@@ -9,7 +9,7 @@ test('should require an array', t => {
   t.end()
 });
 
-test.skip('should require a function', t => {
+test('should require a function', t => {
   t.throws(() => {
     chunkify.array([])
   }, /Usage: chunkify.array\(Array array, Function fn, \[Object] options\) - bad fn/);

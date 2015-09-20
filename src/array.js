@@ -1,4 +1,5 @@
 import ChunkifyOptions from './options'
+import _ from 'underscore'
 
 
 const USAGE = 'Usage: chunkify.array(Array array, Function fn, [Object] options)';
