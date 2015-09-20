@@ -24,20 +24,21 @@ class ChunkifyOptions {
     try {
       this.check_covenants();
     } catch (e) {
-      this.constructor._rethrow(e);
+      // adapt exception to be more informative
+      if (e instanceof CovenantBroken) {
+        let attribute = e.attribute;
+        let expected = typeof DEFAULTS[attribute];
+        let received = typeof options[attribute];
+        throw new TypeError(
+          `Expected '${attribute}' to be '${expected}', got '${received}'`)
+      }
+      throw e
     }
     return this
   }
 
   static _parse_options(options) {
     return _.defaults(_.pick(options, ...SCHEMA), DEFAULTS)
-  }
-
-  static _rethrow(e) {
-    if (e instanceof CovenantBroken) {
-      throw new TypeError(`Expected ${e.attribute} to be ${typeof DEFAULTS[e.attribute]}`)
-    }
-    throw e
   }
 
   static of(options) {
