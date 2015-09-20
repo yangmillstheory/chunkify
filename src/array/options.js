@@ -42,8 +42,15 @@ class ChunkifyOptions {
   }
 
   static of(options) {
-    if (!_.isObject(options) || Array.isArray(options) || _.isFunction(options)) {
+    let throw_error = () => {
       throw new TypeError(`Expected options object, got ${typeof options}`)
+    };
+    if (!_.isObject(options)) {
+      throw_error()
+    } else if (Array.isArray(options)) {
+      throw_error()
+    } else if (_.isFunction(options)) {
+      throw_error()
     }
     return new this(options)
   }
