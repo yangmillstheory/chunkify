@@ -1,5 +1,13 @@
 import test from 'tape'
 import chunkify from './index'
+import ChunkifyOptions from './options'
+import sinon from 'sinon'
+
+let spy_ChunkifyOptions_of = (callback) => {
+  let spy = sinon.spy(ChunkifyOptions, 'of');
+  callback(spy);
+  ChunkifyOptions.of.restore()
+};
 
 
 test('should require an array', t => {
@@ -16,8 +24,15 @@ test('should require a function', t => {
   t.end()
 });
 
-test.skip('should delegate options deserialization', t => {
+test('should delegate options deserialization', t => {
+  let options = {};
 
+  spy_ChunkifyOptions_of((chunkify_options) => {
+    chunkify.array([], function() {}, options);
+    t.ok(chunkify_options.calledWith(options));
+  });
+
+  t.end()
 });
 
 test.skip('should return a promise', t => {
