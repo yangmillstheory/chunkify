@@ -26,5 +26,15 @@
   "bugs": {
     "url": "https://github.com/yangmillstheory/chunkify/issues"
   },
-  "homepage": "https://github.com/yangmillstheory/chunkify"
+  "homepage": "https://github.com/yangmillstheory/chunkify",
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "babel-core": "^5.8.22",
+    "covenance": "^2.0.0",
+    "faucet": "0.0.1",
+    "glob": "^5.0.14",
+    "gulp": "gulpjs/gulp.git#4.0",
+    "gulp-babel": "^5.2.1",
+    "tape": "^4.2.0"
+  }
 }
