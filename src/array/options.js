@@ -33,8 +33,11 @@ class ChunkifyOptions {
     throw e
   }
 
-  static of(options = {}) {
-    new this(options.chunk, options.delay. options.complete)
+  static of(options) {
+    if (!options) {
+      throw new TypeError(`Expected options object, got ${typeof options}`)
+    }
+    return new this(options)
   }
 
 }
