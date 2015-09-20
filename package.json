@@ -31,7 +31,7 @@
   "devDependencies": {
     "babel": "^5.8.21",
     "babel-core": "^5.8.22",
-    "covenance": "^2.0.0",
+    "covenance": "^2.1.0",
     "faucet": "0.0.1",
     "frosty": "^1.0.8",
     "glob": "^5.0.14",
