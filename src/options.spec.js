@@ -60,10 +60,23 @@ test('should throw when an option override has the wrong type', t => {
 
   t.throws(() => {
     ChunkifyOptions.of({chunk})
-  }, /Expected 'chunk' to be 'number', got 'function'/);
+  }, /'chunk' should be a positive number/);
   t.throws(() => {
     ChunkifyOptions.of({delay})
-  }, /Expected 'delay' to be 'number', got 'object'/);
+  }, /'delay' should be a non-negative number/);
+  t.end()
+});
+
+test('should throw when an option override has the wrong value', t => {
+  let chunk = function() {};
+  let delay = [];
+
+  t.throws(() => {
+    ChunkifyOptions.of({chunk})
+  }, /'chunk' should be a positive number/);
+  t.throws(() => {
+    ChunkifyOptions.of({delay})
+  }, /'delay' should be a non-negative number/);
   t.end()
 });
 
