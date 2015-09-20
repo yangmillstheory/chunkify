@@ -4,7 +4,8 @@
   "description": "Prevent long-running scripts from blocking the main thread.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "./test.js src/**/*.spec.js | node_modules/.bin/faucet"
+    "test": "./test.js src/**/*.spec.js | node_modules/.bin/faucet",
+    "prepublish": "npm test && gulp"
   },
   "repository": {
     "type": "git",
