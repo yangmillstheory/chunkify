@@ -4,8 +4,7 @@ import _ from 'underscore'
 
 const DEFAULTS = {
   chunk: 1,
-  delay: 0,
-  complete: function() {} // no-op pass-through
+  delay: 0
 };
 
 const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);
@@ -15,8 +14,7 @@ class ChunkifyOptions {
   get covenance() {
     return covenance.of(
       {attribute: 'chunk', validator: _.isNumber},
-      {attribute: 'delay', validator: _.isNumber},
-      {attribute: 'complete', validator: _.isFunction});
+      {attribute: 'delay', validator: _.isNumber})
   }
 
   constructor(options) {

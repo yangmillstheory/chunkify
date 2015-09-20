@@ -21,7 +21,6 @@ test('should throw when receiving non-object literal options', t => {
 
 test('should have defaults', t => {
   let options = ChunkifyOptions.of({});
-  t.equals(typeof options.complete, 'function');
   t.equals(typeof options.delay, 'number');
   t.equals(typeof options.chunk, 'number');
   t.end()
@@ -30,37 +29,26 @@ test('should have defaults', t => {
 test('should override all defaults', t => {
   let chunk = 50;
   let delay = 100;
-  let complete = function() {};
 
-  let options = ChunkifyOptions.of({chunk, delay, complete});
+  let options = ChunkifyOptions.of({chunk, delay});
 
   t.equals(options.chunk, chunk);
   t.equals(options.delay, delay);
-  t.equals(options.complete, complete);
   t.end()
 });
 
 test('should override some defaults', t => {
   let chunk = 50;
   let delay = 100;
-  let complete = function() {};
 
   let options = ChunkifyOptions.of({chunk});
 
   t.equals(options.chunk, chunk);
   t.notEquals(options.delay, delay);
-  t.notEquals(options.complete, complete);
 
-  options = ChunkifyOptions.of({delay, complete});
+  options = ChunkifyOptions.of({delay});
 
   t.equals(options.delay, delay);
-  t.equals(options.complete, complete);
-  t.notEquals(options.chunk, chunk);
-
-  options = ChunkifyOptions.of({complete});
-
-  t.equals(options.complete, complete);
-  t.notEquals(options.delay, delay);
   t.notEquals(options.chunk, chunk);
 
   t.end()
@@ -69,7 +57,6 @@ test('should override some defaults', t => {
 test('should throw when an option override has the wrong type', t => {
   let chunk = function() {};
   let delay = [];
-  let complete = false;
 
   t.throws(() => {
     ChunkifyOptions.of({chunk})
@@ -77,9 +64,6 @@ test('should throw when an option override has the wrong type', t => {
   t.throws(() => {
     ChunkifyOptions.of({delay})
   }, /Expected 'delay' to be 'number', got 'object'/);
-  t.throws(() => {
-    ChunkifyOptions.of({complete})
-  }, /Expected 'complete' to be 'function', got 'boolean'/);
   t.end()
 });
 
@@ -95,17 +79,12 @@ test('should be immutable', t => {
   t.throws(() => {
     options.chunk = 1
   }, /chunk is immutable/);
-  t.throws(() => {
-    options.complete = null
-  }, /complete is immutable/);
 
   delete options.delay;
   delete options.chunk;
-  delete options.complete;
 
   t.ok(options.delay);
   t.ok(options.chunk);
-  t.ok(options.complete);
 
   t.end()
 });
