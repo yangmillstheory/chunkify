@@ -40,7 +40,7 @@ class ChunkifyOptions {
   }
 
   static of(options) {
-    if (!options) {
+    if (!_.isObject(options) || Array.isArray(options) || _.isFunction(options)) {
       throw new TypeError(`Expected options object, got ${typeof options}`)
     }
     return new this(options)
