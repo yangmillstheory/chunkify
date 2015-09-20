@@ -33,13 +33,37 @@ test('should override all defaults', t => {
   let complete = function() {};
 
   let options = ChunkifyOptions.of({chunk, delay, complete});
+
   t.equals(options.chunk, chunk);
   t.equals(options.delay, delay);
   t.equals(options.complete, complete);
   t.end()
 });
 
-test.skip('should override some defaults', t => {
+test('should override some defaults', t => {
+  let chunk = 50;
+  let delay = 100;
+  let complete = function() {};
+
+  let options = ChunkifyOptions.of({chunk});
+
+  t.equals(options.chunk, chunk);
+  t.notEquals(options.delay, delay);
+  t.notEquals(options.complete, complete);
+
+  options = ChunkifyOptions.of({delay, complete});
+
+  t.equals(options.delay, delay);
+  t.equals(options.complete, complete);
+  t.notEquals(options.chunk, chunk);
+
+  options = ChunkifyOptions.of({complete});
+
+  t.equals(options.complete, complete);
+  t.notEquals(options.delay, delay);
+  t.notEquals(options.chunk, chunk);
+
+  t.end()
 });
 
 test.skip('should throw when an option override has the wrong type', t => {
