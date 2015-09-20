@@ -1,4 +1,5 @@
 import {covenance, CovenantBroken} from 'covenance'
+import frosty from 'frosty'
 import _ from 'underscore'
 
 const DEFAULTS = {
@@ -48,6 +49,7 @@ class ChunkifyOptions {
 
 }
 
+frosty.freeze(ChunkifyOptions.prototype, ...SCHEMA);
 covenance.covenant(ChunkifyOptions);
 
 export default {
