@@ -1,12 +1,19 @@
 import test from 'tape'
+import chunkify from './index'
 
 
-test.skip('should require an array', t => {
-
+test('should require an array', t => {
+  t.throws(() => {
+    chunkify.array()
+  }, /Usage: chunkify.array\(Array array, Function fn, \[Object] options\) - bad array/);
+  t.end()
 });
 
 test.skip('should require a function', t => {
-
+  t.throws(() => {
+    chunkify.array([])
+  }, /Usage: chunkify.array\(Array array, Function fn, \[Object] options\) - bad fn/);
+  t.end()
 });
 
 test.skip('should delegate options deserialization', t => {
