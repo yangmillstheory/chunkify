@@ -13,26 +13,27 @@ class ChunkifyOptions {
 
   get covenance() {
     return covenance.of(
-      {attribute: 'chunk', validator: _.isNumber},
-      {attribute: 'delay', validator: _.isNumber})
+      {
+        attribute: 'chunk',
+        validator: (chunk) => {
+          return _.isNumber(chunk) && chunk > 0;
+        },
+        excstring: "'chunk' should be a positive number"
+      },
+      {
+        attribute: 'delay',
+        validator: (delay) => {
+          return _.isNumber(delay) && delay >= 0;
+        },
+        excstring: "'delay' should be a non-negative number"
+      }
+    )
   }
 
   constructor(options) {
     _.extend(this, this.constructor._parse_options(options));
-    try {
-      this.check_covenants();
-    } catch (e) {
-      // adapt exception to be more informative
-      if (e instanceof CovenantBroken) {
-        let attribute = e.attribute;
-        let expected = typeof DEFAULTS[attribute];
-        let received = typeof options[attribute];
-        throw new TypeError(
-          `Expected '${attribute}' to be '${expected}', got '${received}'`)
-      }
-      throw e
-    }
-    return this
+    this.check_covenants();
+    return this;
   }
 
   static _parse_options(options) {
