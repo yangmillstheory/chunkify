@@ -40,7 +40,7 @@ class ChunkifyOptions {
 
 covenance.covenant(ChunkifyOptions, {
   pre_check_covenants() {
-    for (let option in DEFAULTS) {
+    for (let option of DEFAULTS.getOwnPropertyNames()) {
       if (this[option] === undefined) {
         this[option] = DEFAULTS[option];
       }
