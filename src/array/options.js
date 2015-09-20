@@ -5,7 +5,7 @@ import _ from 'underscore'
 const DEFAULTS = {
   chunk: 1,
   delay: 0,
-  complete: function() {}
+  complete: function() {} // no-op pass-through
 };
 
 const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);

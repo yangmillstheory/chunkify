@@ -83,8 +83,31 @@ test('should throw when an option override has the wrong type', t => {
   t.end()
 });
 
-test.skip('should be read-only', t => {
+test('should be immutable', t => {
+  let chunk = 50;
+  let delay = 100;
 
+  let options = ChunkifyOptions.of({chunk, delay});
+
+  t.throws(() => {
+    options.delay = 0
+  }, /delay is immutable/);
+  t.throws(() => {
+    options.chunk = 1
+  }, /chunk is immutable/);
+  t.throws(() => {
+    options.complete = null
+  }, /complete is immutable/);
+
+  delete options.delay;
+  delete options.chunk;
+  delete options.complete;
+
+  t.ok(options.delay);
+  t.ok(options.chunk);
+  t.ok(options.complete);
+
+  t.end()
 });
 
 
