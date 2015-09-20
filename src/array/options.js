@@ -17,7 +17,7 @@ class ChunkifyOptions {
   }
 
   constructor(chunk, delay, complete) {
-    _.extend(this, {chunk, delay, complete});
+    _.extend(this, _.defaults({chunk, delay, complete}, DEFAULTS));
     try {
       this.check_covenants();
     } catch (e) {
@@ -36,17 +36,10 @@ class ChunkifyOptions {
   static of(options = {}) {
     new this(options.chunk, options.delay. options.complete)
   }
+
 }
 
-covenance.covenant(ChunkifyOptions, {
-  pre_check_covenants() {
-    for (let option of DEFAULTS.getOwnPropertyNames()) {
-      if (this[option] === undefined) {
-        this[option] = DEFAULTS[option];
-      }
-    }
-  }
-});
+covenance.covenant(ChunkifyOptions);
 
 export default {
   of() {
