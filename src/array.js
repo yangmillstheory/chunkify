@@ -2,6 +2,11 @@ import ChunkifyOptions from './options'
 
 
 let array = (array, fn, options = {}) => {
+  if (!Array.isArray(array)) {
+    throw new TypeError(`Expected Array 'array', got ${typeof array}`)
+  } else if (!_.isFunction(fn)) {
+    throw new TypeError(`Expected function 'fn', got ${typeof fn}`)
+  }
   let {CHUNK, DELAY} = ChunkifyOptions.of(options);
   let index = 0;
   let total = array.length;
