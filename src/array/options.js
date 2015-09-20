@@ -7,6 +7,8 @@ const DEFAULTS = {
   complete: function() {}
 };
 
+const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);
+
 class ChunkifyOptions {
 
   get covenance() {
@@ -27,7 +29,7 @@ class ChunkifyOptions {
   }
 
   static _parse_options(options) {
-    return _.defaults(_.pick(options, ...DEFAULTS.getOwnPropertyNames()), DEFAULTS)
+    return _.defaults(_.pick(options, ...SCHEMA), DEFAULTS)
   }
 
   static _rethrow(e) {
