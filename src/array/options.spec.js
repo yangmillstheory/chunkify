@@ -66,8 +66,21 @@ test('should override some defaults', t => {
   t.end()
 });
 
-test.skip('should throw when an option override has the wrong type', t => {
+test('should throw when an option override has the wrong type', t => {
+  let chunk = function() {};
+  let delay = [];
+  let complete = false;
 
+  t.throws(() => {
+    ChunkifyOptions.of({chunk})
+  }, /Expected 'chunk' to be 'number', got 'function'/);
+  t.throws(() => {
+    ChunkifyOptions.of({delay})
+  }, /Expected 'delay' to be 'number', got 'object'/);
+  t.throws(() => {
+    ChunkifyOptions.of({complete})
+  }, /Expected 'complete' to be 'function', got 'boolean'/);
+  t.end()
 });
 
 test.skip('should be read-only', t => {
