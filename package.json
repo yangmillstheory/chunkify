@@ -1,0 +1,30 @@
+{
+  "name": "chunkify",
+  "version": "1.0.0",
+  "description": "Prevent long-running scripts from blocking the main thread.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./test.js src/**/*.spec.js | node_modules/.bin/faucet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangmillstheory/chunkify.git"
+  },
+  "keywords": [
+    "gulp",
+    "gulpfriendly",
+    "chunk",
+    "non-blocking",
+    "es6",
+    "babel",
+    "defer",
+    "timeout",
+    "blocking"
+  ],
+  "author": "Victor Alvarez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yangmillstheory/chunkify/issues"
+  },
+  "homepage": "https://github.com/yangmillstheory/chunkify"
+}
