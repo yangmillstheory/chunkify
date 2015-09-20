@@ -2,7 +2,7 @@
   "name": "chunkify",
   "version": "1.0.0",
   "description": "Prevent long-running scripts from blocking the main thread.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "./test.js src/**/*.spec.js | node_modules/.bin/faucet"
   },
