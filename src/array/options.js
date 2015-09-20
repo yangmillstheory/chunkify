@@ -16,14 +16,18 @@ class ChunkifyOptions {
       {attribute: 'complete', validator: _.isFunction});
   }
 
-  constructor(chunk, delay, complete) {
-    _.extend(this, _.defaults({chunk, delay, complete}, DEFAULTS));
+  constructor(options) {
+    _.extend(this, this.constructor._parse_options(options));
     try {
       this.check_covenants();
     } catch (e) {
       this.constructor._rethrow(e);
     }
     return this
+  }
+
+  static _parse_options(options) {
+    return _.defaults(_.pick(options, ...DEFAULTS.getOwnPropertyNames()), DEFAULTS)
   }
 
   static _rethrow(e) {
