@@ -20,10 +20,10 @@ Import the module:
 
 `options` is an object literal that specifies a non-negative `delay` value, and a positive `chunk` value.
 
-* `chunk` is the number of items in `array` to successively invoke `fn` on before yielding back to the main thread. Default is `1`.
-* `delay` is the minimal time in milliseconds to wait before continuing to invoke `fn` on the next item in `array`. Default is `0`.
+* `chunk` is the number of items in `array` to successively invoke `fn` on before yielding control of the main thread. Default is `1`.
+* `delay` is the minimal time in milliseconds to wait before continuing to invoke `fn` on `array`. Default is `0`.
 
-`fn` is successively invoked on `array`. At every `chunk`<sup>th</sup> invocation, control is given back to the main thread. After `delay` milliseconds, `fn` picks back up where it left off. This continues until all items in `array` have been processed. 
+`fn` is successively invoked on `array`. At every `chunk`<sup>th</sup> invocation, control is yielded back to the thread. After (at least) `delay` milliseconds, `fn` picks up where it left off. This continues until all items in `array` have been processed by `fn`. 
    
 Returns a `Promise` that resolves with `array` when `fn` has been invoked on all items in `array`.
 
