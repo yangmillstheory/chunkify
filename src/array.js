@@ -10,7 +10,7 @@ let array = (array, fn, options = {}) => {
   } else if (!_.isFunction(fn)) {
     throw new TypeError(`${USAGE} - bad fn`)
   }
-  let {CHUNK, DELAY} = ChunkifyOptions.of(options);
+  let {chunk, delay} = ChunkifyOptions.of(options);
   let index = 0;
   let total = array.length;
   let incomplete = () => {
@@ -23,8 +23,8 @@ let array = (array, fn, options = {}) => {
       } catch (e) {
         reject(e);
       }
-      if (incomplete() && (index % CHUNK === 0)) {
-        return setTimeout(process_chunk.bind(null, resolve, reject), DELAY);
+      if (incomplete() && ((index % chunk) === 0)) {
+        return setTimeout(process_chunk.bind(null, resolve, reject), delay);
       }
     }
     resolve(array);
