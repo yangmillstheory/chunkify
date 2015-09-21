@@ -163,6 +163,21 @@ test('should reject the promise with rejection object and stop processing', t =>
   })
 });
 
-test.skip('should not yield after `chunk` iterations if processing is complete', t => {
+test('should not yield after `chunk` iterations if processing is complete', t => {
+  let array = ['A', 'B', 'C'];
+  let fn = sinon.spy();
 
+  tick({
+    ms: 2000,
+
+    before_tick() {
+      chunkify.array(array, fn, {chunk: 3, delay: 1000});
+      t.equals(fn.callCount, 3)
+    },
+
+    after_tick() {
+      t.equals(fn.callCount, 3);
+      t.end()
+    }
+  });
 });
