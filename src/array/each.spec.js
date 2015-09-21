@@ -1,6 +1,6 @@
 import test from 'tape'
 import chunkify from './index'
-import ChunkifyOptions from './options'
+import ChunkifyOptions from '../options'
 import sinon from 'sinon'
 import _ from 'underscore'
 
@@ -20,22 +20,22 @@ let tick = ({before_tick, after_tick, delay}) => {
 
 test('should require an array', t => {
   t.throws(() => {
-    chunkify.array()
-  }, /Usage: chunkify.array\(Array array, Function fn, \[Object] options\) - bad array/);
+    chunkify.each()
+  }, /Usage: chunkify.each\(Array array, Function fn, \[Object options]\) - bad array/);
   t.end()
 });
 
 test('should require a function', t => {
   t.throws(() => {
-    chunkify.array([])
-  }, /Usage: chunkify.array\(Array array, Function fn, \[Object] options\) - bad fn/);
+    chunkify.each([])
+  }, /Usage: chunkify.each\(Array array, Function fn, \[Object options]\) - bad fn/);
   t.end()
 });
 
 test('should delegate options deserialization', t => {
   ChunkifyOptions_spy((spy) => {
     let options = {};
-    chunkify.array([], function() {}, options);
+    chunkify.each([], function() {}, options);
     t.ok(spy.calledWith(options));
     t.end()
   });
@@ -43,7 +43,7 @@ test('should delegate options deserialization', t => {
 
 test('should default options to an empty object', t => {
   ChunkifyOptions_spy((spy) => {
-    chunkify.array([], function() {});
+    chunkify.each([], function() {});
     t.ok(spy.calledWith({}));
     t.end()
   });
@@ -53,7 +53,7 @@ test('should return a promise and not block the main thread', t => {
   let array = ['A'];
   let fn = sinon.spy();
   let fn_on_main_thread = sinon.spy();
-  let promise = chunkify.array(array, fn);
+  let promise = chunkify.each(array, fn);
 
   fn_on_main_thread();
 
@@ -65,7 +65,7 @@ test('should return a promise and not block the main thread', t => {
 test('should not invoke fn when given an empty array', t => {
   let fn = sinon.spy();
 
-  chunkify.array([], fn).then(() => {
+  chunkify.each([], fn).then(() => {
     t.notOk(fn.called);
     t.end();
   });
@@ -76,7 +76,7 @@ test('should invoke fn on the array between 0 and `chunk` iterations', t => {
   let fn = sinon.spy();
   let chunk = 3;
 
-  chunkify.array(array, fn, {chunk}).then(() => {
+  chunkify.each(array, fn, {chunk}).then(() => {
     t.equals(fn.callCount, 3);
     t.deepEqual(fn.getCall(0).args, ['A']);
     t.deepEqual(fn.getCall(1).args, ['B']);
@@ -93,7 +93,7 @@ test('should yield to the main thread for at least `delay` ms after `chunk` iter
     delay: 999,
 
     before_tick() {
-      chunkify.array(array, fn, {chunk: 3, delay: 1000});
+      chunkify.each(array, fn, {chunk: 3, delay: 1000});
 
       t.equals(fn.callCount, 3);
       t.deepEqual(fn.getCall(0).args, ['A']);
@@ -117,7 +117,7 @@ test('should start again in `delay` milliseconds after yielding', t => {
     delay: 1000,
 
     before_tick() {
-      chunkify.array(array, fn, {chunk: 3, delay: 1000});
+      chunkify.each(array, fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3);
       t.deepEqual(fn.getCall(0).args, ['A']);
       t.deepEqual(fn.getCall(1).args, ['B']);
@@ -140,7 +140,7 @@ test('should resolve with the array after processing completes', t => {
     delay: 1000,
 
     before_tick() {
-      return chunkify.array(array, fn, {chunk: 3, delay: 1000});
+      return chunkify.each(array, fn, {chunk: 3, delay: 1000});
     },
 
     after_tick(chunkify_promise) {
@@ -161,7 +161,7 @@ test('should reject the promise with rejection object and stop processing', t =>
     }
   });
 
-  chunkify.array(array, fn, {chunk: 3}).then(null, (rejection) => {
+  chunkify.each(array, fn, {chunk: 3}).then(null, (rejection) => {
     t.equals(rejection.item, 'B');
     t.equals(rejection.error, error);
 
@@ -181,7 +181,7 @@ test('should not yield after `chunk` iterations if processing is complete', t =>
     delay: 2000,
 
     before_tick() {
-      chunkify.array(array, fn, {chunk: 3, delay: 1000});
+      chunkify.each(array, fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3)
     },
 

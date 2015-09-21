@@ -1,4 +1,4 @@
-import array from './array'
+import {each, map} from './array'
 
 
-export default {array}
+export default {each, map}

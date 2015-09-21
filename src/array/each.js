@@ -1,10 +1,10 @@
-import ChunkifyOptions from './options'
+import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
 
-const USAGE = 'Usage: chunkify.array(Array array, Function fn, [Object] options)';
+const USAGE = 'Usage: chunkify.each(Array array, Function fn, [Object options])';
 
-let array = (array, fn, options = {}) => {
+let each = (array, fn, options = {}) => {
   if (!Array.isArray(array)) {
     throw new TypeError(`${USAGE} - bad array`)
   } else if (!_.isFunction(fn)) {
@@ -34,4 +34,4 @@ let array = (array, fn, options = {}) => {
 };
 
 
-export default array
+export default each
