@@ -8,6 +8,7 @@ gulp.task('build', () => {
   return gulp.src([
     `${SRC}/**/*.js`,
     `!${SRC}/**/*.spec.js`
+    `!${SRC}/**/testutils.js`
   ])
   .pipe(babel())
   .pipe(gulp.dest(DST))
