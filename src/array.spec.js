@@ -70,8 +70,18 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
-test.skip('should invoke fn on the array between 0 and `chunk` iterations', t => {
+test('should invoke fn on the array between 0 and `chunk` iterations', t => {
+  let array = [1, 2, 3];
+  let fn = sinon.spy();
+  let chunk = 3;
 
+  chunkify.array(array, fn, {chunk}).then(() => {
+    t.equals(fn.callCount, 3);
+    t.deepEqual(fn.getCall(0).args, [1]);
+    t.deepEqual(fn.getCall(1).args, [2]);
+    t.deepEqual(fn.getCall(2).args, [3]);
+    t.end()
+  })
 });
 
 test.skip('should yield after `chunk` iterations', t => {
