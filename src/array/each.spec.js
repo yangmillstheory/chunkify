@@ -120,7 +120,7 @@ test('should start again in `delay` milliseconds after yielding', t => {
   });
 });
 
-test('should resolve with the array after processing completes', t => {
+test('should resolve with undefined after processing completes', t => {
   let array = ['A', 'B', 'C', 'D'];
   let fn = sinon.spy();
 
@@ -133,7 +133,7 @@ test('should resolve with the array after processing completes', t => {
 
     after_tick(chunkify_promise) {
       chunkify_promise.then((result) => {
-        t.equals(result, array);
+        t.equals(result, undefined);
         t.end()
       })
     }

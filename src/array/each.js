@@ -25,7 +25,7 @@ let each = (array, fn, options = {}) => {
         return setTimeout(process_chunk.bind(null, resolve, reject), delay);
       }
     }
-    resolve(array);
+    resolve();
   } ;
   return new Promise(process_chunk)
 };
