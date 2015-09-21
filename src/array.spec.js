@@ -64,7 +64,7 @@ test('should return a promise', t => {
 test('should not invoke fn when given an empty array', t => {
   let fn = sinon.spy();
 
-  chunkify.array([], fn).then((result) => {
+  chunkify.array([], fn).then(() => {
     t.notOk(fn.called);
     t.end();
   });
