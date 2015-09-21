@@ -60,8 +60,13 @@ test('should return a promise', t => {
   t.end()
 });
 
-test.skip('should not invoke fn when given an empty array', t => {
+test('should not invoke fn when given an empty array', t => {
+  let fn = sinon.spy();
 
+  chunkify.array([], fn).then((result) => {
+    t.notOk(fn.called);
+    t.end();
+  });
 });
 
 test.skip('should invoke fn successively between "chunk" iterations', t => {
