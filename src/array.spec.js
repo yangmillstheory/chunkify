@@ -43,6 +43,10 @@ test('should default options to an empty object', t => {
 
   t.end()
 });
+
+test('should return a promise', t => {
+  t.ok(chunkify.array([], function() {}) instanceof Promise);
+  t.end()
 });
 
 test.skip('should not invoke fn when given an empty array', t => {
