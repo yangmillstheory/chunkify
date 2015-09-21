@@ -124,8 +124,24 @@ test('should start again in `delay` milliseconds after yielding', t => {
   });
 });
 
-test.skip('should resolve with the array after processing completes', t => {
+test('should resolve with the array after processing completes', t => {
+  let array = ['A', 'B', 'C', 'D'];
+  let fn = sinon.spy();
 
+  tick({
+    ms: 1000,
+
+    before_tick() {
+      return chunkify.array(array, fn, {chunk: 3, delay: 1000});
+    },
+
+    after_tick(chunkify_promise) {
+      chunkify_promise.then((result) => {
+        t.equals(result, array);
+        t.end()
+      })
+    }
+  });
 });
 
 test.skip('should reject the promise with a thrown error and the index of occurrence', t => {
