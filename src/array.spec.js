@@ -71,21 +71,21 @@ test('should not invoke fn when given an empty array', t => {
 });
 
 test('should invoke fn on the array between 0 and `chunk` iterations', t => {
-  let array = [1, 2, 3];
+  let array = ['A', 'B', 'C'];
   let fn = sinon.spy();
   let chunk = 3;
 
   chunkify.array(array, fn, {chunk}).then(() => {
     t.equals(fn.callCount, 3);
-    t.deepEqual(fn.getCall(0).args, [1]);
-    t.deepEqual(fn.getCall(1).args, [2]);
-    t.deepEqual(fn.getCall(2).args, [3]);
+    t.deepEqual(fn.getCall(0).args, ['A']);
+    t.deepEqual(fn.getCall(1).args, ['B']);
+    t.deepEqual(fn.getCall(2).args, ['C']);
     t.end()
   })
 });
 
 test('should yield after `chunk` iterations', t => {
-  let array = [1, 2, 3, 4];
+  let array = ['A', 'B', 'C', 'D'];
   let fn = sinon.spy();
   let fn_on_main_thread = sinon.spy();
 
@@ -105,8 +105,27 @@ test('should yield after `chunk` iterations', t => {
   });
 });
 
-test.skip('should start again in `delay` milliseconds after yielding', t => {
+test('should start again in `delay` milliseconds after yielding', t => {
+  let array = ['A', 'B', 'C', 'D'];
+  let fn = sinon.spy();
 
+  tick({
+    ms: 1000,
+
+    before_tick() {
+      chunkify.array(array, fn, {chunk: 3, delay: 1000});
+      t.equals(fn.callCount, 3);
+      t.deepEqual(fn.getCall(0).args, ['A']);
+      t.deepEqual(fn.getCall(1).args, ['B']);
+      t.deepEqual(fn.getCall(2).args, ['C']);
+    },
+
+    after_tick() {
+      t.equals(fn.callCount, 4);
+      t.deepEqual(fn.getCall(3).args, ['D']);
+      t.end();
+    }
+  });
 });
 
 test.skip('should resolve with the array after processing completes', t => {
