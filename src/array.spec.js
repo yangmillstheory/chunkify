@@ -35,8 +35,14 @@ test('should delegate options deserialization', t => {
   t.end()
 });
 
-test.skip('should return a promise', t => {
+test('should default options to an empty object', t => {
+  spy_ChunkifyOptions_of((chunkify_options) => {
+    chunkify.array([], function() {});
+    t.ok(chunkify_options.calledWith({}));
+  });
 
+  t.end()
+});
 });
 
 test.skip('should not invoke fn when given an empty array', t => {
