@@ -47,7 +47,7 @@ Install dependencies.
     
 Compile sources.
 
-    $ node_modules/.bin/gulp build
+    $ node_modules/.bin/gulp
     
 Run tests.
 
