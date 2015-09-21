@@ -84,8 +84,25 @@ test('should invoke fn on the array between 0 and `chunk` iterations', t => {
   })
 });
 
-test.skip('should yield after `chunk` iterations', t => {
+test('should yield after `chunk` iterations', t => {
+  let array = [1, 2, 3, 4];
+  let fn = sinon.spy();
+  let fn_on_main_thread = sinon.spy();
 
+  tick({
+    ms: 999,
+
+    before_tick() {
+      chunkify.array(array, fn, {chunk: 3, delay: 1000});
+    },
+
+    after_tick() {
+      fn_on_main_thread();
+      t.ok(fn_on_main_thread.called);
+      t.equals(fn.callCount, 3);
+      t.end();
+    }
+  });
 });
 
 test.skip('should start again in `delay` milliseconds after yielding', t => {
