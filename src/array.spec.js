@@ -12,13 +12,9 @@ let spy_ChunkifyOptions_of = (callback) => {
 
 let tick = ({before_tick, after_tick, ms}) => {
   let clock = sinon.useFakeTimers();
-  if (_.isFunction(before_tick)) {
-    before_tick();
-  }
+  let before_tick_result = before_tick();
   clock.tick(ms);
-  if (_.isFunction(after_tick)) {
-    after_tick();
-  }
+  after_tick(before_tick_result);
   clock.restore();
 };
 
