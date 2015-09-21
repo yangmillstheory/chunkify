@@ -1,13 +1,13 @@
 import chunkify from '../index'
 import ChunkifyOptions from '../options'
 import _ from 'underscore'
-import {verify_usage} from './utilities'
+import {ok_usage} from './utilities'
 
 
 const USAGE = 'Usage: chunkify.map(Array array, Function fn, [Object options])';
 
 let map = (array, fn, options) => {
-  verify_usage(array, fn, USAGE);
+  ok_usage(array, fn, USAGE);
   let mapped = [];
   let pusher = (result) => {
     mapped.push(result);
