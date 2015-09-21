@@ -1,5 +1,7 @@
 # chunkify
 
+[![Build Status](https://travis-ci.org/yangmillstheory/chunkify.svg?branch=master)](https://travis-ci.org/yangmillstheory/chunkify)
+
 An [ES6-developed](http://babeljs.io/) [node](https://nodejs.org/en/) module that prevents long-running scripts from blocking the JavaScript thread.
 
 ## Install
