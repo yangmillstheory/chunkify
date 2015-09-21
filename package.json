@@ -1,7 +1,7 @@
 {
   "name": "chunkify",
   "version": "1.0.1",
-  "description": "Prevent long-running scripts from blocking the main thread.",
+  "description": "Prevent long-running scripts from blocking the thread.",
   "main": "dist/index.js",
   "scripts": {
     "test": "./test.js src/**/*.spec.js | node_modules/.bin/faucet",
