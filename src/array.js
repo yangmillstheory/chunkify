@@ -18,10 +18,11 @@ let array = (array, fn, options = {}) => {
   };
   var process_chunk = (resolve, reject) => {
     while (incomplete()) {
+      let item = array[index++];
       try {
-        fn(array[index++])
-      } catch (e) {
-        reject(e);
+        fn(item)
+      } catch (error) {
+        return reject({error, item});
       }
       if (incomplete() && ((index % chunk) === 0)) {
         return setTimeout(process_chunk.bind(null, resolve, reject), delay);
