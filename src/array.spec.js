@@ -9,6 +9,17 @@ let spy_ChunkifyOptions_of = (callback) => {
   ChunkifyOptions.of.restore()
 };
 
+let tick = ({before_tick, after_tick, ms}) => {
+  let clock = sinon.useFakeTimers();
+  if (_.isFunction(before_tick)) {
+    before_tick();
+  }
+  clock.tick(ms);
+  if (_.isFunction(after_tick)) {
+    after_tick();
+  }
+  clock.restore();
+};
 
 test('should require an array', t => {
   t.throws(() => {
