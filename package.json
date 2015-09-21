@@ -44,7 +44,9 @@
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-babel": "^5.2.1",
     "sinon": "^1.16.1",
-    "tape": "^4.2.0",
+    "tape": "^4.2.0"
+  },
+  "dependencies": {
     "underscore": "^1.8.3"
   }
 }
