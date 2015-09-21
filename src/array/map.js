@@ -8,13 +8,14 @@ const USAGE = 'Usage: chunkify.map(Array array, Function fn, [Object options])';
 
 let map = (array, fn, options) => {
   verify_usage(array, fn, USAGE);
-  let map_results = [];
-  let push_result = (result) => {
-    map_results.push(result);
+  let mapped = [];
+  let pusher = (result) => {
+    mapped.push(result);
     return result;
   };
-  return chunkify.each(array, _.compose(push_result, fn), options).then(() => {
-    return map_results;
+  let mapper = _.compose(pusher, fn);
+  return chunkify.each(array, mapper, options).then(() => {
+    return mapped;
   });
 };
 
