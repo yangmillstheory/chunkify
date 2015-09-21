@@ -1,11 +1,18 @@
 import sinon from 'sinon'
 import ChunkifyOptions from '../options'
+import chunkify from '../index'
 
 
 let ChunkifyOptions_spy = (callback) => {
   let spy = sinon.spy(ChunkifyOptions, 'of');
   callback(spy);
   ChunkifyOptions.of.restore()
+};
+
+let chunkify_each_spy = (callback) => {
+  let spy = sinon.spy(chunkify, 'each');
+  callback(spy);
+  chunkify.each.restore()
 };
 
 let tick = ({before_tick, after_tick, delay}) => {
@@ -16,4 +23,4 @@ let tick = ({before_tick, after_tick, delay}) => {
   clock.restore();
 };
 
-export default {ChunkifyOptions_spy, tick}
+export default {ChunkifyOptions_spy, chunkify_each_spy, tick}
