@@ -1,6 +1,6 @@
 {
   "name": "chunkify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Prevent long-running scripts from blocking the main thread.",
   "main": "dist/index.js",
   "scripts": {
