@@ -69,15 +69,15 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
-test.skip('should invoke fn successively between "chunk" iterations', t => {
+test.skip('should invoke fn on the array between 0 and `chunk` iterations', t => {
 
 });
 
-test.skip('should yield after "chunk" iterations', t => {
+test.skip('should yield after `chunk` iterations', t => {
 
 });
 
-test.skip('should start again after yielding in "delay" milliseconds', t => {
+test.skip('should start again in `delay` milliseconds after yielding', t => {
 
 });
 
@@ -85,10 +85,10 @@ test.skip('should resolve with the array after processing completes', t => {
 
 });
 
-test.skip('should reject the promise if an error is thrown', t => {
+test.skip('should reject the promise with a thrown error and the index of occurrence', t => {
 
 });
 
-test.skip('should not yield after "chunk" iterations if processing is complete', t => {
+test.skip('should not yield after `chunk` iterations if processing is complete', t => {
 
 });
