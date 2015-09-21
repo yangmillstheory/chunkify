@@ -2,6 +2,7 @@ import test from 'tape'
 import chunkify from './index'
 import ChunkifyOptions from './options'
 import sinon from 'sinon'
+import _ from 'underscore'
 
 let spy_ChunkifyOptions_of = (callback) => {
   let spy = sinon.spy(ChunkifyOptions, 'of');
