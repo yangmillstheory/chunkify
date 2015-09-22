@@ -68,11 +68,10 @@ test('should resolve with mapped results', t => {
 
     after_tick(promise) {
       t.equals(fn.callCount, 3);
-      t.end();
-      //promise.then((mapped) => {
-      //  t.deepEquals(mapped, ['a', 'b', 'c']);
-      //  t.end()
-      //});
+      promise.then((mapped) => {
+        t.deepEquals(mapped, ['a', 'b', 'c']);
+        t.end()
+      });
     }
   });
 });
