@@ -4,7 +4,8 @@ import _ from 'underscore'
 
 const DEFAULTS = {
   chunk: 1,
-  delay: 0
+  delay: 0,
+  scope: null
 };
 
 const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);
@@ -26,6 +27,20 @@ class ChunkifyOptions {
           return _.isNumber(delay) && delay >= 0;
         },
         excstring: "'delay' should be a non-negative number"
+      },
+      {
+        attribute: 'scope',
+        validator: (scope) => {
+          if (scope === undefined) {
+            return false
+          } else if (_.isBoolean(scope)) {
+            return false
+          } else if (_.isNumber(scope)) {
+            return false
+          }
+          return true
+        },
+        excstring: "'scope' should be a defined non-boolean and non-number, or null"
       }
     )
   }
