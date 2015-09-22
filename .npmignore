@@ -1,3 +1,6 @@
 src
 test.js
 gulpfile.babel.js
+.npmignore
+.travis.yml
+.idea
