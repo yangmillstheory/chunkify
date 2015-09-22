@@ -3,6 +3,7 @@ import _ from 'underscore'
 import test from 'tape'
 
 import chunkify from '../index'
+import ChunkifyOptions from '../options'
 import each from './each'
 import {tick} from '../testutils'
 
@@ -32,10 +33,10 @@ test('should return a promise', t => {
 });
 
 // thus, cf. ./each.spec.js
-test('should delegate array, options, and a wrapped fn to .each', t => {
+test('should delegate array, parsed options, and a wrapped fn to .each', t => {
   let array = ['A', 'B', 'C'];
   let scope = {};
-  let options = {chunk: 3, scope};
+  let options = ChunkifyOptions.of({chunk: 3, scope});
   let fn = sinon.spy();
 
   each_spy((each) => {
@@ -65,11 +66,13 @@ test('should resolve with mapped results', t => {
     before_tick() {
       let promise = chunkify.map(array, fn, options);
       t.equals(fn.callCount, 2);
+      t.ok(fn.alwaysCalledOn(null));
       return promise;
     },
 
     after_tick(promise) {
       t.equals(fn.callCount, 3);
+      t.ok(fn.alwaysCalledOn(null));
       promise.then((mapped) => {
         t.deepEquals(mapped, ['a', 'b', 'c']);
         t.end()
