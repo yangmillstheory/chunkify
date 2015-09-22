@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0 - 2.0.1] - 2015-09-21
+## [2.0.0 - 2.0.3] - 2015-09-21
 ### BREAKING CHANGES
 * `chunkify.array` is now `chunkify.each`. The returned promise resolves with `undefined` instead of the original array.
 
