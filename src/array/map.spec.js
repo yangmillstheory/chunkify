@@ -80,3 +80,24 @@ test('should resolve with mapped results', t => {
     }
   });
 });
+
+test('should reject the promise with rejection object and stop processing', t => {
+  let array = ['A', 'B', 'C'];
+  let error = new Error('Cannot process B!');
+  let fn = sinon.spy((letter) => {
+    if (letter === 'B') {
+      throw error;
+    }
+  });
+
+  chunkify.map(array, fn, {chunk: 3}).then(null, (rejection) => {
+    t.equals(rejection.item, 'B');
+    t.equals(rejection.error, error);
+
+    t.equals(fn.callCount, 2);
+    t.deepEquals(fn.getCall(0).args, ['A']);
+    t.deepEquals(fn.getCall(1).args, ['B']);
+
+    t.end()
+  })
+});
