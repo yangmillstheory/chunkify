@@ -77,5 +77,9 @@ covenance.covenant(ChunkifyOptions);
 export default {
   of() {
     return ChunkifyOptions.of(...arguments)
+  },
+
+  is(thing) {
+    return (thing instanceof ChunkifyOptions)
   }
 }
