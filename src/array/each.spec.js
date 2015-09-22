@@ -1,6 +1,6 @@
 import test from 'tape'
 import chunkify from '../index'
-import {ChunkifyOptions_spy, tick} from '../testutils'
+import {ChunkifyOptionsSpy, tick} from '../testutils'
 import ChunkifyOptions from '../options'
 import sinon from 'sinon'
 import _ from 'underscore'
@@ -21,7 +21,7 @@ test('should require a function', t => {
 });
 
 test('should delegate options deserialization', t => {
-  ChunkifyOptions_spy((spy) => {
+  ChunkifyOptionsSpy((spy) => {
     let options = {};
     chunkify.each([], function() {}, options);
     t.ok(spy.calledWith(options));
@@ -30,7 +30,7 @@ test('should delegate options deserialization', t => {
 });
 
 test('should default options to an empty object', t => {
-  ChunkifyOptions_spy((spy) => {
+  ChunkifyOptionsSpy((spy) => {
     chunkify.each([], function() {});
     t.ok(spy.calledWith({}));
     t.end()
@@ -128,11 +128,14 @@ test('should resolve with undefined after processing completes', t => {
     delay: 1000,
 
     before_tick() {
-      return chunkify.each(array, fn, {chunk: 3, delay: 1000});
+      let promise = chunkify.each(array, fn, {chunk: 3, delay: 1000});
+      t.equals(fn.callCount, 3);
+      return promise
     },
 
-    after_tick(chunkify_promise) {
-      chunkify_promise.then((result) => {
+    after_tick(promise) {
+      t.equals(fn.callCount, 4);
+      promise.then((result) => {
         t.equals(result, undefined);
         t.end()
       })

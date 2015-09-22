@@ -31,4 +31,4 @@ let each = (array, fn, options = {}) => {
 };
 
 
-export default each
+export default {apply: each}

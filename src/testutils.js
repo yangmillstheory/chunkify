@@ -2,9 +2,8 @@ import sinon from 'sinon'
 import ChunkifyOptions from './options'
 
 
-let ChunkifyOptions_spy = (callback) => {
-  let spy = sinon.spy(ChunkifyOptions, 'of');
-  callback(spy);
+let ChunkifyOptionsSpy = (callback) => {
+  callback(sinon.spy(ChunkifyOptions, 'of'));
   ChunkifyOptions.of.restore()
 };
 
@@ -16,4 +15,4 @@ let tick = ({before_tick, after_tick, delay}) => {
   clock.restore();
 };
 
-export default {ChunkifyOptions_spy, tick}
+export default {ChunkifyOptionsSpy, tick}

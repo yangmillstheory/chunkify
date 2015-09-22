@@ -14,10 +14,10 @@ let map = (array, fn, options) => {
     return result;
   };
   let mapper = _.compose(pusher, fn);
-  return each(array, mapper, options).then(() => {
+  return each.apply(array, mapper, options).then(() => {
     return mapped;
   });
 };
 
 
-export default map
+export default {apply: map}
