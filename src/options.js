@@ -63,17 +63,17 @@ class ChunkifyOptions {
 
   static _parse_options(options) {
     let parsed = {};
-    let setkey = (key) => {
-      if (options[key] === undefined) {
+    let setkey = (key, alias) => {
+      if (options[alias] === undefined) {
         return false;
       }
-      parsed[key] = options[key];
+      parsed[key] = options[alias];
       return true
     };
     for (let key of SCHEMA) {
-      if (!setkey(key)) {
+      if (!setkey(key, key)) {
         for (let alias of ALIASES[key]) {
-          if (setkey(alias)) {
+          if (setkey(key, alias)) {
             break
           }
         }
