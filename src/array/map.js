@@ -1,4 +1,4 @@
-import chunkify from '../index'
+import each from './each'
 import ChunkifyOptions from '../options'
 import _ from 'underscore'
 import {ok_usage} from './utilities'
@@ -14,7 +14,7 @@ let map = (array, fn, options) => {
     return result;
   };
   let mapper = _.compose(pusher, fn);
-  return chunkify.each(array, mapper, options).then(() => {
+  return each(array, mapper, options).then(() => {
     return mapped;
   });
 };

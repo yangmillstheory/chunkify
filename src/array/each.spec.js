@@ -1,6 +1,6 @@
 import test from 'tape'
-import chunkify from './index'
-import {ChunkifyOptions_spy, tick} from './testutils'
+import chunkify from '../index'
+import {ChunkifyOptions_spy, tick} from '../testutils'
 import ChunkifyOptions from '../options'
 import sinon from 'sinon'
 import _ from 'underscore'
