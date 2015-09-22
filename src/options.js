@@ -8,6 +8,16 @@ const DEFAULTS = {
   scope: null
 };
 
+const ALIASES = {
+  chunk: ['chunksize'],
+  delay: [
+    'yield',
+    'yieldtime',
+    'delaytime'
+  ],
+  scope: []
+};
+
 const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);
 
 class ChunkifyOptions {
@@ -52,7 +62,24 @@ class ChunkifyOptions {
   }
 
   static _parse_options(options) {
-    return _.defaults(_.pick(options, ...SCHEMA), DEFAULTS)
+    let parsed = {};
+    let setkey = (key) => {
+      if (options[key] === undefined) {
+        return false;
+      }
+      parsed[key] = options[key];
+      return true
+    };
+    for (let key of SCHEMA) {
+      if (!setkey(key)) {
+        for (let alias of ALIASES[key]) {
+          if (setkey(alias)) {
+            break
+          }
+        }
+      }
+    }
+    return _.defaults(parsed, DEFAULTS)
   }
 
   static of(options) {
