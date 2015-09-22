@@ -73,6 +73,29 @@ test('should invoke fn on the array between 0 and `chunk` iterations', t => {
   })
 });
 
+test('should invoke fn with the default scope', t => {
+  let array = ['A', 'B', 'C'];
+  let fn = sinon.spy();
+  let chunk = 3;
+
+  chunkify.each(array, fn, {chunk}).then(() => {
+    t.ok(fn.alwaysCalledOn(null));
+    t.end()
+  });
+});
+
+test('should invoke fn with the provided scope', t => {
+  let array = ['A', 'B', 'C'];
+  let fn = sinon.spy();
+  let chunk = 3;
+  let scope = {};
+
+  chunkify.each(array, fn, {chunk, scope}).then(() => {
+    t.ok(fn.alwaysCalledOn(scope));
+    t.end()
+  });
+});
+
 test('should yield to the main thread for at least `delay` ms after `chunk` iterations', t => {
   let array = ['A', 'B', 'C', 'D'];
   let fn = sinon.spy();

@@ -7,7 +7,7 @@ const USAGE = 'Usage: chunkify.each(Array array, Function fn, [Object options])'
 
 let each = (array, fn, options = {}) => {
   ok_usage(array, fn, USAGE);
-  let {chunk, delay} = ChunkifyOptions.of(options);
+  let {chunk, delay, scope} = ChunkifyOptions.of(options);
   let index = 0;
   let total = array.length;
   let incomplete = () => {
@@ -17,7 +17,7 @@ let each = (array, fn, options = {}) => {
     while (incomplete()) {
       let item = array[index++];
       try {
-        fn(item)
+        fn.call(scope, item)
       } catch (error) {
         return reject({error, item});
       }
