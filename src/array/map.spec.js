@@ -34,7 +34,8 @@ test('should return a promise', t => {
 // thus, cf. ./each.spec.js
 test('should delegate array, options, and a wrapped fn to .each', t => {
   let array = ['A', 'B', 'C'];
-  let options = {chunk: 3};
+  let scope = {};
+  let options = {chunk: 3, scope};
   let fn = sinon.spy();
 
   each_spy((each) => {
@@ -42,6 +43,7 @@ test('should delegate array, options, and a wrapped fn to .each', t => {
 
     // fn was called 3 times
     t.ok(fn.callCount, 3);
+    t.ok(fn.alwaysCalledOn(scope));
 
     // use a function matcher, since fn was wrapped (we don't care how)
     t.ok(each.calledWithExactly(array, sinon.match.func, options));
