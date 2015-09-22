@@ -20,11 +20,21 @@ test('should require a function', t => {
   t.end()
 });
 
-test('should delegate options deserialization', t => {
+test('should delegate options deserialization for raw dictionaries', t => {
   ChunkifyOptionsSpy((spy) => {
     let options = {};
     chunkify.each([], function() {}, options);
     t.ok(spy.calledWith(options));
+    t.end()
+  });
+});
+
+test('should not delegate options deserialization for ChunkifyOptions', t => {
+  let raw = {};
+  let options = ChunkifyOptions.of(raw);
+  ChunkifyOptionsSpy((spy) => {
+    chunkify.each([], function() {}, options);
+    t.notok(spy.calledWith(raw));
     t.end()
   });
 });
