@@ -58,7 +58,7 @@ test('should resolve with mapped results', t => {
   });
 
   tick({
-    ms: 1000,
+    delay: 1000,
 
     before_tick() {
       let promise = chunkify.map(array, fn, options);
