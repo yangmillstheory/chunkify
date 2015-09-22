@@ -7,14 +7,7 @@ const USAGE = 'Usage: chunkify.each(Array array, Function fn, [Object options])'
 
 let each = (array, fn, options = {}) => {
   ok_usage(array, fn, USAGE);
-  let parse_options = () => {
-    if (ChunkifyOptions.is(options)) {
-      return options;
-    } else {
-      return ChunkifyOptions.of(options);
-    }
-  };
-  let {chunk, delay, scope} = parse_options();
+  let {chunk, delay, scope} = ChunkifyOptions.of(options);
   let index = 0;
   let total = array.length;
   let incomplete = () => {

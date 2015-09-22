@@ -83,15 +83,18 @@ class ChunkifyOptions {
   }
 
   static of(options) {
-    let throw_error = () => {
+    if (options instanceof this) {
+      return options;
+    }
+    let throw_not_an_object = () => {
       throw new TypeError(`Expected options object, got ${typeof options}`)
     };
     if (!_.isObject(options)) {
-      throw_error()
+      throw_not_an_object()
     } else if (Array.isArray(options)) {
-      throw_error()
+      throw_not_an_object()
     } else if (_.isFunction(options)) {
-      throw_error()
+      throw_not_an_object()
     }
     return new this(options)
   }
@@ -104,9 +107,5 @@ covenance.covenant(ChunkifyOptions);
 export default {
   of() {
     return ChunkifyOptions.of(...arguments)
-  },
-
-  is(thing) {
-    return (thing instanceof ChunkifyOptions)
   }
 }

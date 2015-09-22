@@ -29,16 +29,6 @@ test('should delegate options deserialization for raw dictionaries', t => {
   });
 });
 
-test('should not delegate options deserialization for ChunkifyOptions', t => {
-  let raw = {};
-  let options = ChunkifyOptions.of(raw);
-  ChunkifyOptionsSpy((spy) => {
-    chunkify.each([], function() {}, options);
-    t.notok(spy.calledWith(raw));
-    t.end()
-  });
-});
-
 test('should default options to an empty object', t => {
   ChunkifyOptionsSpy((spy) => {
     chunkify.each([], function() {});
