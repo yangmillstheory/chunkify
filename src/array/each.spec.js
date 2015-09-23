@@ -59,16 +59,16 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
-test('should invoke fn on the array between 0 and `chunk` iterations', t => {
+test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
   let array = ['A', 'B', 'C'];
   let fn = sinon.spy();
   let chunk = 3;
 
   chunkify.each(array, fn, {chunk}).then(() => {
     t.equals(fn.callCount, 3);
-    t.deepEqual(fn.getCall(0).args, ['A']);
-    t.deepEqual(fn.getCall(1).args, ['B']);
-    t.deepEqual(fn.getCall(2).args, ['C']);
+    t.deepEqual(fn.getCall(0).args, ['A', 0]);
+    t.deepEqual(fn.getCall(1).args, ['B', 1]);
+    t.deepEqual(fn.getCall(2).args, ['C', 2]);
     t.end()
   })
 });
@@ -107,9 +107,9 @@ test('should yield to the main thread for at least `delay` ms after `chunk` iter
       chunkify.each(array, fn, {chunk: 3, delay: 1000});
 
       t.equals(fn.callCount, 3);
-      t.deepEqual(fn.getCall(0).args, ['A']);
-      t.deepEqual(fn.getCall(1).args, ['B']);
-      t.deepEqual(fn.getCall(2).args, ['C']);
+      t.deepEqual(fn.getCall(0).args, ['A', 0]);
+      t.deepEqual(fn.getCall(1).args, ['B', 1]);
+      t.deepEqual(fn.getCall(2).args, ['C', 2]);
     },
 
     after_tick() {
@@ -130,14 +130,14 @@ test('should start again in `delay` milliseconds after yielding', t => {
     before_tick() {
       chunkify.each(array, fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3);
-      t.deepEqual(fn.getCall(0).args, ['A']);
-      t.deepEqual(fn.getCall(1).args, ['B']);
-      t.deepEqual(fn.getCall(2).args, ['C']);
+      t.deepEqual(fn.getCall(0).args, ['A', 0]);
+      t.deepEqual(fn.getCall(1).args, ['B', 1]);
+      t.deepEqual(fn.getCall(2).args, ['C', 2]);
     },
 
     after_tick() {
       t.equals(fn.callCount, 4);
-      t.deepEqual(fn.getCall(3).args, ['D']);
+      t.deepEqual(fn.getCall(3).args, ['D', 3]);
       t.end();
     }
   });
@@ -176,12 +176,13 @@ test('should reject the promise with rejection object and stop processing', t =>
   });
 
   chunkify.each(array, fn, {chunk: 3}).then(null, (rejection) => {
-    t.equals(rejection.item, 'B');
     t.equals(rejection.error, error);
+    t.equals(rejection.item, 'B');
+    t.equals(rejection.index, 1);
 
     t.equals(fn.callCount, 2);
-    t.deepEquals(fn.getCall(0).args, ['A']);
-    t.deepEquals(fn.getCall(1).args, ['B']);
+    t.deepEquals(fn.getCall(0).args, ['A', 0]);
+    t.deepEquals(fn.getCall(1).args, ['B', 1]);
 
     t.end()
   })

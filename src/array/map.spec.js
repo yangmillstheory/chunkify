@@ -95,8 +95,8 @@ test('should reject the promise with rejection object and stop processing', t =>
     t.equals(rejection.error, error);
 
     t.equals(fn.callCount, 2);
-    t.deepEquals(fn.getCall(0).args, ['A']);
-    t.deepEquals(fn.getCall(1).args, ['B']);
+    t.deepEquals(fn.getCall(0).args, ['A', 0]);
+    t.deepEquals(fn.getCall(1).args, ['B', 1]);
 
     t.end()
   })
