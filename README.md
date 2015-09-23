@@ -34,11 +34,13 @@ In API methods, an optional `options` object may provide any subset of the follo
 
 ### <a name='each'>chunkify.each(Array array, Function fn, [Object options])</a>
 
-`fn` is successively invoked on `array`. At every `chunk`<sup>th</sup> invocation, control is yielded back to the thread. After (at least) `delay` milliseconds, `fn` picks up where it left off. This continues until all items in `array` have been processed by `fn`. 
+`fn` is invoked on successive `array` elements and their indices (`fn(item, index)`). At every `chunk`<sup>th</sup> invocation, control is yielded back to the thread. After (at least) `delay` milliseconds, `fn` picks up where it left off. This continues until all items in `array` have been processed by `fn`. 
    
 Returns a `Promise` that resolves with `array` when `fn` has been invoked on all items in `array`.
 
-If any invocation of `fn` throws an error, the promise is rejected with an object `{error, item}`, where `error` is the caught `Error`, and `item` is the member of `array` where `fn.call(options.scope, item)` threw. No further processing happens after the failure.
+If any invocation of `fn` throws an error, the promise is rejected with an object `{error, item, index}`, where `error` is the caught `Error`, `index` is the index in `array` where the invocation threw, and `item` is `array[index]`. 
+
+No further processing happens after the failure.
  
 ### chunkify.map(Array array, Function fn, [Object options])
  
