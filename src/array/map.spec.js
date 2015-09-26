@@ -1,11 +1,10 @@
+import test from 'tape'
 import sinon from 'sinon'
 import _ from 'underscore'
-import test from 'tape'
 
 import chunkify from '../index'
+import {ChunkifyOptionsSpy, tick} from '../testutils'
 import ChunkifyOptions from '../options'
-import {tick} from '../testutils'
-import {each_spy} from './testutils'
 
 
 test('should require an array', t => {
@@ -22,62 +21,138 @@ test('should require a function', t => {
   t.end()
 });
 
+test('should deserialize options', t => {
+  ChunkifyOptionsSpy((spy) => {
+    let options = {};
+    chunkify.map([], sinon.spy(), options);
+    t.ok(spy.calledWith(options));
+    t.end()
+  });
+});
+
+test('should default options to an empty object', t => {
+  ChunkifyOptionsSpy((spy) => {
+    chunkify.map([], sinon.spy());
+    t.ok(spy.calledWith({}));
+    t.end()
+  });
+});
+
 test('should return a promise', t => {
-  t.ok(chunkify.map(['A', 'B', 'C'], () => {}) instanceof Promise);
+  t.ok(chunkify.map([], sinon.spy()) instanceof Promise);
   t.end()
 });
 
-// thus, cf. ./each.spec.js
-test('should delegate array, parsed options, and a wrapped fn to .each', t => {
-  let array = ['A', 'B', 'C'];
-  let scope = {};
-  let options = ChunkifyOptions.of({chunk: 3, scope});
+test('should not invoke fn when given an empty array', t => {
   let fn = sinon.spy();
 
-  each_spy((each) => {
-    chunkify.map(array, fn, options);
-
-    // fn was called 3 times
-    t.ok(fn.callCount, 3);
-    t.ok(fn.alwaysCalledOn(scope));
-
-    // use a function matcher, since fn was wrapped (we don't care how)
-    t.ok(each.calledWithExactly(array, sinon.match.func, options));
-    t.ok(each.callCount, 1);
+  chunkify.map([], fn).then(() => {
+    t.notOk(fn.called);
     t.end();
   });
 });
 
-test('should resolve with mapped results', t => {
-  let array = ['A', 'B', 'C'];
-  let options = {chunk: 2, delay: 1000};
+test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
+  let fn = sinon.spy();
+
+  chunkify.map(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+    t.equals(fn.callCount, 3);
+    t.deepEqual(fn.getCall(0).args, ['A', 0]);
+    t.deepEqual(fn.getCall(1).args, ['B', 1]);
+    t.deepEqual(fn.getCall(2).args, ['C', 2]);
+    t.end()
+  })
+});
+
+test('should invoke fn with the default scope', t => {
+  let fn = sinon.spy();
+
+  chunkify.map(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+    t.ok(fn.alwaysCalledOn(null));
+    t.end()
+  });
+});
+
+test('should invoke fn with the provided scope', t => {
+  let fn = sinon.spy();
+  let scope = {};
+
+  chunkify.map(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
+    t.ok(fn.alwaysCalledOn(scope));
+    t.end()
+  });
+});
+
+test('should yield for at least `delay` ms after `chunk` iterations', t => {
+  let fn = sinon.spy();
+
+  tick({
+    delay: 999,
+
+    before_tick() {
+      chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+
+      t.equals(fn.callCount, 3);
+      t.deepEqual(fn.getCall(0).args, ['A', 0]);
+      t.deepEqual(fn.getCall(1).args, ['B', 1]);
+      t.deepEqual(fn.getCall(2).args, ['C', 2]);
+    },
+
+    after_tick() {
+      // 1000 milliseconds hasn't elapsed yet
+      t.equals(fn.callCount, 3);
+      t.end();
+    }
+  });
+});
+
+test('should start again in `delay` milliseconds after yielding', t => {
+  let fn = sinon.spy();
+
+  tick({
+    delay: 1000,
+
+    before_tick() {
+      chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+      t.equals(fn.callCount, 3);
+      t.deepEqual(fn.getCall(0).args, ['A', 0]);
+      t.deepEqual(fn.getCall(1).args, ['B', 1]);
+      t.deepEqual(fn.getCall(2).args, ['C', 2]);
+    },
+
+    after_tick() {
+      t.equals(fn.callCount, 4);
+      t.deepEqual(fn.getCall(3).args, ['D', 3]);
+      t.end();
+    }
+  });
+});
+
+test('should resolve with the mapped array after processing completes', t => {
   let fn = sinon.spy((letter) => {
-    return letter.toLowerCase();
+    return letter.toLowerCase()
   });
 
   tick({
     delay: 1000,
 
     before_tick() {
-      let promise = chunkify.map(array, fn, options);
-      t.equals(fn.callCount, 2);
-      t.ok(fn.alwaysCalledOn(null));
-      return promise;
+      let promise = chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+      t.equals(fn.callCount, 3);
+      return promise
     },
 
     after_tick(promise) {
-      t.equals(fn.callCount, 3);
-      t.ok(fn.alwaysCalledOn(null));
-      promise.then((mapped) => {
-        t.deepEquals(mapped, ['a', 'b', 'c']);
+      t.equals(fn.callCount, 4);
+      promise.then((result) => {
+        t.deepEquals(result, ['a', 'b', 'c', 'd']);
         t.end()
-      });
+      })
     }
   });
 });
 
 test('should reject the promise with rejection object and stop processing', t => {
-  let array = ['A', 'B', 'C'];
   let error = new Error('Cannot process B!');
   let fn = sinon.spy((letter) => {
     if (letter === 'B') {
@@ -85,9 +160,10 @@ test('should reject the promise with rejection object and stop processing', t =>
     }
   });
 
-  chunkify.map(array, fn, {chunk: 3}).then(null, (rejection) => {
-    t.equals(rejection.item, 'B');
+  chunkify.map(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
     t.equals(rejection.error, error);
+    t.equals(rejection.item, 'B');
+    t.equals(rejection.index, 1);
 
     t.equals(fn.callCount, 2);
     t.deepEquals(fn.getCall(0).args, ['A', 0]);
@@ -95,4 +171,22 @@ test('should reject the promise with rejection object and stop processing', t =>
 
     t.end()
   })
+});
+
+test('should not yield after `chunk` iterations if processing is complete', t => {
+  let fn = sinon.spy();
+
+  tick({
+    delay: 2000,
+
+    before_tick() {
+      chunkify.map(['A', 'B', 'C'], fn, {chunk: 3, delay: 1000});
+      t.equals(fn.callCount, 3)
+    },
+
+    after_tick() {
+      t.equals(fn.callCount, 3);
+      t.end()
+    }
+  });
 });

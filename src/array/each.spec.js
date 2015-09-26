@@ -1,9 +1,10 @@
 import test from 'tape'
+import sinon from 'sinon'
+import _ from 'underscore'
+
 import chunkify from '../index'
 import {ChunkifyOptionsSpy, tick} from '../testutils'
 import ChunkifyOptions from '../options'
-import sinon from 'sinon'
-import _ from 'underscore'
 
 
 test('should require an array', t => {
@@ -23,7 +24,7 @@ test('should require a function', t => {
 test('should deserialize options', t => {
   ChunkifyOptionsSpy((spy) => {
     let options = {};
-    chunkify.each([], function() {}, options);
+    chunkify.each([], sinon.spy(), options);
     t.ok(spy.calledWith(options));
     t.end()
   });
@@ -31,14 +32,14 @@ test('should deserialize options', t => {
 
 test('should default options to an empty object', t => {
   ChunkifyOptionsSpy((spy) => {
-    chunkify.each([], function() {});
+    chunkify.each([], sinon.spy());
     t.ok(spy.calledWith({}));
     t.end()
   });
 });
 
 test('should return a promise', t => {
-  t.ok(chunkify.each([], fn) instanceof Promise);
+  t.ok(chunkify.each([], sinon.spy()) instanceof Promise);
   t.end()
 });
 
@@ -82,7 +83,7 @@ test('should invoke fn with the provided scope', t => {
   });
 });
 
-test('should yield to the main thread for at least `delay` ms after `chunk` iterations', t => {
+test('should yield for at least `delay` ms after `chunk` iterations', t => {
   let fn = sinon.spy();
 
   tick({
