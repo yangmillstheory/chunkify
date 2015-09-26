@@ -6,12 +6,8 @@ import chunkify from '../index'
 import ChunkifyOptions from '../options'
 import each from './each'
 import {tick} from '../testutils'
+import {each_spy} from './testutils'
 
-
-let each_spy = (callback) => {
-  callback(sinon.spy(each, 'apply'));
-  each.apply.restore()
-};
 
 test('should require an array', t => {
   t.throws(() => {
