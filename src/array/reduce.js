@@ -29,4 +29,4 @@ let reduce = (array, fn, options = {}) => {
 };
 
 
-export default {apply: map};
+export default {apply: reduce};
