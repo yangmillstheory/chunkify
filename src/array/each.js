@@ -5,9 +5,9 @@ import {ok_usage} from './utilities'
 
 const USAGE = 'Usage: chunkify.each(Array array, Function fn, [Object options])';
 
-let each = (start, final) => {
-  let reset = (array) => {
-    return _.defaults({index: start, final}, {
+let bounded_each = ({from, to}) => {
+  let set_index_bounds = (array) => {
+    return _.defaults({index: from, to}, {
       index: 0,
       final: array.length
     });
@@ -15,7 +15,7 @@ let each = (start, final) => {
   return (array, fn, options = {}) => {
     ok_usage(array, fn, USAGE);
     let {chunk, delay, scope} = ChunkifyOptions.of(options);
-    let {index, final} = reset(array);
+    let {index, final} = set_index_bounds(array);
     let incomplete = () => {
       return index < final;
     };
@@ -40,4 +40,4 @@ let each = (start, final) => {
 
 
 
-export default {apply: each(0), each}
+export default {apply: bounded_each({from: 0}), bounded_each}
