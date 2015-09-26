@@ -2,9 +2,9 @@ import sinon from 'sinon'
 import each from './each'
 
 
-let each_spy = (callback) => {
-  callback(sinon.spy(each, 'apply'));
-  each.apply.restore()
+let each_from_0_spy = (callback) => {
+  callback(sinon.spy(each.from_0, 'apply'));
+  each.from_0.restore()
 };
 
-export {each_spy}
+export {each_from_0_spy}

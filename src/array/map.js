@@ -15,7 +15,7 @@ let map = (array, fn, options = {}) => {
     return result;
   };
   let mapper = _.compose(pusher, fn.bind(okopts.scope));
-  return each.apply(array, mapper, okopts).then(() => {
+  return each.from_0(array, mapper, okopts).then(() => {
     return mapped;
   });
 };

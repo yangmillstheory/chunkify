@@ -4,7 +4,6 @@ import test from 'tape'
 
 import chunkify from '../index'
 import ChunkifyOptions from '../options'
-import each from './each'
 import {tick} from '../testutils'
 import {each_spy} from './testutils'
 
