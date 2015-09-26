@@ -10,17 +10,20 @@ let reduce = (array, fn, options = {}) => {
   ok_usage(array, fn, USAGE);
   let initialize = () => {
     if (options.hasOwnProperty(MEMO_KEY)) {
-      return {reducer: each.from_0, memo: options[MEMO_KEY]}
+      return {skip_first: false, memo: options[MEMO_KEY]}
     } else {
-      return {reducer: each.from_1, memo: array[0]}
+      return {skip_first: true, memo: array[0]}
     }
   };
-  let {memo, reducer} = initialize();
+  let {memo, skip_first} = initialize();
   let reducee = function(item, index) {
+    if (skip_first && index === 0) {
+      return
+    }
     // this will be scoped to options.scope
     memo = fn.call(this, memo, item, index, array);
   };
-  return reducer(array, reducee, options).then(() => {
+  return each.iterate(array, reducee, options).then(() => {
     return memo
   });
 };

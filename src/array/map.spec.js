@@ -121,7 +121,7 @@ test('should start again in `delay` milliseconds after yielding', t => {
   });
 });
 
-test('should resolve with the mapped array after processing completes', t => {
+test('should resolve with the mapped array', t => {
   let fn = sinon.spy((letter) => {
     return letter.toLowerCase()
   });
@@ -158,8 +158,6 @@ test('should reject the promise with rejection object and stop processing', t =>
     t.equals(rejection.item, 'B');
     t.equals(rejection.index, 1);
     t.equals(fn.callCount, 2);
-    t.deepEquals(fn.getCall(0).args, ['A', 0]);
-    t.deepEquals(fn.getCall(1).args, ['B', 1]);
     t.end()
   })
 });

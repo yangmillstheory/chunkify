@@ -38,6 +38,5 @@ let bounded_each = ({from, to}) => {
 
 
 export default {
-  from_0: bounded_each({from: 0}),
-  from_1: bounded_each({from: 1})
+  iterate: bounded_each({from: 0})
 }
