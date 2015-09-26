@@ -188,7 +188,7 @@ test('should resolve with the reduced result from a given memo', t => {
 });
 
 test('should reject the promise with rejection object and stop processing', t => {
-  let error = new Error('Cannot process B!');
+  let error = {};
   let fn = sinon.spy((memo, letter) => {
     if (letter === 'B') {
       throw error;
@@ -196,9 +196,7 @@ test('should reject the promise with rejection object and stop processing', t =>
   });
 
   chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, memo: ''}).then(null, (rejection) => {
-    t.equals(rejection.error, error);
-    t.equals(rejection.item, 'B');
-    t.equals(rejection.index, 1);
+    t.deepEquals(rejection, {error, item: 'B', index: 1});
     t.equals(fn.callCount, 2);
     t.end()
   })
