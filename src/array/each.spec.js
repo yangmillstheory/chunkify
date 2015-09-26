@@ -20,7 +20,7 @@ test('should require a function', t => {
   t.end()
 });
 
-test('should delegate options deserialization for raw dictionaries', t => {
+test('should deserialize options', t => {
   ChunkifyOptionsSpy((spy) => {
     let options = {};
     chunkify.each([], function() {}, options);
@@ -37,16 +37,8 @@ test('should default options to an empty object', t => {
   });
 });
 
-test('should return a promise and not block the main thread', t => {
-  let array = ['A'];
-  let fn = sinon.spy();
-  let fn_on_main_thread = sinon.spy();
-  let promise = chunkify.each(array, fn);
-
-  fn_on_main_thread();
-
-  t.ok(fn_on_main_thread.called);
-  t.ok(promise instanceof Promise);
+test('should return a promise', t => {
+  t.ok(chunkify.each([], fn) instanceof Promise);
   t.end()
 });
 
@@ -60,11 +52,9 @@ test('should not invoke fn when given an empty array', t => {
 });
 
 test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
-  let array = ['A', 'B', 'C'];
   let fn = sinon.spy();
-  let chunk = 3;
 
-  chunkify.each(array, fn, {chunk}).then(() => {
+  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
     t.equals(fn.callCount, 3);
     t.deepEqual(fn.getCall(0).args, ['A', 0]);
     t.deepEqual(fn.getCall(1).args, ['B', 1]);
@@ -74,37 +64,32 @@ test('should invoke fn with the array item and index between 0 and `chunk` itera
 });
 
 test('should invoke fn with the default scope', t => {
-  let array = ['A', 'B', 'C'];
   let fn = sinon.spy();
-  let chunk = 3;
 
-  chunkify.each(array, fn, {chunk}).then(() => {
+  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
     t.ok(fn.alwaysCalledOn(null));
     t.end()
   });
 });
 
 test('should invoke fn with the provided scope', t => {
-  let array = ['A', 'B', 'C'];
   let fn = sinon.spy();
-  let chunk = 3;
   let scope = {};
 
-  chunkify.each(array, fn, {chunk, scope}).then(() => {
+  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
     t.ok(fn.alwaysCalledOn(scope));
     t.end()
   });
 });
 
 test('should yield to the main thread for at least `delay` ms after `chunk` iterations', t => {
-  let array = ['A', 'B', 'C', 'D'];
   let fn = sinon.spy();
 
   tick({
     delay: 999,
 
     before_tick() {
-      chunkify.each(array, fn, {chunk: 3, delay: 1000});
+      chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
 
       t.equals(fn.callCount, 3);
       t.deepEqual(fn.getCall(0).args, ['A', 0]);
@@ -121,14 +106,13 @@ test('should yield to the main thread for at least `delay` ms after `chunk` iter
 });
 
 test('should start again in `delay` milliseconds after yielding', t => {
-  let array = ['A', 'B', 'C', 'D'];
   let fn = sinon.spy();
 
   tick({
     delay: 1000,
 
     before_tick() {
-      chunkify.each(array, fn, {chunk: 3, delay: 1000});
+      chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3);
       t.deepEqual(fn.getCall(0).args, ['A', 0]);
       t.deepEqual(fn.getCall(1).args, ['B', 1]);
@@ -144,14 +128,13 @@ test('should start again in `delay` milliseconds after yielding', t => {
 });
 
 test('should resolve with undefined after processing completes', t => {
-  let array = ['A', 'B', 'C', 'D'];
   let fn = sinon.spy();
 
   tick({
     delay: 1000,
 
     before_tick() {
-      let promise = chunkify.each(array, fn, {chunk: 3, delay: 1000});
+      let promise = chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3);
       return promise
     },
@@ -167,7 +150,6 @@ test('should resolve with undefined after processing completes', t => {
 });
 
 test('should reject the promise with rejection object and stop processing', t => {
-  let array = ['A', 'B', 'C'];
   let error = new Error('Cannot process B!');
   let fn = sinon.spy((letter) => {
     if (letter === 'B') {
@@ -175,7 +157,7 @@ test('should reject the promise with rejection object and stop processing', t =>
     }
   });
 
-  chunkify.each(array, fn, {chunk: 3}).then(null, (rejection) => {
+  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
     t.equals(rejection.error, error);
     t.equals(rejection.item, 'B');
     t.equals(rejection.index, 1);
@@ -189,14 +171,13 @@ test('should reject the promise with rejection object and stop processing', t =>
 });
 
 test('should not yield after `chunk` iterations if processing is complete', t => {
-  let array = ['A', 'B', 'C'];
   let fn = sinon.spy();
 
   tick({
     delay: 2000,
 
     before_tick() {
-      chunkify.each(array, fn, {chunk: 3, delay: 1000});
+      chunkify.each(['A', 'B', 'C'], fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3)
     },
 
