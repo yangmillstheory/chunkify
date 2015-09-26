@@ -23,7 +23,7 @@ let reduce = (array, fn, options = {}) => {
     // this will be scoped to options.scope
     memo = fn.call(this, memo, item, index, array);
   };
-  reducer(array, reducee, options).then(() => {
+  return reducer(array, reducee, options).then(() => {
     return memo
   });
 };
