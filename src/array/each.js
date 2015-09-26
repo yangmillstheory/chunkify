@@ -27,7 +27,7 @@ let iterate = (array, fn, options = {}) => {
       }
     }
     resolve();
-  } ;
+  };
   return new Promise(process_chunk)
 };
 
