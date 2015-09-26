@@ -91,11 +91,7 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
 
     before_tick() {
       chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
-
       t.equals(fn.callCount, 3);
-      t.deepEqual(fn.getCall(0).args, ['A', 0]);
-      t.deepEqual(fn.getCall(1).args, ['B', 1]);
-      t.deepEqual(fn.getCall(2).args, ['C', 2]);
     },
 
     after_tick() {
@@ -115,9 +111,6 @@ test('should start again in `delay` milliseconds after yielding', t => {
     before_tick() {
       chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3);
-      t.deepEqual(fn.getCall(0).args, ['A', 0]);
-      t.deepEqual(fn.getCall(1).args, ['B', 1]);
-      t.deepEqual(fn.getCall(2).args, ['C', 2]);
     },
 
     after_tick() {
@@ -164,11 +157,9 @@ test('should reject the promise with rejection object and stop processing', t =>
     t.equals(rejection.error, error);
     t.equals(rejection.item, 'B');
     t.equals(rejection.index, 1);
-
     t.equals(fn.callCount, 2);
     t.deepEquals(fn.getCall(0).args, ['A', 0]);
     t.deepEquals(fn.getCall(1).args, ['B', 1]);
-
     t.end()
   })
 });
