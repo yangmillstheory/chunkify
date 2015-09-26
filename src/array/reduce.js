@@ -1,10 +1,7 @@
-import {bounded_each} from './each'
+import each from './each'
 import ChunkifyOptions from '../options'
 import _ from 'underscore'
 import {ok_usage} from './utilities'
-
-let each_from_0 = bounded_each({from: 0});
-let each_from_1 = bounded_each({from: 1});
 
 const USAGE = 'Usage: chunkify.reduce(Array array, Function fn, [Object options])';
 const MEMO_KEY = 'memo';
@@ -13,9 +10,9 @@ let reduce = (array, fn, options = {}) => {
   ok_usage(array, fn, USAGE);
   let initialize = () => {
     if (options.hasOwnProperty(MEMO_KEY)) {
-      return {memo: options[MEMO_KEY], reducer: each_from_0}
+      return {reducer: each.from_0, memo: options[MEMO_KEY]}
     } else {
-      return {memo: array[0], reducer: each_from_1}
+      return {reducer: each.from_1, memo: array[0]}
     }
   };
   let {memo, reducer} = initialize();
