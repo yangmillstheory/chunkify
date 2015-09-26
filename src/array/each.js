@@ -9,7 +9,7 @@ let bounded_each = ({from, to}) => {
   return (array, fn, options = {}) => {
     ok_usage(array, fn, USAGE);
     let {chunk, delay, scope} = ChunkifyOptions.of(options);
-    let {index, final} = _.defaults({index: from, to}, {
+    let {index, final} = _.defaults({index: from, final: to}, {
       index: 0,
       final: array.length
     });
