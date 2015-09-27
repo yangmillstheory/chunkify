@@ -18,14 +18,35 @@ gulp.task('build', () => {
 });
 
 
+const SITE = {
+  base: 'site',
+
+  js: function() {
+    return `${this.base}/js`
+  },
+
+  src: function() {
+    return `${this.base}/src`
+  }
+};
+
+
+gulp.task('site', (done) => {
+  gulp
+    .src(`${SITE.src()}/index.js`)
+    .pipe(babel())
+    .pipe(gulp.dest(`${SITE.js()}`));
+  done()
+});
+
 gulp.task('bundle', () => {
-  browserify({entries: `${DST}/index.js`, debug: true})
+  browserify({entries: `${SITE.js()}/index.js`, debug: true})
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
-    .pipe(gulp.dest('.'));
+    .pipe(gulp.dest(`${SITE.base}`));
 });
 
 
 gulp.task('default', gulp.series('build'));
-gulp.task('gh-pages', gulp.series('build', 'bundle'));
+gulp.task('gh-pages', gulp.series('build', 'site', 'bundle'));
