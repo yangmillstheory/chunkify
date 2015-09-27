@@ -1,4 +1,4 @@
-function* chunkify(length, chunk) {
+function* chunks(length, chunk) {
   for (let index = 0; index < length; index++) {
     var ok_chunk;
     if (index) {
@@ -10,4 +10,4 @@ function* chunkify(length, chunk) {
   }
 }
 
-export default {chunkify}
+export default {of: chunks}
