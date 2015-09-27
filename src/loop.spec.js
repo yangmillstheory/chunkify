@@ -51,19 +51,19 @@ test('should not invoke fn when range is 0', t => {
     t.end();
   });
 });
-//
-//test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
-//  let fn = sinon.spy();
-//
-//  chunkify.loop(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
-//    t.equals(fn.callCount, 3);
-//    t.deepEqual(fn.getCall(0).args, ['A', 0]);
-//    t.deepEqual(fn.getCall(1).args, ['B', 1]);
-//    t.deepEqual(fn.getCall(2).args, ['C', 2]);
-//    t.end()
-//  })
-//});
-//
+
+test('should invoke fn with the loop index', t => {
+  let fn = sinon.spy();
+
+  chunkify.loop(3, fn, {chunk: 3}).then(() => {
+    t.equals(fn.callCount, 3);
+    t.deepEqual(fn.getCall(0).args, [0]);
+    t.deepEqual(fn.getCall(1).args, [1]);
+    t.deepEqual(fn.getCall(2).args, [2]);
+    t.end()
+  })
+});
+
 //test('should invoke fn with the default scope', t => {
 //  let fn = sinon.spy();
 //
