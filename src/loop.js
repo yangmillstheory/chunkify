@@ -1,39 +1,21 @@
-import chunks from './chunks'
+import rangeloop from './range'
 import ChunkifyOptions from './options'
 import _ from 'underscore'
 
 
-const USAGE = 'Usage: chunkify.loop(Number range, Function fn, [Object options])';
+const USAGE = 'Usage: chunkify.loop(Function fn, Number range, [Object options])';
 
-let ok_usage = (range, fn) => {
-  if (!_.isNumber(range)) {
-    throw new Error(`${USAGE} - bad range`);
-  } else if (!_.isFunction(fn)) {
+let ok_usage = (fn, range) => {
+  if (!_.isFunction(fn)) {
     throw new Error(`${USAGE} - bad fn`);
+  } else if (!_.isNumber(range)) {
+    throw new Error(`${USAGE} - bad range`);
   }
 };
 
-let loop = (range, fn, options = {}) => {
-  ok_usage(range, fn);
-  let {scope, chunk, delay} = ChunkifyOptions.of(options);
-  let iterator = chunks.of({chunk, range});
-  let resume = (resolve, reject) => {
-    let next = iterator.next();
-    if (next.done) {
-      return resolve();
-    }
-    let {index, pause} = next.value;
-    try {
-      fn.call(scope, index)
-    } catch (error) {
-      return reject({error, index});
-    }
-    if (pause) {
-      return setTimeout(resume, delay, resolve, reject);
-    }
-    resume(resolve, reject);
-  };
-  return new Promise(resume);
+let loop = (fn, range, options = {}) => {
+  ok_usage(fn, range);
+  return rangeloop(fn, range, options);
 };
 
 export default loop
