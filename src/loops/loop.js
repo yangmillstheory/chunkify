@@ -1,5 +1,5 @@
 import rangeloop from './range'
-import ChunkifyOptions from './options'
+import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
 

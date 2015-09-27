@@ -1,5 +1,5 @@
-import chunks from './chunks'
-import ChunkifyOptions from './options'
+import chunks from '../chunks'
+import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
 

@@ -1,12 +1,11 @@
 import 'babel/polyfill'
-import array from './array'
-import loop from './loop'
-import range from './range'
+import arrays from './arrays'
+import loops from './loops'
 
 export default {
-  each: array.each,
-  map: array.map,
-  reduce: array.reduce,
-  loop,
-  range
+  each: arrays.each,
+  map: arrays.map,
+  reduce: arrays.reduce,
+  loop: loops.loop,
+  range: loops.range
 }
