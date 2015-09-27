@@ -1,6 +1,6 @@
 {
   "name": "chunkify",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "A functional API to unblock your JavaScript thread.",
   "main": "dist/index.js",
   "scripts": {
