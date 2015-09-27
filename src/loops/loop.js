@@ -15,6 +15,7 @@ let ok_usage = (fn, range) => {
 
 let loop = (fn, range, options = {}) => {
   ok_usage(fn, range);
+  delete options.start;
   return rangeloop(fn, range, options);
 };
 

@@ -38,6 +38,14 @@ test('should default options to an empty object', t => {
   });
 });
 
+test('should remove any start value in options', t => {
+  ChunkifyOptionsSpy((spy) => {
+    chunkify.loop(sinon.spy(), 10, {start: 5});
+    t.ok(spy.calledWith({}));
+    t.end()
+  });
+});
+
 test('should return a promise', t => {
   t.ok(chunkify.loop(sinon.spy(), 10) instanceof Promise);
   t.end()
