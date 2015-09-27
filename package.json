@@ -36,12 +36,15 @@
   "homepage": "https://github.com/yangmillstheory/chunkify",
   "devDependencies": {
     "babel-core": "^5.8.22",
+    "browserify": "^11.2.0",
     "faucet": "0.0.1",
     "glob": "^5.0.14",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-babel": "^5.2.1",
     "sinon": "^1.16.1",
-    "tape": "^4.2.0"
+    "tape": "^4.2.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
     "underscore": "^1.8.3",
