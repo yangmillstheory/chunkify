@@ -1,30 +1,30 @@
-//import test from 'tape'
-//import sinon from 'sinon'
-//import _ from 'underscore'
-//
-//import chunkify from '../index'
-//import {ChunkifyOptionsSpy, tick} from '../testutils'
-//import ChunkifyOptions from '../options'
-//
-//
-//test('should require an array', t => {
-//  t.throws(() => {
-//    chunkify.each()
-//  }, /Usage: chunkify.each\(Array array, Function fn, \[Object options]\) - bad array/);
-//  t.end()
-//});
-//
-//test('should require a function', t => {
-//  t.throws(() => {
-//    chunkify.each([])
-//  }, /Usage: chunkify.each\(Array array, Function fn, \[Object options]\) - bad fn/);
-//  t.end()
-//});
-//
+import test from 'tape'
+import sinon from 'sinon'
+import _ from 'underscore'
+
+import chunkify from './index'
+import {ChunkifyOptionsSpy, tick} from './testutils'
+import ChunkifyOptions from './options'
+
+
+test('should require a range', t => {
+  t.throws(() => {
+    chunkify.loop()
+  }, /Usage: chunkify.loop\(Number range, Function fn, \[Object options]\) - bad range/);
+  t.end()
+});
+
+test('should require a function', t => {
+  t.throws(() => {
+    chunkify.loop(10)
+  }, /Usage: chunkify.loop\(Number range, Function fn, \[Object options]\) - bad fn/);
+  t.end()
+});
+
 //test('should deserialize options', t => {
 //  ChunkifyOptionsSpy((spy) => {
 //    let options = {};
-//    chunkify.each([], sinon.spy(), options);
+//    chunkify.loop([], sinon.spy(), options);
 //    t.ok(spy.calledWith(options));
 //    t.end()
 //  });
@@ -32,21 +32,21 @@
 //
 //test('should default options to an empty object', t => {
 //  ChunkifyOptionsSpy((spy) => {
-//    chunkify.each([], sinon.spy());
+//    chunkify.loop([], sinon.spy());
 //    t.ok(spy.calledWith({}));
 //    t.end()
 //  });
 //});
 //
 //test('should return a promise', t => {
-//  t.ok(chunkify.each([], sinon.spy()) instanceof Promise);
+//  t.ok(chunkify.loop([], sinon.spy()) instanceof Promise);
 //  t.end()
 //});
 //
 //test('should not invoke fn when given an empty array', t => {
 //  let fn = sinon.spy();
 //
-//  chunkify.each([], fn).then(() => {
+//  chunkify.loop([], fn).then(() => {
 //    t.notOk(fn.called);
 //    t.end();
 //  });
@@ -55,7 +55,7 @@
 //test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
 //  let fn = sinon.spy();
 //
-//  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+//  chunkify.loop(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
 //    t.equals(fn.callCount, 3);
 //    t.deepEqual(fn.getCall(0).args, ['A', 0]);
 //    t.deepEqual(fn.getCall(1).args, ['B', 1]);
@@ -67,7 +67,7 @@
 //test('should invoke fn with the default scope', t => {
 //  let fn = sinon.spy();
 //
-//  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+//  chunkify.loop(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
 //    t.ok(fn.alwaysCalledOn(null));
 //    t.end()
 //  });
@@ -77,7 +77,7 @@
 //  let fn = sinon.spy();
 //  let scope = {};
 //
-//  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
+//  chunkify.loop(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
 //    t.ok(fn.alwaysCalledOn(scope));
 //    t.end()
 //  });
@@ -90,7 +90,7 @@
 //    delay: 999,
 //
 //    before_tick() {
-//      chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+//      chunkify.loop(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
 //      t.equals(fn.callCount, 3);
 //    },
 //
@@ -109,7 +109,7 @@
 //    delay: 1000,
 //
 //    before_tick() {
-//      chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+//      chunkify.loop(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
 //      t.equals(fn.callCount, 3);
 //    },
 //
@@ -127,7 +127,7 @@
 //    delay: 1000,
 //
 //    before_tick() {
-//      let promise = chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+//      let promise = chunkify.loop(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
 //      t.equals(fn.callCount, 3);
 //      return promise
 //    },
@@ -150,7 +150,7 @@
 //    }
 //  });
 //
-//  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
+//  chunkify.loop(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
 //    t.deepEquals(rejection, {error, item: 'B', index: 1});
 //    t.equals(fn.callCount, 2);
 //    t.end()
@@ -164,7 +164,7 @@
 //    delay: 2000,
 //
 //    before_tick() {
-//      chunkify.each(['A', 'B', 'C'], fn, {chunk: 3, delay: 1000});
+//      chunkify.loop(['A', 'B', 'C'], fn, {chunk: 3, delay: 1000});
 //      t.equals(fn.callCount, 3)
 //    },
 //
