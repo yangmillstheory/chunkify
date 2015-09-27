@@ -2,7 +2,7 @@ function* chunks(start, final, chunk) {
   for (let index = start; index < final; index++) {
     yield {
       index,
-      pause: ((index > start) && ((index + 1) % chunk === 0))
+      pause: ((index > start) && ((index + 1) % (start + chunk) === 0))
     };
   }
 }
