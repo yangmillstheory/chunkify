@@ -52,6 +52,25 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
+test('should invoke fn with the default scope', t => {
+  let fn = sinon.spy();
+
+  chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+    t.ok(fn.alwaysCalledOn(null));
+    t.end()
+  });
+});
+
+test('should invoke fn with the provided scope', t => {
+  let fn = sinon.spy();
+  let scope = {};
+
+  chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
+    t.ok(fn.alwaysCalledOn(scope));
+    t.end()
+  });
+});
+
 test('should invoke fn with memo, item, index and array', t => {
   let array = ['A', 'B', 'C'];
   let identity = sinon.spy((memo) => {
@@ -82,25 +101,6 @@ test('should invoke fn with the memo as the first item when no memo is given', t
   })
 });
 
-test('should invoke fn with the default scope', t => {
-  let fn = sinon.spy();
-
-  chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
-    t.ok(fn.alwaysCalledOn(null));
-    t.end()
-  });
-});
-
-test('should invoke fn with the provided scope', t => {
-  let fn = sinon.spy();
-  let scope = {};
-
-  chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
-    t.ok(fn.alwaysCalledOn(scope));
-    t.end()
-  });
-});
-
 test('should yield for at least `delay` ms after `chunk` iterations', t => {
   let fn = sinon.spy();
 
@@ -121,18 +121,22 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
 });
 
 test('should start again in `delay` milliseconds after yielding', t => {
-  let fn = sinon.spy();
+  let fn = sinon.spy((memo) => {
+    return memo
+  });
+  let array = ['A', 'B', 'C', 'D'];
 
   tick({
     delay: 1000,
 
     before_tick() {
-      chunkify.reduce(['A', 'B', 'C', 'D'], fn, {memo: '', chunk: 3, delay: 1000});
+      chunkify.reduce(array, fn, {memo: '', chunk: 3, delay: 1000});
       t.equals(fn.callCount, 3);
     },
 
     after_tick() {
       t.equals(fn.callCount, 4);
+      t.deepEqual(fn.getCall(3).args, ['', 'D', 3, array]);
       t.end();
     }
   });

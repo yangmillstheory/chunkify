@@ -52,18 +52,6 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
-test('should invoke fn with the array item and index', t => {
-  let fn = sinon.spy();
-
-  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
-    t.equals(fn.callCount, 3);
-    t.deepEqual(fn.getCall(0).args, ['A', 0]);
-    t.deepEqual(fn.getCall(1).args, ['B', 1]);
-    t.deepEqual(fn.getCall(2).args, ['C', 2]);
-    t.end()
-  })
-});
-
 test('should invoke fn with the default scope', t => {
   let fn = sinon.spy();
 
@@ -81,6 +69,18 @@ test('should invoke fn with the provided scope', t => {
     t.ok(fn.alwaysCalledOn(scope));
     t.end()
   });
+});
+
+test('should invoke fn with the array item and index', t => {
+  let fn = sinon.spy();
+
+  chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+    t.equals(fn.callCount, 3);
+    t.deepEqual(fn.getCall(0).args, ['A', 0]);
+    t.deepEqual(fn.getCall(1).args, ['B', 1]);
+    t.deepEqual(fn.getCall(2).args, ['C', 2]);
+    t.end()
+  })
 });
 
 test('should yield for at least `delay` ms after `chunk` iterations', t => {
@@ -115,6 +115,7 @@ test('should start again in `delay` milliseconds after yielding', t => {
 
     after_tick() {
       t.equals(fn.callCount, 4);
+      t.deepEqual(fn.getCall(3).args, ['D', 3]);
       t.end();
     }
   });
