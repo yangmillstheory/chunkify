@@ -54,13 +54,13 @@ test('should override some defaults', t => {
   options = ChunkifyOptions.of({delay, scope});
 
   t.equals(options.delay, delay);
-  t.equals(options.scope, delay);
+  t.equals(options.scope, scope);
   t.notEquals(options.chunk, chunk);
 
   options = ChunkifyOptions.of({scope});
 
   t.equals(options.scope, scope);
-  t.notEquals(options.scope, scope);
+  t.notEquals(options.chunk, chunk);
   t.notEquals(options.delay, delay);
 
   t.end()
