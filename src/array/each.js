@@ -15,14 +15,14 @@ let each = (array, fn, options = {}) => {
     if (done) {
       return resolve();
     }
-    let {index, ok_chunk} = value;
+    let {index, pause} = value;
     let item = array[index];
     try {
       fn.call(scope, item, index);
     } catch (error) {
       return reject({error, item, index})
     }
-    if (ok_chunk) {
+    if (pause) {
       return setTimeout(resume, delay, resolve, reject)
     }
     resume(resolve, reject);

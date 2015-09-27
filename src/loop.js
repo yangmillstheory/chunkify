@@ -22,13 +22,13 @@ let loop = (range, fn, options = {}) => {
     if (next.done) {
       return resolve();
     }
-    let {index, ok_chunk} = next.value;
+    let {index, pause} = next.value;
     try {
       fn.call(scope, index)
     } catch (error) {
       return reject({error, index});
     }
-    if (ok_chunk) {
+    if (pause) {
       return setTimeout(resume, delay, resolve, reject);
     }
     resume(resolve, reject);
