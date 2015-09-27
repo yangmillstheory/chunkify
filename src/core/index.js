@@ -3,7 +3,7 @@ import chunks from './chunks'
 
 let chunkify = (array, fn, options = {}) => {
   let {chunk, delay, scope} = options;
-  let iterator = chunks.of(array.length, chunk);
+  let iterator = chunks.of({chunk, range: array.length});
   let resume = (resolve, reject) => {
     let {value, done} = iterator.next();
     if (done) {
