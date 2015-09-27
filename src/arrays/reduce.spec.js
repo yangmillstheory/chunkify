@@ -10,14 +10,14 @@ import ChunkifyOptions from '../options'
 test('should require an array', t => {
   t.throws(() => {
     chunkify.reduce()
-  }, /Usage: chunkify.reduce\(Array array, Function fn, \[Object options]\) - bad array/);
+  }, /Usage: chunkify.reduce\(Array array, Function fn, \[Object options]\) - bad array; not an array/);
   t.end()
 });
 
 test('should require a function', t => {
   t.throws(() => {
     chunkify.reduce([])
-  }, /Usage: chunkify.reduce\(Array array, Function fn, \[Object options]\) - bad fn/);
+  }, /Usage: chunkify.reduce\(Array array, Function fn, \[Object options]\) - bad fn; not a function/);
   t.end()
 });
 

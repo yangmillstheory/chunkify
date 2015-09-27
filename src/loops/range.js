@@ -7,16 +7,16 @@ const USAGE = 'Usage: chunkify.range(Function fn, Number final, [Object options]
 
 let ok_usage = (fn, final, options) => {
   if (!_.isFunction(fn)) {
-    throw new Error(`${USAGE} - bad fn`);
+    throw new Error(`${USAGE} - bad fn; not a function`);
   } else  if (!_.isNumber(final)) {
-    throw new Error(`${USAGE} - bad final`);
+    throw new Error(`${USAGE} - bad final; not a number`);
   }
   let {start} = options;
   if (start != null) {
     if (!_.isNumber(start)) {
-      throw new Error(`${USAGE} - bad start`);
+      throw new Error(`${USAGE} - bad start; not a number`);
     } else if (start > final) {
-      throw new Error(`${USAGE} - bad start`);
+      throw new Error(`${USAGE} - bad start; it's greater than final`);
     }
   }
 };

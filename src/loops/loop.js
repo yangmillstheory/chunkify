@@ -7,9 +7,9 @@ const USAGE = 'Usage: chunkify.loop(Function fn, Number range, [Object options])
 
 let ok_usage = (fn, range) => {
   if (!_.isFunction(fn)) {
-    throw new Error(`${USAGE} - bad fn`);
+    throw new Error(`${USAGE} - bad fn; not a function`);
   } else if (!_.isNumber(range)) {
-    throw new Error(`${USAGE} - bad range`);
+    throw new Error(`${USAGE} - bad range; not a number`);
   }
 };
 

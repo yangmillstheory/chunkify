@@ -10,28 +10,28 @@ import ChunkifyOptions from '../options'
 test('should require a function', t => {
   t.throws(() => {
     chunkify.range()
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad fn/);
+  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad fn; not a function/);
   t.end()
 });
 
-test('should require a function', t => {
+test('should require a final index', t => {
   t.throws(() => {
     chunkify.range(() => {})
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad final/);
+  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad final; not a number/);
   t.end()
 });
 
 test('should require a number start option if given', t => {
   t.throws(() => {
     chunkify.range(() => {}, 10, {start: 'string'})
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad start/);
+  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad start; not a number/);
   t.end()
 });
 
 test('should require a number start option less than final if given', t => {
   t.throws(() => {
     chunkify.range(() => {}, 10, {start: 11})
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad start/);
+  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad start; it's greater than final/);
   t.end()
 });
 
