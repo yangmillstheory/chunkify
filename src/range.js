@@ -23,11 +23,11 @@ let ok_usage = (fn, final, options) => {
 let range = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
   let {scope, chunk, delay} = ChunkifyOptions.of(options);
-  let iterator = chunks.range(_.defaults({
-    start: options.start,
+  let iterator = chunks.range({
+    start: options.start || 0,
     final,
     chunk
-  }, {start: 0}));
+  });
   let resume = (resolve, reject) => {
     let next = iterator.next();
     if (next.done) {
