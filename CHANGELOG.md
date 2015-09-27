@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.3 - 2.1.0] - 2015-09-21
+### Added
+* `chunkify.map`
+* `chunkify.reduce`
+* `chunkify.range`
+* `chunkify.loop`
+
+Improved README. Internal refactor to use generators. 
+
+All API methods now rely on the core API `chunkify.range` and `chunkify` generator.
+
 ## [2.0.0 - 2.0.3] - 2015-09-21
 ### BREAKING CHANGES
 * `chunkify.array` is now `chunkify.each`. The returned promise resolves with `undefined` instead of the original array.
