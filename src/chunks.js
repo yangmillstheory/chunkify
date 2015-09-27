@@ -10,9 +10,5 @@ function* chunks(start, final, chunk) {
 export default {
   range: ({start, final, chunk}) => {
     return chunks(start, final, chunk)
-  },
-
-  of: ({range, chunk}) => {
-    return chunks(0, range, chunk)
   }
 }
