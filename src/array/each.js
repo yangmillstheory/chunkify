@@ -11,11 +11,11 @@ let each = (array, fn, options = {}) => {
   let {chunk, delay, scope} = ChunkifyOptions.of(options);
   let iterator = chunks.of({chunk, range: array.length});
   let resume = (resolve, reject) => {
-    let {value, done} = iterator.next();
-    if (done) {
+    let next = iterator.next();
+    if (next.done) {
       return resolve();
     }
-    let {index, pause} = value;
+    let {index, pause} = next.value;
     let item = array[index];
     try {
       fn.call(scope, item, index);
