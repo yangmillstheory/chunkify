@@ -38,17 +38,17 @@ In [API methods](#api), an optional `options` object may provide any subset of t
 
 ### ***Arrays***
 
-### <a name='each'>chunkify.each(Array array, Function fn, [Object options])</a>
+#### <a name='each'>chunkify.each(Array array, Function fn, [Object options])</a>
 
 `fn` is invoked on successive `array` elements and their indices (`fn(item, index)`).  
    
 Returns a `Promise` that resolves with `undefined` when `fn` has been invoked on all items in `array`.
 
-### chunkify.map(Array array, Function fn, [Object options])
+#### chunkify.map(Array array, Function fn, [Object options])
  
 Identical to [chunkify.each](#each), except the returned `Promise` resolves with the `array` mapped by `fn`.
 
-### chunkify.reduce(Array array, Function fn, [Object options])
+#### chunkify.reduce(Array array, Function fn, [Object options])
  
 Exactly like the [native reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) on `Array.prototype`, but the work is chunked up as [above](#each), and the returned promise resolves with the result of the reduction.
 
@@ -56,11 +56,11 @@ Exactly like the [native reduce](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 ### ***Loops***
 
-### <a name='range'>chunkify.range(Function fn, Number final, [Object options])</a>
+#### <a name='range'>chunkify.range(Function fn, Number final, [Object options])</a>
 
 Invoke `fn` in chunks from the range `options.start` to `final`. If `options.start` is given, it must be a `Number` less than or equal to `final`. Its default value is `0`. 
 
-### chunkify.loop(Function fn, Number range, [Object options])
+#### chunkify.loop(Function fn, Number range, [Object options])
 
 Like [chunkify.range](#range), with `options.start` forced to `0`. 
  
