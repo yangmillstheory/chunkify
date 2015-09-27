@@ -3,6 +3,7 @@ import ChunkifyOptions from '../options'
 import _ from 'underscore'
 import {ok_usage} from './utilities'
 
+
 const USAGE = 'Usage: chunkify.reduce(Array array, Function fn, [Object options])';
 const MEMO_KEY = 'memo';
 
@@ -23,10 +24,10 @@ let reduce = (array, fn, options = {}) => {
     // this will be scoped to options.scope
     memo = fn.call(this, memo, item, index, array);
   };
-  return each.iterate(array, reducee, options).then(() => {
+  return each(array, reducee, options).then(() => {
     return memo
   });
 };
 
 
-export default {apply: reduce};
+export default reduce

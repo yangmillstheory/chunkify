@@ -15,10 +15,10 @@ let map = (array, fn, options = {}) => {
     return result;
   };
   let mapper = _.compose(pusher, fn.bind(okopts.scope));
-  return each.iterate(array, mapper, okopts).then(() => {
+  return each(array, mapper, okopts).then(() => {
     return mapped;
   });
 };
 
 
-export default {apply: map}
+export default map
