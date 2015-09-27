@@ -60,6 +60,8 @@ Exactly like the [native reduce](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 Invoke `fn` in chunks from the range `options.start` to `final`. If `options.start` is given, it must be a `Number` less than or equal to `final`. Its default value is `0`. 
 
+Returns a `Promise` that resolves with `undefined` when the entire range has been traversed.  
+
 #### chunkify.loop(Function fn, Number range, [Object options])
 
 Like [chunkify.range](#range), with `options.start` forced to `0`. 
