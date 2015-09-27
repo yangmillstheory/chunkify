@@ -52,7 +52,7 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
-test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
+test('should invoke fn with the array item and index', t => {
   let fn = sinon.spy();
 
   chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {

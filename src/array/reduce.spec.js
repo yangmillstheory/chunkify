@@ -52,7 +52,7 @@ test('should not invoke fn when given an empty array', t => {
   });
 });
 
-test('should invoke fn with memo, item, index and array between 0 and `chunk` iterations', t => {
+test('should invoke fn with memo, item, index and array', t => {
   let array = ['A', 'B', 'C'];
   let identity = sinon.spy((memo) => {
     return memo;
