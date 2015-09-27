@@ -30,7 +30,7 @@ let range = (fn, final, options = {}) => {
     final,
     chunk
   });
-  let resume = (resolve, reject) => {
+  var resume = (resolve, reject) => {
     let next = iterator.next();
     if (next.done) {
       return resolve();
