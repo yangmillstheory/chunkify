@@ -1,14 +1,18 @@
-function* chunks(chunk, range) {
-  for (let index = 0; index < range; index++) {
+function* chunks(start, final, chunk) {
+  for (let index = start; index < final; index++) {
     yield {
       index,
-      pause: (index > 0 && (index + 1) % chunk === 0)
+      pause: ((index > start) && ((index + 1) % chunk === 0))
     };
   }
 }
 
 export default {
-  of: ({chunk, range}) => {
-    return chunks(chunk, range)
+  range: ({start, final, chunk}) => {
+    return chunks(start, final, chunk)
+  },
+
+  of: ({range, chunk}) => {
+    return chunks(0, range, chunk)
   }
 }
