@@ -4,7 +4,7 @@
   "description": "A functional API to unblock your JavaScript thread.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "./test.js src/**/*.spec.js | node_modules/.bin/faucet",
+    "test": "./test.js src/**/*.spec.js src/*.spec.js | node_modules/.bin/faucet",
     "prepublish": "npm test && gulp"
   },
   "repository": {
