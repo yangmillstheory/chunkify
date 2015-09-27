@@ -15,6 +15,8 @@ let ok_usage = (fn, final, options) => {
   if (start != null) {
     if (!_.isNumber(start)) {
       throw new Error(`${USAGE} - bad start`);
+    } else if (start > final) {
+      throw new Error(`${USAGE} - bad start`);
     }
   }
 };
