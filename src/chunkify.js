@@ -1,4 +1,4 @@
-function* chunks(start, final, chunk) {
+function* chunkify(start, final, chunk) {
   for (let index = start; index < final; index++) {
     yield {
       index,
@@ -9,6 +9,6 @@ function* chunks(start, final, chunk) {
 
 export default {
   range: ({start, final, chunk}) => {
-    return chunks(start, final, chunk)
+    return chunkify(start, final, chunk)
   }
 }

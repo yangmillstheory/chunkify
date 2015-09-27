@@ -1,4 +1,4 @@
-import chunks from '../chunks'
+import chunkify from '../chunkify'
 import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
@@ -25,7 +25,7 @@ let ok_usage = (fn, final, options) => {
 let range = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
   let {scope, chunk, delay} = ChunkifyOptions.of(options);
-  let iterator = chunks.range({
+  let iterator = chunkify.range({
     start: options.start || 0,
     final,
     chunk
@@ -44,7 +44,7 @@ let range = (fn, final, options = {}) => {
     if (pause) {
       return setTimeout(resume, delay, resolve, reject);
     }
-    resume(resolve, reject);
+    return resume(resolve, reject);
   };
   return new Promise(resume);
 };
