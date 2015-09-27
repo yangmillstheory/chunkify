@@ -21,36 +21,36 @@ test('should require a function', t => {
   t.end()
 });
 
-//test('should deserialize options', t => {
-//  ChunkifyOptionsSpy((spy) => {
-//    let options = {};
-//    chunkify.loop([], sinon.spy(), options);
-//    t.ok(spy.calledWith(options));
-//    t.end()
-//  });
-//});
-//
-//test('should default options to an empty object', t => {
-//  ChunkifyOptionsSpy((spy) => {
-//    chunkify.loop([], sinon.spy());
-//    t.ok(spy.calledWith({}));
-//    t.end()
-//  });
-//});
-//
-//test('should return a promise', t => {
-//  t.ok(chunkify.loop([], sinon.spy()) instanceof Promise);
-//  t.end()
-//});
-//
-//test('should not invoke fn when given an empty array', t => {
-//  let fn = sinon.spy();
-//
-//  chunkify.loop([], fn).then(() => {
-//    t.notOk(fn.called);
-//    t.end();
-//  });
-//});
+test('should deserialize options', t => {
+  ChunkifyOptionsSpy((spy) => {
+    let options = {};
+    chunkify.loop(10, sinon.spy(), options);
+    t.ok(spy.calledWith(options));
+    t.end()
+  });
+});
+
+test('should default options to an empty object', t => {
+  ChunkifyOptionsSpy((spy) => {
+    chunkify.loop(10, sinon.spy());
+    t.ok(spy.calledWith({}));
+    t.end()
+  });
+});
+
+test('should return a promise', t => {
+  t.ok(chunkify.loop(10, sinon.spy()) instanceof Promise);
+  t.end()
+});
+
+test('should not invoke fn when range is 0', t => {
+  let fn = sinon.spy();
+
+  chunkify.loop(0, fn).then(() => {
+    t.notOk(fn.called);
+    t.end();
+  });
+});
 //
 //test('should invoke fn with the array item and index between 0 and `chunk` iterations', t => {
 //  let fn = sinon.spy();
