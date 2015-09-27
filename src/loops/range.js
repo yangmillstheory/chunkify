@@ -42,9 +42,10 @@ let range = (fn, final, options = {}) => {
       return reject({error, index});
     }
     if (pause) {
-      return setTimeout(resume, delay, resolve, reject);
+      setTimeout(resume, delay, resolve, reject);
+    } else {
+      resume(resolve, reject);
     }
-    return resume(resolve, reject);
   };
   return new Promise(resume);
 };
