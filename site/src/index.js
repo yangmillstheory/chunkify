@@ -1,46 +1,80 @@
 import chunkify from '../../dist'
 import angular from 'angular'
-
-console.log(chunkify);
-console.log(angular);
+import _ from 'underscore'
 
 
 angular
 .module('chunkify-demo', [])
-.controller('ChunkifyCtrl', ($scope) => {
+.controller('ChunkifyCtrl', function($scope) {
 
-    $scope.buttons = {
-      disabled: false
-    };
+  const METHODS = ['map', 'reduce', 'each', 'loop'];
 
-    $scope.chunked = {
-      reduce: function() {
-        console.log('chunked reduce')
-      },
-      map: function() {
-        console.log('chunked map')
-      },
-      each: function() {
-        console.log('chunked each')
-      },
-      loop: function() {
-        console.log('chunked loop')
-      }
-    };
+  this.dataset = _.range(10e5);
 
-    $scope.regular = {
-      reduce: function() {
-        console.log('regular reduce')
-      },
-      map: function() {
-        console.log('regular map')
-      },
-      each: function() {
-        console.log('regular each')
-      },
-      loop: function() {
-        console.log('regular loop')
-      }
-    };
+  $scope.buttons = {
+    disabled: false,
+
+    disable: function() {
+      this.disabled = true;
+    },
+
+    enable: function() {
+      this.disabled = false;
+    }
+  };
+
+  $scope.actions = {
+
+    _clean_options(options) {
+      _.defaults(options, {chunkify: false});
+      console.log(`Found options.chunkify: ${options.chunkify}`)
+    },
+
+    _before_action(options = {}) {
+      this._clean_options(options);
+      $scope.buttons.disable()
+    },
+
+    _after_action(promise) {
+      promise.then(() => {
+        $scope.buttons.enable();
+        $scope.$digest();
+      });
+    },
+
+    _reduce(options) {
+      console.log('chunk reduce');
+      return new Promise(resolve => setTimeout(resolve, 3000));
+    },
+
+    _map(options) {
+      console.log('chunk map');
+      return new Promise(resolve => setTimeout(resolve, 3000));
+    },
+
+    _each(options) {
+      console.log('chunk each');
+      return new Promise(resolve => setTimeout(resolve, 3000));
+    },
+
+    _loop(options) {
+      console.log('chunk loop');
+      return new Promise(resolve => setTimeout(resolve, 5000));
+    }
+
+  };
+
+
+  // some metaprogramming to avoid boilerplate
+  for (let method of METHODS) {
+    $scope.actions[method] = _.compose(promise => {
+      $scope.actions._after_action(promise);
+    }, options => {
+      return $scope.actions[`_${method}`](options)
+    }, options => {
+      $scope.actions._before_action(options);
+      return options
+    });
+  }
 
 });

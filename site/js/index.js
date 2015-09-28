@@ -10,42 +10,113 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-console.log(_dist2['default']);
-console.log(_angular2['default']);
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
 
+  var METHODS = ['map', 'reduce', 'each', 'loop'];
+
+  this.dataset = _underscore2['default'].range(10e5);
+
   $scope.buttons = {
-    disabled: false
-  };
+    disabled: false,
 
-  $scope.chunked = {
-    reduce: function reduce() {
-      console.log('chunked reduce');
+    disable: function disable() {
+      this.disabled = true;
     },
-    map: function map() {
-      console.log('chunked map');
-    },
-    each: function each() {
-      console.log('chunked each');
-    },
-    loop: function loop() {
-      console.log('chunked loop');
+
+    enable: function enable() {
+      this.disabled = false;
     }
   };
 
-  $scope.regular = {
-    reduce: function reduce() {
-      console.log('regular reduce');
+  $scope.actions = {
+
+    _clean_options: function _clean_options(options) {
+      _underscore2['default'].defaults(options, { chunkify: false });
+      console.log('Found options.chunkify: ' + options.chunkify);
     },
-    map: function map() {
-      console.log('regular map');
+
+    _before_action: function _before_action() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      this._clean_options(options);
+      $scope.buttons.disable();
     },
-    each: function each() {
-      console.log('regular each');
+
+    _after_action: function _after_action(promise) {
+      promise.then(function () {
+        $scope.buttons.enable();
+        $scope.$digest();
+      });
     },
-    loop: function loop() {
-      console.log('regular loop');
+
+    _reduce: function _reduce(options) {
+      console.log('chunk reduce');
+      return new Promise(function (resolve) {
+        return setTimeout(resolve, 3000);
+      });
+    },
+
+    _map: function _map(options) {
+      console.log('chunk map');
+      return new Promise(function (resolve) {
+        return setTimeout(resolve, 3000);
+      });
+    },
+
+    _each: function _each(options) {
+      console.log('chunk each');
+      return new Promise(function (resolve) {
+        return setTimeout(resolve, 3000);
+      });
+    },
+
+    _loop: function _loop(options) {
+      console.log('chunk loop');
+      return new Promise(function (resolve) {
+        return setTimeout(resolve, 5000);
+      });
     }
+
   };
+
+  // some metaprogramming to avoid boilerplate
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    var _loop2 = function () {
+      var method = _step.value;
+
+      $scope.actions[method] = _underscore2['default'].compose(function (promise) {
+        $scope.actions._after_action(promise);
+      }, function (options) {
+        return $scope.actions['_' + method](options);
+      }, function (options) {
+        $scope.actions._before_action(options);
+        return options;
+      });
+    };
+
+    for (var _iterator = METHODS[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      _loop2();
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator['return']) {
+        _iterator['return']();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
 });

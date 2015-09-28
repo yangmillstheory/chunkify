@@ -12,31 +12,31 @@
   </grid>
   <div ng-controller='ChunkifyCtrl'>
     <div class='buttons'>
-      <button ng-disabled='buttons.disabled' ng-click='chunked.reduce()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.reduce({chunkify: true})'>
         Chunked Reduce
       </button>
-      <button ng-disabled='buttons.disabled' ng-click='regular.reduce()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.reduce()'>
         Regular Reduce
       </button>
     <div class='buttons'>
-      <button ng-disabled='buttons.disabled' ng-click='chunked.map()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.map({chunkify: true})'>
         Chunked Map
       </button>
-      <button ng-disabled='buttons.disabled' ng-click='regular.map()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.map()'>
         Regular Map
       </button>
     <div class='buttons'>
-      <button ng-disabled='buttons.disabled' ng-click='chunked.each()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.each({chunkify: true})'>
         Chunked Each
       </button>
-      <button ng-disabled='buttons.disabled' ng-click='regular.each()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.each()'>
         Regular Each
       </button>
     <div class='buttons'>
-      <button ng-disabled='buttons.disabled' ng-click='chunked.loop()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.loop({chunkify: true})'>
         Chunked Loop
       </button>
-      <button ng-disabled='buttons.disabled' ng-click='regular.loop()'>
+      <button ng-disabled='buttons.disabled' ng-click='actions.loop()'>
         Regular Loop
       </button>
   </div>
