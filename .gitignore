@@ -3,3 +3,4 @@ dist
 node_modules
 *.log
 notes.md
+site/js/index.js
