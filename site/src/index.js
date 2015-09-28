@@ -83,20 +83,27 @@ angular
   return {
     replace: true,
     link: function(scope, element) {
+      const FADESPEED = 'slow';
+      const CSS_PROPS = {
+        'background-color': '#34495e',
+        'border-radius': '6px',
+        'margin': '50px auto'
+      };
       let $element = $(element);
+      $element.css(CSS_PROPS);
       $element.css('width', $($window).width() - 300);
       $element.css('height', $($window).height() - 300);
-      $element.css('background-color', '#34495e');
-      $element.css('border-radius', '6px');
-      $element.css('margin', '50px auto');
-      var animate = opaque => {
-        $element.animate({
-          opacity: (opaque ? '1.0' : '0.5')
-        }, 1000, () => {
-          animate(!opaque);
-        });
+      var fade = fadeIn => {
+        let complete = () => {
+          fade(!fadeIn);
+        };
+        if (fadeIn) {
+          $element.fadeIn(FADESPEED, complete);
+        } else {
+          $element.fadeOut(FADESPEED, complete);
+        }
       };
-      animate(false);
+      fade(false);
     },
     template: '<div class="animation"></div>'
   }
