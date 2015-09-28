@@ -44,11 +44,13 @@
   },
   "homepage": "https://github.com/yangmillstheory/chunkify",
   "devDependencies": {
+    "angular": "^1.5.0-beta.0",
     "babel-core": "^5.8.22",
     "faucet": "0.0.1",
     "glob": "^5.0.14",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-babel": "^5.2.1",
+    "jquery": "^2.1.4",
     "sinon": "^1.16.1",
     "tape": "^4.2.0"
   },
