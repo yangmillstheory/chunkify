@@ -7,8 +7,6 @@ angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', function($scope) {
 
-  const METHODS = ['map', 'reduce', 'each', 'loop'];
-
   this.dataset = _.range(10e5);
 
   $scope.buttons = {
@@ -24,6 +22,8 @@ angular
   };
 
   $scope.actions = {
+
+    names: ['map', 'reduce', 'each', 'loop'],
 
     _clean_options(options) {
       _.defaults(options, {chunkify: false});
@@ -66,7 +66,7 @@ angular
 
 
   // some metaprogramming to avoid boilerplate
-  for (let method of METHODS) {
+  for (let method of $scope.actions.names) {
     $scope.actions[method] = _.compose(promise => {
       $scope.actions._after_action(promise);
     }, options => {

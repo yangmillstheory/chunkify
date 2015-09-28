@@ -16,8 +16,6 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
 
-  var METHODS = ['map', 'reduce', 'each', 'loop'];
-
   this.dataset = _underscore2['default'].range(10e5);
 
   $scope.buttons = {
@@ -33,6 +31,8 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
   };
 
   $scope.actions = {
+
+    names: ['map', 'reduce', 'each', 'loop'],
 
     _clean_options: function _clean_options(options) {
       _underscore2['default'].defaults(options, { chunkify: false });
@@ -102,7 +102,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       });
     };
 
-    for (var _iterator = METHODS[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (var _iterator = $scope.actions.names[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       _loop2();
     }
   } catch (err) {
