@@ -83,14 +83,14 @@ angular
   return {
     replace: true,
     link: function(scope, element) {
-      const FADESPEED = 'slow';
-      const CSS_PROPS = {
+      const fadetime = 'slow';
+      const cssprops = {
         'background-color': '#34495e',
         'border-radius': '6px',
         'margin': '50px auto'
       };
       let $element = $(element);
-      $element.css(CSS_PROPS);
+      $element.css(cssprops);
       $element.css('width', $($window).width() - 300);
       $element.css('height', $($window).height() - 300);
       var fade = fadeIn => {
@@ -98,9 +98,9 @@ angular
           fade(!fadeIn);
         };
         if (fadeIn) {
-          $element.fadeIn(FADESPEED, complete);
+          $element.fadeIn(fadetime, complete);
         } else {
-          $element.fadeOut(FADESPEED, complete);
+          $element.fadeOut(fadetime, complete);
         }
       };
       fade(false);

@@ -127,14 +127,14 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
   return {
     replace: true,
     link: function link(scope, element) {
-      var FADESPEED = 'slow';
-      var CSS_PROPS = {
+      var fadetime = 'slow';
+      var cssprops = {
         'background-color': '#34495e',
         'border-radius': '6px',
         'margin': '50px auto'
       };
       var $element = (0, _jquery2['default'])(element);
-      $element.css(CSS_PROPS);
+      $element.css(cssprops);
       $element.css('width', (0, _jquery2['default'])($window).width() - 300);
       $element.css('height', (0, _jquery2['default'])($window).height() - 300);
       var fade = function fade(fadeIn) {
@@ -142,9 +142,9 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
           fade(!fadeIn);
         };
         if (fadeIn) {
-          $element.fadeIn(FADESPEED, complete);
+          $element.fadeIn(fadetime, complete);
         } else {
-          $element.fadeOut(FADESPEED, complete);
+          $element.fadeOut(fadetime, complete);
         }
       };
       fade(false);
