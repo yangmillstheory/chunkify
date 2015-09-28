@@ -14,6 +14,10 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
 
   this.dataset = _underscore2['default'].range(10e5);
@@ -119,4 +123,25 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       }
     }
   }
+}).directive('animation', function ($interval, $window) {
+  return {
+    replace: true,
+    link: function link(scope, element) {
+      var $element = (0, _jquery2['default'])(element);
+      $element.css('width', (0, _jquery2['default'])($window).width() - 300);
+      $element.css('height', (0, _jquery2['default'])($window).height() - 300);
+      $element.css('background-color', '#34495e');
+      $element.css('border-radius', '6px');
+      $element.css('margin', '50px auto');
+      var animate = function animate(opaque) {
+        $element.animate({
+          opacity: opaque ? '1.0' : '0.5'
+        }, 1000, function () {
+          animate(!opaque);
+        });
+      };
+      animate(false);
+    },
+    template: '<div class="animation"></div>'
+  };
 });

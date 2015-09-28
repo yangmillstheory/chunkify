@@ -1,6 +1,7 @@
 import chunkify from '../../dist'
 import angular from 'angular'
 import _ from 'underscore'
+import $ from 'jquery'
 
 
 angular
@@ -77,4 +78,27 @@ angular
     });
   }
 
+})
+.directive('animation', function($interval, $window) {
+  return {
+    replace: true,
+    link: function(scope, element) {
+      let $element = $(element);
+      $element.css('width', $($window).width() - 300);
+      $element.css('height', $($window).height() - 300);
+      $element.css('background-color', '#34495e');
+      $element.css('border-radius', '6px');
+      $element.css('margin', '50px auto');
+      var animate = opaque => {
+        $element.animate({
+          opacity: (opaque ? '1.0' : '0.5')
+        }, 1000, () => {
+          animate(!opaque);
+        });
+      };
+      animate(false);
+    },
+    template: '<div class="animation"></div>'
+  }
 });
+
