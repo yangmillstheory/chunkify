@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="chunkify-demo">
 <head>
   <meta charset="UTF-8">
   <title>yangmillstheory - chunkify</title>
+  <style>
+
+  </style>
 </head>
 <body>
+  <grid>
+  </grid>
+  <div ng-controller='ChunkifyCtrl'>
+    <div class='buttons'>
+      <button ng-disabled='buttons.disabled' ng-click='chunked.reduce()'>
+        Chunked Reduce
+      </button>
+      <button ng-disabled='buttons.disabled' ng-click='regular.reduce()'>
+        Regular Reduce
+      </button>
+    <div class='buttons'>
+      <button ng-disabled='buttons.disabled' ng-click='chunked.map()'>
+        Chunked Map
+      </button>
+      <button ng-disabled='buttons.disabled' ng-click='regular.map()'>
+        Regular Map
+      </button>
+    <div class='buttons'>
+      <button ng-disabled='buttons.disabled' ng-click='chunked.each()'>
+        Chunked Each
+      </button>
+      <button ng-disabled='buttons.disabled' ng-click='regular.each()'>
+        Regular Each
+      </button>
+    <div class='buttons'>
+      <button ng-disabled='buttons.disabled' ng-click='chunked.loop()'>
+        Chunked Loop
+      </button>
+      <button ng-disabled='buttons.disabled' ng-click='regular.loop()'>
+        Regular Loop
+      </button>
+  </div>
   <script src="site/bundle.js"></script>
 </body>
 </html>
