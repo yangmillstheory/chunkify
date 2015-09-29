@@ -8,9 +8,14 @@ angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', function($scope) {
   const RANGE = _.range(0.5 * Math.pow(10, 6));
-  let blocking = () => {
+  let simulate_work = () => {
+    let random_integer = () => {
+      let max = Math.pow(10, 3);
+      let min = Math.pow(10, 3) * .75;
+      return Math.random() * (max - min) + min;
+    };
     let i = 0;
-    while (i < Math.pow(10, 3)) {
+    while (i < random_integer()) {
       i++
     }
   };
@@ -51,7 +56,7 @@ angular
 
     _reduce(options) {
       let reducer = (memo, item) => {
-        blocking();
+        simulate_work();
         return memo + item
       };
       let memo = 0;
@@ -65,7 +70,7 @@ angular
 
     _map(options) {
       let mapper = (item) => {
-        blocking();
+        simulate_work();
         return item + 1
       };
       if (options.chunkify) {
