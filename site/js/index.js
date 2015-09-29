@@ -20,15 +20,19 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
   var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 6));
-  var blocking = function blocking() {
+  var simulate_work = function simulate_work() {
+    var random_integer = function random_integer() {
+      var max = Math.pow(10, 3);
+      var min = Math.pow(10, 3) * .75;
+      return Math.random() * (max - min) + min;
+    };
     var i = 0;
-    while (i < Math.pow(10, 3)) {
+    while (i < random_integer()) {
       i++;
     }
   };
 
   $scope.buttons = {
-
     disabled: false,
 
     disable: function disable() {
@@ -44,16 +48,18 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     names: ['map', 'reduce', 'each', 'loop'],
 
+    chunkify: false,
+
     _clean_options: function _clean_options(options) {
-      _underscore2['default'].defaults(options, { chunkify: false });
+      // currently a no-op
+      return options;
     },
 
     _before_action: function _before_action() {
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      this._clean_options(options);
       $scope.buttons.disable();
-      return options;
+      return this._clean_options(options);
     },
 
     _after_action: function _after_action(promise) {
@@ -63,41 +69,38 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       });
     },
 
-    _reduce: function _reduce(options) {
+    _reduce: function _reduce() {
       var reducer = function reducer(memo, item) {
-        blocking();
+        simulate_work();
         return memo + item;
       };
       var memo = 0;
-      if (options.chunkify) {
-        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: 2500, delay: 10 });
+      if ($scope.actions.chunkify) {
+        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: 1000, delay: 10 });
       } else {
-        //return Promise.resolve(RANGE.reduce(reducer, memo))
         return Promise.resolve(RANGE.reduce(reducer, memo));
       }
     },
 
-    _map: function _map(options) {
+    _map: function _map() {
       var mapper = function mapper(item) {
-        blocking();
+        simulate_work();
         return item + 1;
       };
-      if (options.chunkify) {
-        return _dist2['default'].map(RANGE, mapper, { chunk: 2500, delay: 10 });
+      if ($scope.actions.chunkify) {
+        return _dist2['default'].map(RANGE, mapper, { chunk: 1000, delay: 10 });
       } else {
         return Promise.resolve(RANGE.map(mapper));
       }
     },
 
-    _each: function _each(options) {
-      console.log('chunk each');
+    _each: function _each() {
       return new Promise(function (resolve) {
         return setTimeout(resolve, 3000);
       });
     },
 
-    _loop: function _loop(options) {
-      console.log('chunk loop');
+    _loop: function _loop() {
       return new Promise(function (resolve) {
         return setTimeout(resolve, 5000);
       });
@@ -170,5 +173,9 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     },
 
     template: '<div class="animation"></div>'
+  };
+}).filter('titlecase', function () {
+  return function (word) {
+    return '' + word.charAt(0).toUpperCase() + word.slice(1);
   };
 });
