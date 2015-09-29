@@ -19,11 +19,10 @@ var _jquery = require('jquery');
 var _jquery2 = _interopRequireDefault(_jquery);
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
-  var RANGE = _underscore2['default'].range(5 * Math.pow(10, 5));
-  var LENGTH = RANGE.length;
-  var expensive_fn = function expensive_fn() {
+  var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 6));
+  var blocking = function blocking() {
     var i = 0;
-    while (i < Math.pow(10, 4)) {
+    while (i < Math.pow(10, 3)) {
       i++;
     }
   };
@@ -66,12 +65,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     _reduce: function _reduce(options) {
       var reducer = function reducer(memo, item) {
-        expensive_fn();
+        blocking();
         return memo + item;
       };
       var memo = 0;
       if (options.chunkify) {
-        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: 5000, delay: 10 });
+        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: 2500, delay: 10 });
       } else {
         //return Promise.resolve(RANGE.reduce(reducer, memo))
         return Promise.resolve(RANGE.reduce(reducer, memo));
@@ -80,11 +79,11 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     _map: function _map(options) {
       var mapper = function mapper(item) {
-        expensive_fn();
+        blocking();
         return item + 1;
       };
       if (options.chunkify) {
-        return _dist2['default'].map(RANGE, mapper, { chunk: 5000, delay: 10 });
+        return _dist2['default'].map(RANGE, mapper, { chunk: 2500, delay: 10 });
       } else {
         return Promise.resolve(RANGE.map(mapper));
       }

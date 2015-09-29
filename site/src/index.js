@@ -7,11 +7,10 @@ import $ from 'jquery'
 angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', function($scope) {
-  const RANGE = _.range(5 * Math.pow(10, 5));
-  const LENGTH = RANGE.length;
-  let expensive_fn = () => {
+  const RANGE = _.range(0.5 * Math.pow(10, 6));
+  let blocking = () => {
     let i = 0;
-    while (i < Math.pow(10, 4)) {
+    while (i < Math.pow(10, 3)) {
       i++
     }
   };
@@ -52,12 +51,12 @@ angular
 
     _reduce(options) {
       let reducer = (memo, item) => {
-        expensive_fn();
+        blocking();
         return memo + item
       };
       let memo = 0;
       if (options.chunkify) {
-        return chunkify.reduce(RANGE, reducer, {memo, chunk: 5000, delay: 10})
+        return chunkify.reduce(RANGE, reducer, {memo, chunk: 2500, delay: 10})
       } else {
         //return Promise.resolve(RANGE.reduce(reducer, memo))
         return Promise.resolve(RANGE.reduce(reducer, memo))
@@ -66,11 +65,11 @@ angular
 
     _map(options) {
       let mapper = (item) => {
-        expensive_fn();
+        blocking();
         return item + 1
       };
       if (options.chunkify) {
-        return chunkify.map(RANGE, mapper, {chunk: 5000, delay: 10})
+        return chunkify.map(RANGE, mapper, {chunk: 2500, delay: 10})
       } else {
         return Promise.resolve(RANGE.map(mapper))
       }
