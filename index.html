@@ -44,6 +44,10 @@
 </head>
 <body ng-cloak>
   <div class='main' ng-controller='ChunkifyCtrl'>
+    <label for='chunkify-checkbox'>
+      <input type="checkbox" id='chunkify-checkbox' ng-model="actions.chunkify" />
+      chunkify
+    </label>
     <div class='buttons' ng-repeat="action in actions.names">
       <button ng-disabled='buttons.disabled' ng-click='actions[action]({chunkify: true})'>
         chunkified {{action}}
