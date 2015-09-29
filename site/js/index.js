@@ -20,7 +20,14 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
 
-  this.dataset = _underscore2['default'].range(10e5);
+  var RANGE = _underscore2['default'].range(Math.pow(10, 6) / 2);
+  var LENGTH = RANGE.length;
+  var expensive = function expensive() {
+    var i = 0;
+    while (i < 10000) {
+      i++;
+    }
+  };
 
   $scope.buttons = {
     disabled: false,
@@ -40,7 +47,6 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     _clean_options: function _clean_options(options) {
       _underscore2['default'].defaults(options, { chunkify: false });
-      console.log('Found options.chunkify: ' + options.chunkify);
     },
 
     _before_action: function _before_action() {
@@ -48,27 +54,40 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
       this._clean_options(options);
       $scope.buttons.disable();
+      return options;
     },
 
     _after_action: function _after_action(promise) {
-      promise.then(function () {
+      promise.then(function (value) {
         $scope.buttons.enable();
         $scope.$digest();
       });
     },
 
     _reduce: function _reduce(options) {
-      console.log('chunk reduce');
-      return new Promise(function (resolve) {
-        return setTimeout(resolve, 3000);
-      });
+      var reducer = function reducer(memo, item) {
+        expensive();
+        return memo + item;
+      };
+      var memo = 0;
+      if (options.chunkify) {
+        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: 5000, delay: 10 });
+      } else {
+        //return Promise.resolve(RANGE.reduce(reducer, memo))
+        return Promise.resolve(RANGE.reduce(reducer, memo));
+      }
     },
 
     _map: function _map(options) {
-      console.log('chunk map');
-      return new Promise(function (resolve) {
-        return setTimeout(resolve, 3000);
-      });
+      var mapper = function mapper(item) {
+        expensive();
+        return item + 1;
+      };
+      if (options.chunkify) {
+        return _dist2['default'].map(RANGE, mapper, { chunk: 5000, delay: 10 });
+      } else {
+        return Promise.resolve(RANGE.map(mapper));
+      }
     },
 
     _each: function _each(options) {
@@ -101,8 +120,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       }, function (options) {
         return $scope.actions['_' + method](options);
       }, function (options) {
-        $scope.actions._before_action(options);
-        return options;
+        return $scope.actions._before_action(options);
       });
     };
 
@@ -127,27 +145,29 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
   return {
     replace: true,
     link: function link(scope, element) {
-      var fadetime = 'slow';
+      var duration = 1000;
       var cssprops = {
         'background-color': '#34495e',
         'border-radius': '6px',
-        'margin': '50px auto'
+        'margin': '50px auto',
+        'width': (0, _jquery2['default'])($window).width() - 300,
+        'height': (0, _jquery2['default'])($window).height() - 300
       };
       var $element = (0, _jquery2['default'])(element);
       $element.css(cssprops);
-      $element.css('width', (0, _jquery2['default'])($window).width() - 300);
-      $element.css('height', (0, _jquery2['default'])($window).height() - 300);
-      var fade = function fade(fadeIn) {
+      var animate = function animate(shrink) {
         var complete = function complete() {
-          fade(!fadeIn);
+          animate(!shrink);
         };
-        if (fadeIn) {
-          $element.fadeIn(fadetime, complete);
+        var css;
+        if (shrink) {
+          css = { width: cssprops.width / 2, height: cssprops.height / 2 };
         } else {
-          $element.fadeOut(fadetime, complete);
+          css = { width: cssprops.width, height: cssprops.height };
         }
+        $element.animate(css, duration, complete);
       };
-      fade(false);
+      animate(true);
     },
     template: '<div class="animation"></div>'
   };

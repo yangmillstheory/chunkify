@@ -8,7 +8,14 @@ angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', function($scope) {
 
-  this.dataset = _.range(10e5);
+  const RANGE = _.range(Math.pow(10, 6) / 2);
+  const LENGTH = RANGE.length;
+  let expensive = () => {
+    let i = 0;
+    while (i < 10000) {
+      i++
+    }
+  };
 
   $scope.buttons = {
     disabled: false,
@@ -28,29 +35,45 @@ angular
 
     _clean_options(options) {
       _.defaults(options, {chunkify: false});
-      console.log(`Found options.chunkify: ${options.chunkify}`)
     },
 
     _before_action(options = {}) {
       this._clean_options(options);
-      $scope.buttons.disable()
+      $scope.buttons.disable();
+      return options
     },
 
     _after_action(promise) {
-      promise.then(() => {
+      promise.then((value) => {
         $scope.buttons.enable();
         $scope.$digest();
       });
     },
 
     _reduce(options) {
-      console.log('chunk reduce');
-      return new Promise(resolve => setTimeout(resolve, 3000));
+      let reducer = (memo, item) => {
+        expensive();
+        return memo + item
+      };
+      let memo = 0;
+      if (options.chunkify) {
+        return chunkify.reduce(RANGE, reducer, {memo, chunk: 5000, delay: 10})
+      } else {
+        //return Promise.resolve(RANGE.reduce(reducer, memo))
+        return Promise.resolve(RANGE.reduce(reducer, memo))
+      }
     },
 
     _map(options) {
-      console.log('chunk map');
-      return new Promise(resolve => setTimeout(resolve, 3000));
+      let mapper = (item) => {
+        expensive();
+        return item + 1
+      };
+      if (options.chunkify) {
+        return chunkify.map(RANGE, mapper, {chunk: 5000, delay: 10})
+      } else {
+        return Promise.resolve(RANGE.map(mapper))
+      }
     },
 
     _each(options) {
@@ -73,8 +96,7 @@ angular
     }, options => {
       return $scope.actions[`_${method}`](options)
     }, options => {
-      $scope.actions._before_action(options);
-      return options
+      return $scope.actions._before_action(options);
     });
   }
 
@@ -83,27 +105,29 @@ angular
   return {
     replace: true,
     link: function(scope, element) {
-      const fadetime = 'slow';
+      const duration = 1000;
       const cssprops = {
         'background-color': '#34495e',
         'border-radius': '6px',
-        'margin': '50px auto'
+        'margin': '50px auto',
+        'width': $($window).width() - 300,
+        'height': $($window).height() - 300
       };
       let $element = $(element);
       $element.css(cssprops);
-      $element.css('width', $($window).width() - 300);
-      $element.css('height', $($window).height() - 300);
-      var fade = fadeIn => {
+      var animate = shrink => {
         let complete = () => {
-          fade(!fadeIn);
+          animate(!shrink);
         };
-        if (fadeIn) {
-          $element.fadeIn(fadetime, complete);
+        var css;
+        if (shrink) {
+          css = {width: cssprops.width/2, height: cssprops.height/2};
         } else {
-          $element.fadeOut(fadetime, complete);
+          css = {width: cssprops.width, height: cssprops.height};
         }
+        $element.animate(css, duration, complete);
       };
-      fade(false);
+      animate(true);
     },
     template: '<div class="animation"></div>'
   }
