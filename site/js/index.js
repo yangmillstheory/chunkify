@@ -19,17 +19,17 @@ var _jquery = require('jquery');
 var _jquery2 = _interopRequireDefault(_jquery);
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
-
-  var RANGE = _underscore2['default'].range(Math.pow(10, 6) / 2);
+  var RANGE = _underscore2['default'].range(5 * Math.pow(10, 5));
   var LENGTH = RANGE.length;
-  var expensive = function expensive() {
+  var expensive_fn = function expensive_fn() {
     var i = 0;
-    while (i < 10000) {
+    while (i < Math.pow(10, 4)) {
       i++;
     }
   };
 
   $scope.buttons = {
+
     disabled: false,
 
     disable: function disable() {
@@ -66,7 +66,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     _reduce: function _reduce(options) {
       var reducer = function reducer(memo, item) {
-        expensive();
+        expensive_fn();
         return memo + item;
       };
       var memo = 0;
@@ -80,7 +80,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     _map: function _map(options) {
       var mapper = function mapper(item) {
-        expensive();
+        expensive_fn();
         return item + 1;
       };
       if (options.chunkify) {
@@ -169,6 +169,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       };
       animate(true);
     },
+
     template: '<div class="animation"></div>'
   };
 });

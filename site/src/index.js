@@ -7,17 +7,17 @@ import $ from 'jquery'
 angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', function($scope) {
-
-  const RANGE = _.range(Math.pow(10, 6) / 2);
+  const RANGE = _.range(5 * Math.pow(10, 5));
   const LENGTH = RANGE.length;
-  let expensive = () => {
+  let expensive_fn = () => {
     let i = 0;
-    while (i < 10000) {
+    while (i < Math.pow(10, 4)) {
       i++
     }
   };
 
   $scope.buttons = {
+
     disabled: false,
 
     disable: function() {
@@ -52,7 +52,7 @@ angular
 
     _reduce(options) {
       let reducer = (memo, item) => {
-        expensive();
+        expensive_fn();
         return memo + item
       };
       let memo = 0;
@@ -66,7 +66,7 @@ angular
 
     _map(options) {
       let mapper = (item) => {
-        expensive();
+        expensive_fn();
         return item + 1
       };
       if (options.chunkify) {
@@ -129,6 +129,7 @@ angular
       };
       animate(true);
     },
+
     template: '<div class="animation"></div>'
   }
 });
