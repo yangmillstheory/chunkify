@@ -6,7 +6,7 @@ import $ from 'jquery'
 
 angular
 .module('chunkify-demo', [])
-.controller('ChunkifyCtrl', function($scope) {
+.controller('ChunkifyCtrl', ($scope) => {
   const RANGE = _.range(0.5 * Math.pow(10, 6));
   let simulate_work = () => {
     let random_integer = () => {
@@ -21,7 +21,6 @@ angular
   };
 
   $scope.buttons = {
-
     disabled: false,
 
     disable: function() {
@@ -37,14 +36,16 @@ angular
 
     names: ['map', 'reduce', 'each', 'loop'],
 
+    chunkify: false,
+
     _clean_options(options) {
-      _.defaults(options, {chunkify: false});
+      // currently a no-op
+      return options;
     },
 
     _before_action(options = {}) {
-      this._clean_options(options);
       $scope.buttons.disable();
-      return options
+      return this._clean_options(options);
     },
 
     _after_action(promise) {
@@ -54,44 +55,40 @@ angular
       });
     },
 
-    _reduce(options) {
+    _reduce() {
       let reducer = (memo, item) => {
         simulate_work();
         return memo + item
       };
       let memo = 0;
-      if (options.chunkify) {
-        return chunkify.reduce(RANGE, reducer, {memo, chunk: 2500, delay: 10})
+      if ($scope.actions.chunkify) {
+        return chunkify.reduce(RANGE, reducer, {memo, chunk: 1000, delay: 10})
       } else {
-        //return Promise.resolve(RANGE.reduce(reducer, memo))
         return Promise.resolve(RANGE.reduce(reducer, memo))
       }
     },
 
-    _map(options) {
+    _map() {
       let mapper = (item) => {
         simulate_work();
         return item + 1
       };
-      if (options.chunkify) {
-        return chunkify.map(RANGE, mapper, {chunk: 2500, delay: 10})
+      if ($scope.actions.chunkify) {
+        return chunkify.map(RANGE, mapper, {chunk: 1000, delay: 10})
       } else {
         return Promise.resolve(RANGE.map(mapper))
       }
     },
 
-    _each(options) {
-      console.log('chunk each');
+    _each() {
       return new Promise(resolve => setTimeout(resolve, 3000));
     },
 
-    _loop(options) {
-      console.log('chunk loop');
+    _loop() {
       return new Promise(resolve => setTimeout(resolve, 5000));
     }
 
   };
-
 
   // some metaprogramming to avoid boilerplate
   for (let method of $scope.actions.names) {
@@ -105,7 +102,7 @@ angular
   }
 
 })
-.directive('animation', function($interval, $window) {
+.directive('animation', ($interval, $window) => {
   return {
     replace: true,
     link: function(scope, element) {
