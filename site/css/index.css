@@ -8,6 +8,19 @@ body {
   margin-left: 20px;
   font-size: 6em;
   letter-spacing: -10px;
+  position: relative;
+}
+
+.title #github {
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  bottom: 20px;
+  left: 350px;
+  z-index: 10;
+  background: url(../img/github.png) no-repeat;
+  background-size: 100% auto;
+  cursor: pointer;
 }
 
 .main-wrapper {
@@ -55,6 +68,12 @@ body {
 .main > .buttons > button:disabled {
   background-color: lightgray;
   color: black;
+}
+
+label {
+  color: #4d63bc;
+  font-size: 25px;
+  letter-spacing: -2px;
 }
 
 .grid-container {
