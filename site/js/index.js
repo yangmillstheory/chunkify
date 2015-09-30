@@ -143,35 +143,14 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       }
     }
   }
-}).directive('animation', function ($interval, $window) {
+})
+// Fills parent with a fixed number of cells.
+//
+//  On resize, resizes those cells too.
+.directive('animationGrid', function ($interval, $window) {
   return {
     replace: true,
-    link: function link(scope, element) {
-      var duration = 1000;
-      var cssprops = {
-        'background-color': '#34495e',
-        'border-radius': '6px',
-        'margin': '50px auto',
-        'width': (0, _jquery2['default'])($window).width() - 300,
-        'height': (0, _jquery2['default'])($window).height() - 300
-      };
-      var $element = (0, _jquery2['default'])(element);
-      $element.css(cssprops);
-      var animate = function animate(shrink) {
-        var complete = function complete() {
-          animate(!shrink);
-        };
-        var css;
-        if (shrink) {
-          css = { width: cssprops.width / 2, height: cssprops.height / 2 };
-        } else {
-          css = { width: cssprops.width, height: cssprops.height };
-        }
-        $element.animate(css, duration, complete);
-      };
-      animate(true);
-    },
-
+    link: function link(scope, element) {},
     template: '<div class="animation"></div>'
   };
 }).filter('titlecase', function () {

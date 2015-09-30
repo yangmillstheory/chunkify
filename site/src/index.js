@@ -102,35 +102,15 @@ angular
   }
 
 })
-.directive('animation', ($interval, $window) => {
+// Fills parent with a fixed number of cells.
+//
+//  On resize, resizes those cells too.
+.directive('animationGrid', ($interval, $window) => {
   return {
     replace: true,
     link: function(scope, element) {
-      const duration = 1000;
-      const cssprops = {
-        'background-color': '#34495e',
-        'border-radius': '6px',
-        'margin': '50px auto',
-        'width': $($window).width() - 300,
-        'height': $($window).height() - 300
-      };
-      let $element = $(element);
-      $element.css(cssprops);
-      var animate = shrink => {
-        let complete = () => {
-          animate(!shrink);
-        };
-        var css;
-        if (shrink) {
-          css = {width: cssprops.width/2, height: cssprops.height/2};
-        } else {
-          css = {width: cssprops.width, height: cssprops.height};
-        }
-        $element.animate(css, duration, complete);
-      };
-      animate(true);
-    },
 
+    },
     template: '<div class="animation"></div>'
   }
 })
