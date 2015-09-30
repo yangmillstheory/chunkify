@@ -40,7 +40,7 @@ gulp.task('site', (done) => {
 });
 
 gulp.task('bundle', () => {
-  browserify({entries: `${SITE.js()}/index.js`, debug: true})
+  browserify({entries: `${SITE.js()}/index.js`, debug: false})
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
