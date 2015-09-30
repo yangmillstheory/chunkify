@@ -1,0 +1,53 @@
+body {
+    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+}
+
+.title {
+    color: #4d63bc;
+    margin-top: 40px;
+    margin-left: 20px;
+    font-size: 4em;
+}
+
+.main {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    text-align: center;
+    width: 100px;
+}
+
+.main > .buttons {
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+.main > .buttons > button {
+    color: #fff;
+    background-color: #8BC53F;
+    padding: 5px 0;
+    font-size: 17px;
+    line-height: 1.471;
+    border-radius: 6px;
+    font-weight: 400;
+    width: 90px;
+    border: none;
+    transition: border .25s linear,color .25s linear,background-color .25s linear;
+    -webkit-font-smoothing: subpixel-antialiased;
+    cursor: pointer;
+    text-align: center;
+}
+
+.main > div:first-of-type > button:first-of-type {
+    margin-top: 20px;
+}
+
+.main > .buttons > button:disabled {
+    background-color: lightgray;
+    color: black;
+}
+
+.grid-container {
+
+}
