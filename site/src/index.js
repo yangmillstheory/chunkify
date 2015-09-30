@@ -117,9 +117,9 @@ angular
         })
       };
       resize();
-      $window.onresize = resize
+      $window.onresize = resize;
     },
-    template: '<div class="animation"></div>'
+    template: '<div class="cells"></div>'
   }
 })
 .filter('titlecase', () => {

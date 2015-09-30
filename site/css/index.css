@@ -4,7 +4,7 @@ body {
 
 .title {
   color: #4d63bc;
-  margin-top: 40px;
+  margin-top: 20px;
   margin-left: 20px;
   font-size: 6em;
   letter-spacing: -10px;
@@ -46,7 +46,7 @@ body {
 .main > .buttons > button {
   color: #fff;
   background-color: #8BC53F;
-  padding: 5px 0;
+  padding: 2px 0;
   padding-left: 10px;
   font-size: 17px;
   line-height: 1.471;
@@ -80,5 +80,6 @@ label {
   display: inline-block;
   background-color: beige;
   margin: 20px;
+  margin-left: 25px;
   border-radius: 5px;
 }
