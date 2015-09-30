@@ -6,15 +6,22 @@ body {
     color: #4d63bc;
     margin-top: 40px;
     margin-left: 20px;
-    font-size: 4em;
+    font-size: 6em;
+    letter-spacing: -10px;
+}
+
+.main-wrapper {
+    margin-top: 20px;
 }
 
 .main {
+    display: inline-block;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-left: 10px;
+    margin-left: 20px;
     text-align: center;
     width: 100px;
+    float: left;
 }
 
 .main > .buttons {
@@ -49,5 +56,8 @@ body {
 }
 
 .grid-container {
-
+    display: inline-block;
+    background-color: beige;
+    margin: 20px;
+    border-radius: 5px;
 }

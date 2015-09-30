@@ -109,7 +109,15 @@ angular
   return {
     replace: true,
     link: function(scope, element) {
-
+      let $parent = $(element).parent();
+      let resize = () => {
+        $parent.css({
+          width: $window.innerWidth - 200,
+          height: $window.innerHeight - 250
+        })
+      };
+      resize();
+      $window.onresize = resize
     },
     template: '<div class="animation"></div>'
   }

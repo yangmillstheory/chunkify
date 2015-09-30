@@ -150,7 +150,17 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 .directive('animationGrid', function ($interval, $window) {
   return {
     replace: true,
-    link: function link(scope, element) {},
+    link: function link(scope, element) {
+      var $parent = (0, _jquery2['default'])(element).parent();
+      var resize = function resize() {
+        $parent.css({
+          width: $window.innerWidth - 200,
+          height: $window.innerHeight - 250
+        });
+      };
+      resize();
+      $window.onresize = resize;
+    },
     template: '<div class="animation"></div>'
   };
 }).filter('titlecase', function () {
