@@ -29,6 +29,10 @@ function* chunkify(start, final, chunk, delay) {
 
 export default {
   from_keywords: ({start, final, chunk, delay}) => {
-    return chunkify(start, final, chunk, delay)
+    if (!_.isNumber(start)) {
+      throw new Error('start index `start` of generator range must be a number')
+    } else if (!_.isNumber(final)) {
+      throw new Error('final index `final` of generator range must be a number')
+    }
   }
 }
