@@ -21,7 +21,6 @@ let ok_usage = (fn, final, options) => {
   }
 };
 
-
 let interval = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
   let {scope, chunk, delay} = ChunkifyOptions.of(options);
@@ -31,7 +30,7 @@ let interval = (fn, final, options = {}) => {
     chunk,
     delay
   });
-  var process_chunk = (resolve, reject) => {
+  var process_chunk_sync = (resolve, reject) => {
     let next = iterator.next();
     while (!(next.value instanceof Promise) && !next.done) {
       try {
@@ -45,10 +44,10 @@ let interval = (fn, final, options = {}) => {
       return resolve();
     }
     return next.value.then(() => {
-      return process_chunk(resolve, reject)
+      return process_chunk_sync(resolve, reject)
     });
   };
-  return new Promise(process_chunk);
+  return new Promise(process_chunk_sync);
 };
 
 export default interval
