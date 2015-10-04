@@ -1,3 +1,7 @@
+html {
+  background-color: lightgrey;
+}
+
 body {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
   position: relative;
