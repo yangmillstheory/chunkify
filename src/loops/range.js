@@ -31,7 +31,7 @@ let range = (fn, final, options = {}) => {
     chunk,
     delay
   });
-  var resume = (resolve, reject) => {
+  var process_chunk = (resolve, reject) => {
     let next = iterator.next();
     while (!(next.value instanceof Promise) && !next.done) {
       try {
@@ -45,10 +45,10 @@ let range = (fn, final, options = {}) => {
       return resolve();
     }
     return next.value.then(() => {
-      return resume(resolve, reject)
+      return process_chunk(resolve, reject)
     });
   };
-  return new Promise(resume);
+  return new Promise(process_chunk);
 };
 
 export default range
