@@ -54,7 +54,7 @@ Exactly like the [native reduce](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 **If any invocation of `fn` throws an `Error`, the returned promise is rejected with an object `{error, item, index}`, where `error` is the caught `Error`, `index` is the index in `array` where the invocation threw, and `item` is `array[index]`. No further processing happens after the failure.**
 
-### ***Loops***
+### ***Ranges***
 
 #### <a name='interval'>chunkify.interval(Function fn, Number final, [Object options])</a>
 
@@ -67,6 +67,19 @@ Returns a `Promise` that resolves with `undefined` when the entire range has bee
 Like [chunkify.interval](#interval), with `options.start` forced to `0`. 
  
 **If any invocation of `fn` throws an `Error`, the promise is rejected with an object `{error, index}`, where `error` is the caught `Error` and `index` is the index in `array` where the invocation threw. No further processing happens after the failure.**
+
+### ***Core***
+
+#### chunkify.generator(Number start, Number final, Object options)</a>
+
+Returns the core [Generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) used internally. Thus, this is somewhat more unstable than other API methods.
+ 
+`options` may specify `delay` and `chunk` (as in the [options section](#options)).
+ 
+The generator yields integers from the range `start` and `final`, inclusive. Values are yielded synchronously within intervals of length `chunk`. At every `chunk`<sup>th</sup> call to `.next()`, the generator yields a `Promise` that represents a paused state (this is what unblocks the thread). 
+
+This promise resolves after at least `delay` milliseconds; an error will be thrown in case the generator is advanced again before this `Promise` has resolved. Further calls to `.next()` may be resumed after resolution. This process can continue until all integers between `start` and `final` have been yielded. 
+
 
 ## Contributing
 
