@@ -245,7 +245,8 @@ angular
         'background-color': '#f2dede'
       });
       $(element).find('p:first-of-type').css({
-        'background-color': 'grey'
+        'background-color': 'grey',
+        'color': 'white'
       });
     },
     template: '<div class="blurb">' +

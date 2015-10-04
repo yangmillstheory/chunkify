@@ -88,7 +88,7 @@ body {
 }
 
 .main > .button-container > .buttons > button {
-  color: grey;
+  color: white;
   background-color: #8BC53F;
   padding: 2px 0;
   padding-left: 10px;
@@ -180,6 +180,7 @@ dl {
 
 dl dt {
   background-color: grey;
+  color: white;
   float: left;
   font-weight: bold;
   margin-right: 10px;
