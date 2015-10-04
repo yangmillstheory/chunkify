@@ -23,7 +23,7 @@ let ok_usage = (fn, final, options) => {
 
 let interval = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
-  let {start} = _.defaults(options, {start: 0});
+  let start = options.start || 0;
   let okoptions = ChunkifyOptions.of(options);
   let generator = chunkify.generator(start, final, okoptions);
   var process_chunk_sync = (resolve, reject) => {
