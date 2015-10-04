@@ -13,11 +13,11 @@ body {
 }
 
 #github {
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
   position: absolute;
-  bottom: 0;
-  left: 315px;
+  bottom: -15px;
+  left: 310px;
   z-index: 1;
   background: url(../img/octocat.png) no-repeat;
   background-size: 100% auto;
@@ -25,11 +25,11 @@ body {
 }
 
 #npm {
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
   position: absolute;
-  bottom: 4px;
-  left: 360px;
+  bottom: -10px;
+  left: 375px;
   background: url(../img/npmjs.png) no-repeat;
   background-size: 100% auto;
   cursor: pointer;

@@ -307,7 +307,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
     link: function link(scope) {
       scope.table = {
-        data: [{ label: 'Iters', value: scope.experiment.length }, { label: 'Chunk', value: scope.experiment.chunk }, { label: 'Delay', value: scope.experiment.delay }]
+        data: [{ label: 'Iters', value: scope.experiment.length }, { label: 'Chunk', value: scope.experiment.chunk }, { label: 'Delay', value: scope.experiment.delay + ' ms' }]
       };
     },
     template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Turning <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '</div>'

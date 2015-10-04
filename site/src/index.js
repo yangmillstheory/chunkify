@@ -229,7 +229,7 @@ angular
         data: [
           {label: 'Iters', value: scope.experiment.length},
           {label: 'Chunk', value: scope.experiment.chunk},
-          {label: 'Delay', value: scope.experiment.delay}
+          {label: 'Delay', value: `${scope.experiment.delay} ms`}
         ]
       }
     },
