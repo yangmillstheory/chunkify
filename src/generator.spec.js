@@ -1,3 +1,4 @@
+import {ChunkifyOptionsSpy} from './testutils'
 import chunkify from './index'
 import test from 'tape'
 
@@ -7,23 +8,31 @@ const DELAY = 10;
 const TOLERANCE = 5;
 
 test('should throw when not given a number start index', t => {
-
+  for (let start of [undefined, null, 'string', {}, []]) {
+    t.throws(() => {
+      chunkify.generator({start});
+    }, /start index `start` of generator range must be a number/);
+  }
+  t.end()
 });
 
 test('should throw when not given a number final index', t => {
-
+  for (let final of [undefined, null, 'string', {}, []]) {
+    t.throws(() => {
+      chunkify.generator({start: 0, final});
+    }, /final index `final` of generator range must be a number/);
+  }
+  t.end()
 });
 
-test('should throw when not given a number chunk', t => {
-
-});
-
-test('should throw when not given a number delay', t => {
-
-});
-
-test('should default chunk and delay', t => {
-
+test('should pass `chunk` and `delay` to options helper class', t => {
+  let chunk = 1;
+  let delay = 0;
+  ChunkifyOptionsSpy((spy) => {
+    chunkify.generator({start: 0, final: 1, chunk, delay});
+    t.ok(spy.calledWith({chunk, delay}));
+    t.end()
+  });
 });
 
 test('should yield a "timeout promise" delay after `chunk` iterations', t => {

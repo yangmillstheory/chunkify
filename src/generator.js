@@ -32,7 +32,8 @@ function* chunkify(start, final, options) {
 }
 
 export default {
-  from_keywords: ({start, final, chunk, delay}) => {
+  from_keywords: (options = {}) => {
+    let {start, final, chunk, delay} = options;
     if (!_.isNumber(start)) {
       throw new Error('start index `start` of generator range must be a number')
     } else if (!_.isNumber(final)) {
