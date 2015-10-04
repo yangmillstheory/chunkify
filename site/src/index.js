@@ -232,22 +232,6 @@ angular
           {label: 'Delay Time', value: `${scope.experiment.delay} ms`}
         ]
       };
-      $(element).find('p').css({
-        'border-radius': '3px',
-        padding: '5px',
-        'font-size': '15px',
-        '-moz-box-shadow': '3px 3px 1px 0 #555',
-        '-webkit-box-shadow': '3px 3px 1px 0 #555',
-        'box-shadow': '3px 3px 1px 0 #555'
-      });
-      $(element).find('p:last-of-type').css({
-        'color': '#a94442',
-        'background-color': '#f2dede'
-      });
-      $(element).find('p:first-of-type').css({
-        'background-color': 'grey',
-        'color': 'white'
-      });
     },
     template: '<div class="blurb">' +
       '<dl>' +
