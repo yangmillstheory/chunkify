@@ -95,29 +95,28 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 999,
+    delay: 10,
 
     before_tick() {
-      chunkify.loop(fn, 4, {chunk: 3, delay: 1000});
+      chunkify.loop(fn, 4, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
     after_tick() {
-      // 1000 milliseconds hasn't elapsed yet
       t.equals(fn.callCount, 3);
       t.end();
     }
   });
 });
 
-test('should start again in `delay` milliseconds after yielding', t => {
+test('should start again after `delay` milliseconds from last yielding', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
-      chunkify.loop(fn, 4, {chunk: 3, delay: 1000});
+      chunkify.loop(fn, 4, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
@@ -132,10 +131,10 @@ test('should resolve with undefined', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
-      let promise = chunkify.loop(fn, 4, {chunk: 3, delay: 1000});
+      let promise = chunkify.loop(fn, 4, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
       return promise
     },
@@ -169,10 +168,10 @@ test('should not yield after `chunk` iterations if processing is complete', t =>
   let fn = sinon.spy();
 
   tick({
-    delay: 2000,
+    delay: 20,
 
     before_tick() {
-      chunkify.loop(fn, 3, {chunk: 3, delay: 1000});
+      chunkify.loop(fn, 3, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3)
     },
 
