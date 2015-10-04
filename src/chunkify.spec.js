@@ -1,4 +1,4 @@
-import chunkify from './chunkify'
+import chunkify from './index'
 import test from 'tape'
 
 
@@ -8,7 +8,7 @@ const TOLERANCE = 5;
 
 
 test('should yield a "timeout promise" delay after `chunk` iterations', t => {
-  let it = chunkify.interval({start: 0, final: 3, chunk: 2, delay: DELAY});
+  let it = chunkify.generator({start: 0, final: 3, chunk: 2, delay: DELAY});
 
   t.deepEquals(it.next(), {done: false, value: 0});
   t.deepEquals(it.next(), {done: false, value: 1});
@@ -29,20 +29,20 @@ test('should yield a "timeout promise" delay after `chunk` iterations', t => {
 });
 
 test('should throw an error if advanced while delay is pending', t => {
-  let it = chunkify.interval({start: 0, final: 3, chunk: 2, delay: 100});
+  let it = chunkify.generator({start: 0, final: 3, chunk: 2, delay: 100});
 
   it.next();
   it.next();
-  it.next();  // pending
+  it.next();  // paused
 
   t.throws(() => {
     it.next();
-  }, /pending delay at index 2; wait 100 milliseconds/);
+  }, /paused at index 2; wait 100 milliseconds/);
   t.end()
 });
 
 test('should yield a "timeout promise" after `chunk` iterations from a given `start`', t => {
-  let it = chunkify.interval({start: 1, final: 4, chunk: 2, delay: 10});
+  let it = chunkify.generator({start: 1, final: 4, chunk: 2, delay: 10});
 
   t.deepEquals(it.next(), {done: false, value: 1});
   t.deepEquals(it.next(), {done: false, value: 2});
@@ -64,14 +64,14 @@ test('should yield a "timeout promise" after `chunk` iterations from a given `st
 });
 
 test('should throw an error if advanced while delay is pending from a given start', t => {
-  let it = chunkify.interval({start: 1, final: 4, chunk: 2, delay: 100});
+  let it = chunkify.generator({start: 1, final: 4, chunk: 2, delay: 100});
 
   it.next();
   it.next();
-  it.next();  // pending
+  it.next();  // paused
 
   t.throws(() => {
     it.next();
-  }, /pending delay at index 3; wait 100 milliseconds/);
+  }, /paused at index 3; wait 100 milliseconds/);
   t.end()
 });
