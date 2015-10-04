@@ -28,6 +28,18 @@ test('should yield a "timeout promise" delay after `chunk` iterations', t => {
   });
 });
 
+test('should throw an error if advanced while delay is pending', t => {
+  let it = chunkify.interval({start: 0, final: 3, chunk: 2, delay: 100});
+
+  it.next();
+  it.next();
+  it.next();  // pending
+
+  t.throws(() => {
+    it.next();
+  }, /pending delay at index 2; wait 100 milliseconds/);
+  t.end()
+});
 
 test('should yield a "timeout promise" after `chunk` iterations from a given `start`', t => {
   let it = chunkify.interval({start: 1, final: 4, chunk: 2, delay: 10});
@@ -49,4 +61,17 @@ test('should yield a "timeout promise" after `chunk` iterations from a given `st
     t.deepEquals(it.next(), {done: true, value: undefined});
     t.end()
   });
+});
+
+test('should throw an error if advanced while delay is pending from a given start', t => {
+  let it = chunkify.interval({start: 1, final: 4, chunk: 2, delay: 100});
+
+  it.next();
+  it.next();
+  it.next();  // pending
+
+  t.throws(() => {
+    it.next();
+  }, /pending delay at index 3; wait 100 milliseconds/);
+  t.end()
 });
