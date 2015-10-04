@@ -40,7 +40,7 @@ var random_integer = function random_integer() {
   return Math.random() * (max - min) + min;
 };
 
-_angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope, $timeout) {
+_angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
   var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
   var CHUNK = 100;
   var DELAY = 10;
@@ -205,7 +205,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       }
     }
   }
-}).directive('animation', function ($interval, $window) {
+}]).directive('animation', ['$interval', '$window', function ($interval, $window) {
   var marked1$0 = [shifts_generator].map(regeneratorRuntime.mark);
 
   var intial_css = {
@@ -300,14 +300,14 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     },
     template: '<div id="animation"></div>'
   };
-}).directive('chunkifyInfo', function () {
+}]).directive('chunkifyInfo', function () {
   return {
     scope: {
       experiment: '='
     },
     template: '<div class="blurb">' + '<p>' + 'Works on arrays and loops of length <strong>{{experiment.length}}</strong> ' + 'in synchronous chunks of size <strong>{{experiment.chunk}}</strong> with delays of <strong>{{experiment.delay}} milliseconds</strong> ' + 'in between.' + '</p>' + '<p>' + 'Turning <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '</div>'
   };
-}).directive('progressbar', function ($timeout) {
+}).directive('progressbar', ['$timeout', function ($timeout) {
   return {
     restrict: 'E',
     scope: {
@@ -338,7 +338,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     },
     template: '<div class="progressbar-container" title="{{progress}} of {{max}} iterations processed">' + '<div id="progressbar"></div>' + '</div>'
   };
-}).filter('titlecase', function () {
+}]).filter('titlecase', function () {
   return function (word) {
     return '' + word.charAt(0).toUpperCase() + word.slice(1);
   };

@@ -3,6 +3,7 @@ import babel from 'gulp-babel';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
+import uglify from 'gulp-uglify';
 
 
 let [SRC, DST] = ['src', 'dist'];
@@ -44,6 +45,13 @@ gulp.task('bundle', () => {
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
+    .pipe(gulp.dest(`${SITE.base}`));
+});
+
+
+gulp.task('bundle:uglify', () => {
+  return gulp.src(`${SITE.base}/bundle.js`)
+    .pipe(uglify())
     .pipe(gulp.dest(`${SITE.base}`));
 });
 

@@ -17,7 +17,7 @@ let random_integer = (options = {}) => {
 
 angular
 .module('chunkify-demo', [])
-.controller('ChunkifyCtrl', ($scope, $timeout) => {
+.controller('ChunkifyCtrl', ['$scope', '$timeout', ($scope, $timeout) => {
   const RANGE = _.range(0.5 * Math.pow(10, 5));
   const CHUNK = 100;
   const DELAY = 10;
@@ -144,8 +144,8 @@ angular
     });
   }
 
-})
-.directive('animation', ($interval, $window) => {
+}])
+.directive('animation', ['$interval', '$window', ($interval, $window) => {
   const intial_css = {
     'background-color': '#4d63bc',
     'border-radius': '50px',
@@ -218,7 +218,7 @@ angular
     },
     template: '<div id="animation"></div>'
   }
-})
+}])
 .directive('chunkifyInfo', () => {
   return {
     scope: {
@@ -236,7 +236,7 @@ angular
     '</div>'
   }
 })
-.directive('progressbar', $timeout => {
+.directive('progressbar', ['$timeout', $timeout => {
   return {
     restrict: 'E',
     scope: {
@@ -270,7 +270,7 @@ angular
         '<div id="progressbar"></div>' +
       '</div>'
   }
-})
+}])
 .filter('titlecase', () => {
    return word => {
      return `${word.charAt(0).toUpperCase()}${word.slice(1)}`
