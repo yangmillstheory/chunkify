@@ -325,8 +325,8 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         max: scope.max,
         value: 0,
         complete: function complete() {
-          if (scope.value > 0) {
-            scope.value = 0;
+          if (scope.progress > 0) {
+            scope.progress = 0;
             scope.$digest();
           }
         }
