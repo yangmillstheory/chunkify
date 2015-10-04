@@ -8,7 +8,7 @@ body {
 }
 
 .title {
-  color: dimgrey;
+  color: #4d63bc;
   margin-top: 20px;
   margin-left: 20px;
   font-size: 6em;
@@ -16,12 +16,22 @@ body {
   position: relative;
 }
 
+.title .title-blurb {
+  position: absolute;
+  color: dimgrey;
+  bottom: -15px;
+  left: 250px;
+  font-size: 35px;
+  letter-spacing: -3px;
+  font-weight: 600;
+}
+
 #github {
   width: 75px;
   height: 75px;
   position: absolute;
-  bottom: -15px;
-  left: 310px;
+  bottom: -20px;
+  left: 855px;
   z-index: 1;
   background: url(../img/octocat.png) no-repeat;
   background-size: 100% auto;
@@ -32,8 +42,8 @@ body {
   width: 75px;
   height: 75px;
   position: absolute;
-  bottom: -10px;
-  left: 375px;
+  bottom: -15px;
+  left: 915px;
   background: url(../img/npmjs.png) no-repeat;
   background-size: 100% auto;
   cursor: pointer;
