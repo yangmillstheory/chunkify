@@ -6,7 +6,9 @@ An [ES6-developed](http://babeljs.io/) functional API that prevents long-running
  
 ## Introduction
 
-This is an API for getting long-running JavaScripts to periodically unblock the thread. The idea is to use timeouts to chunk up work and let the call stack unwind. Here's a [demo](http://yangmillstheory.github.io/chunkify/) of the code being used on the browser.
+This is an API for getting long-running JavaScripts to periodically unblock the thread. The idea is to use timeouts to chunk up work and let the call stack unwind. 
+
+Here's a [demo](http://yangmillstheory.github.io/chunkify/) of the code being used in the browser, integrated with [Angular.js](https://angularjs.org/). 
  
 ## Install
 
