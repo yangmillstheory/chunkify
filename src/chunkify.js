@@ -6,25 +6,22 @@
 // An error will be thrown in case an iterator is advanced before a pending
 // promise has resolved.
 function* chunkify(start, final, chunk, delay) {
-  let delayed = false;
-  let pending_delay_error = (index) => {
-    let pending_delay = `pending delay at index ${index}; `;
-    pending_delay += `wait ${delay} milliseconds before `;
-    pending_delay += `further invocations of .next()`;
-    throw new Error(pending_delay)
+  let paused = false;
+  let paused_error = (index) => {
+    return new Error(`paused at index ${index}; wait ${delay} milliseconds before further invocations of .next()`)
   };
-  function* do_delay() {
+  function* pause() {
     yield new Promise(resolve => {
-      delayed = true;
-      setTimeout(() => { resolve(); delayed = false; }, delay)
+      paused = true;
+      setTimeout(() => { resolve(); paused = false; }, delay)
     })
   }
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
-      yield* do_delay()
+      yield* pause()
     }
-    if (delayed) {
-      pending_delay_error(index);
+    if (paused) {
+      throw paused_error(index);
     }
     yield index
   }
