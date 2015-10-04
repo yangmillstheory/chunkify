@@ -76,7 +76,7 @@ The behavior is just like `Array.prototype.reduce`, but the work is chunked up a
 
 `options` can specify all of the properties mentioned in [options](#options), along with a numerical `start` value that must be less than or equal to `final`. By default, `options.start` is `0`.
 
-Invoke `fn` synchronously in chunks from the interval `options.start` to `final`.  
+Invoke `fn` synchronously in chunks on successive integers in the interval `options.start` to `final`.  
 
 Returns a `Promise` that resolves with `undefined` when the entire interval has been traversed.  
 
