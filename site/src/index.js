@@ -158,10 +158,12 @@ angular
   function* shifts_generator($element, $parent) {
     let shifts_index = 0;
     let random_left = () => {
-      return random_integer({min: 0, max: $parent.width()});
+      let width = $parent.width();
+      return random_integer({min: 0.25 * width, max: width});
     };
     let random_top = () => {
-      return random_integer({min: 0, max: $parent.height()});
+      let height = $parent.height();
+      return random_integer({min: 0.25 * height, max: height});
     };
     let shifts = [
       () => {

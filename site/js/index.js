@@ -225,11 +225,13 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
           shifts_index = 0;
 
           random_left = function random_left() {
-            return random_integer({ min: 0, max: $parent.width() });
+            var width = $parent.width();
+            return random_integer({ min: 0.25 * width, max: width });
           };
 
           random_top = function random_top() {
-            return random_integer({ min: 0, max: $parent.height() });
+            var height = $parent.height();
+            return random_integer({ min: 0.25 * height, max: height });
           };
 
           shifts = [function () {
