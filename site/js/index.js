@@ -24,6 +24,8 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 require('jquery-ui/progressbar');
 
+require('jquery-ui/tooltip');
+
 var random_integer = function random_integer() {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -313,16 +315,28 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       max: '=max'
     },
     link: function link(scope, element) {
-      var $progressbar = (0, _jquery2['default'])(element).find('#progressbar').eq(0).progressbar({
+      var $element = (0, _jquery2['default'])(element);
+      var $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
-        value: 0
+        value: 0,
+        complete: function complete() {
+          if (scope.value > 0) {
+            scope.value = 0;
+            scope.$digest();
+          }
+        }
       });
       var progress = function progress(value) {
-        $progressbar.progressbar('option', 'value', value);
+        $bar.progressbar('option', 'value', value);
       };
       scope.$watch('progress', progress);
+      $element.tooltip({
+        position: {
+          my: 'left+115 top-25'
+        }
+      });
     },
-    template: '<div class="progressbar-container">' + '<div id="progressbar"></div>' + '</div>'
+    template: '<div class="progressbar-container" title="{{progress}} of {{max}} iterations processed">' + '<div id="progressbar"></div>' + '</div>'
   };
 }).filter('titlecase', function () {
   return function (word) {

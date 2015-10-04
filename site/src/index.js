@@ -4,6 +4,7 @@ import Spinner from 'spin.js'
 import _ from 'underscore'
 import $ from 'jquery'
 import 'jquery-ui/progressbar'
+import 'jquery-ui/tooltip'
 
 
 let random_integer = (options = {}) => {
@@ -243,17 +244,29 @@ angular
       max: '=max'
     },
     link(scope, element) {
-      let $progressbar = $(element).find('#progressbar').eq(0).progressbar({
+      let $element = $(element);
+      let $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
-        value: 0
+        value: 0,
+        complete() {
+          if (scope.value > 0) {
+            scope.value = 0;
+            scope.$digest()
+          }
+        }
       });
       var progress = value => {
-        $progressbar.progressbar('option', 'value', value)
+        $bar.progressbar('option', 'value', value)
       };
-      scope.$watch('progress', progress)
+      scope.$watch('progress', progress);
+      $element.tooltip({
+        position: {
+          my: 'left+115 top-25'
+        }
+      })
     },
     template:
-      '<div class="progressbar-container">' +
+      '<div class="progressbar-container" title="{{progress}} of {{max}} iterations processed">' +
         '<div id="progressbar"></div>' +
       '</div>'
   }

@@ -32,7 +32,7 @@ var each = function each(array, fn) {
 
 exports['default'] = each;
 module.exports = exports['default'];
-},{"../core":6,"./utilities":5,"underscore":218}],2:[function(require,module,exports){
+},{"../core":6,"./utilities":5,"underscore":220}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -98,7 +98,7 @@ var map = function map(array, fn) {
 
 exports['default'] = map;
 module.exports = exports['default'];
-},{"../options":11,"./each":1,"./utilities":5,"underscore":218}],4:[function(require,module,exports){
+},{"../options":11,"./each":1,"./utilities":5,"underscore":220}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -155,7 +155,7 @@ var reduce = function reduce(array, fn) {
 
 exports['default'] = reduce;
 module.exports = exports['default'];
-},{"../options":11,"./each":1,"./utilities":5,"underscore":218}],5:[function(require,module,exports){
+},{"../options":11,"./each":1,"./utilities":5,"underscore":220}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -178,7 +178,7 @@ exports['default'] = {
   }
 };
 module.exports = exports['default'];
-},{"underscore":218}],6:[function(require,module,exports){
+},{"underscore":220}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -266,7 +266,7 @@ var interval = function interval(fn, final) {
 
 exports['default'] = interval;
 module.exports = exports['default'];
-},{"../index":10,"../options":11,"underscore":218}],8:[function(require,module,exports){
+},{"../index":10,"../options":11,"underscore":220}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -307,7 +307,7 @@ var range = function range(fn, _range) {
 
 exports['default'] = range;
 module.exports = exports['default'];
-},{"../options":11,"./interval":7,"underscore":218}],9:[function(require,module,exports){
+},{"../options":11,"./interval":7,"underscore":220}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -418,7 +418,7 @@ exports['default'] = {
   }
 };
 module.exports = exports['default'];
-},{"./options":11,"underscore":218}],10:[function(require,module,exports){
+},{"./options":11,"underscore":220}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -627,7 +627,7 @@ exports['default'] = {
   }
 };
 module.exports = exports['default'];
-},{"covenance":199,"frosty":212,"underscore":218}],12:[function(require,module,exports){
+},{"covenance":199,"frosty":212,"underscore":220}],12:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.0-beta.0
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -34661,7 +34661,7 @@ module.exports = {
   }
 };
 
-},{"../errors":203,"../mixin":209,"./options":207,"underscore":218}],207:[function(require,module,exports){
+},{"../errors":203,"../mixin":209,"./options":207,"underscore":220}],207:[function(require,module,exports){
 var UTILS, _, errors, first_alias_pair, parse_methodhook, parse_mixinghook, parse_omits,
   hasProp = {}.hasOwnProperty;
 
@@ -34759,7 +34759,7 @@ module.exports = {
   }
 };
 
-},{"../errors":203,"./utils":208,"underscore":218}],208:[function(require,module,exports){
+},{"../errors":203,"./utils":208,"underscore":220}],208:[function(require,module,exports){
 var _,
   slice = [].slice;
 
@@ -34802,7 +34802,7 @@ module.exports = {
   }
 };
 
-},{"underscore":218}],209:[function(require,module,exports){
+},{"underscore":220}],209:[function(require,module,exports){
 var Mixin, _, errors, make, validate,
   hasProp = {}.hasOwnProperty;
 
@@ -34955,7 +34955,7 @@ module.exports = {
   validate: validate
 };
 
-},{"../errors":203,"underscore":218}],210:[function(require,module,exports){
+},{"../errors":203,"underscore":220}],210:[function(require,module,exports){
 var PROTOMIXING_ALIASES, PROTOMIXING_KEY, enable_protomixing, mixer,
   slice = [].slice;
 
@@ -35394,7 +35394,512 @@ $.extend( $.ui, {
 
 })( jQuery );
 
-},{"jquery":216}],214:[function(require,module,exports){
+},{"jquery":218}],214:[function(require,module,exports){
+var jQuery = require('jquery');
+
+/*!
+ * jQuery UI Position 1.10.4
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/position/
+ */
+(function( $, undefined ) {
+
+$.ui = $.ui || {};
+
+var cachedScrollbarWidth,
+	max = Math.max,
+	abs = Math.abs,
+	round = Math.round,
+	rhorizontal = /left|center|right/,
+	rvertical = /top|center|bottom/,
+	roffset = /[\+\-]\d+(\.[\d]+)?%?/,
+	rposition = /^\w+/,
+	rpercent = /%$/,
+	_position = $.fn.position;
+
+function getOffsets( offsets, width, height ) {
+	return [
+		parseFloat( offsets[ 0 ] ) * ( rpercent.test( offsets[ 0 ] ) ? width / 100 : 1 ),
+		parseFloat( offsets[ 1 ] ) * ( rpercent.test( offsets[ 1 ] ) ? height / 100 : 1 )
+	];
+}
+
+function parseCss( element, property ) {
+	return parseInt( $.css( element, property ), 10 ) || 0;
+}
+
+function getDimensions( elem ) {
+	var raw = elem[0];
+	if ( raw.nodeType === 9 ) {
+		return {
+			width: elem.width(),
+			height: elem.height(),
+			offset: { top: 0, left: 0 }
+		};
+	}
+	if ( $.isWindow( raw ) ) {
+		return {
+			width: elem.width(),
+			height: elem.height(),
+			offset: { top: elem.scrollTop(), left: elem.scrollLeft() }
+		};
+	}
+	if ( raw.preventDefault ) {
+		return {
+			width: 0,
+			height: 0,
+			offset: { top: raw.pageY, left: raw.pageX }
+		};
+	}
+	return {
+		width: elem.outerWidth(),
+		height: elem.outerHeight(),
+		offset: elem.offset()
+	};
+}
+
+$.position = {
+	scrollbarWidth: function() {
+		if ( cachedScrollbarWidth !== undefined ) {
+			return cachedScrollbarWidth;
+		}
+		var w1, w2,
+			div = $( "<div style='display:block;position:absolute;width:50px;height:50px;overflow:hidden;'><div style='height:100px;width:auto;'></div></div>" ),
+			innerDiv = div.children()[0];
+
+		$( "body" ).append( div );
+		w1 = innerDiv.offsetWidth;
+		div.css( "overflow", "scroll" );
+
+		w2 = innerDiv.offsetWidth;
+
+		if ( w1 === w2 ) {
+			w2 = div[0].clientWidth;
+		}
+
+		div.remove();
+
+		return (cachedScrollbarWidth = w1 - w2);
+	},
+	getScrollInfo: function( within ) {
+		var overflowX = within.isWindow || within.isDocument ? "" :
+				within.element.css( "overflow-x" ),
+			overflowY = within.isWindow || within.isDocument ? "" :
+				within.element.css( "overflow-y" ),
+			hasOverflowX = overflowX === "scroll" ||
+				( overflowX === "auto" && within.width < within.element[0].scrollWidth ),
+			hasOverflowY = overflowY === "scroll" ||
+				( overflowY === "auto" && within.height < within.element[0].scrollHeight );
+		return {
+			width: hasOverflowY ? $.position.scrollbarWidth() : 0,
+			height: hasOverflowX ? $.position.scrollbarWidth() : 0
+		};
+	},
+	getWithinInfo: function( element ) {
+		var withinElement = $( element || window ),
+			isWindow = $.isWindow( withinElement[0] ),
+			isDocument = !!withinElement[ 0 ] && withinElement[ 0 ].nodeType === 9;
+		return {
+			element: withinElement,
+			isWindow: isWindow,
+			isDocument: isDocument,
+			offset: withinElement.offset() || { left: 0, top: 0 },
+			scrollLeft: withinElement.scrollLeft(),
+			scrollTop: withinElement.scrollTop(),
+			width: isWindow ? withinElement.width() : withinElement.outerWidth(),
+			height: isWindow ? withinElement.height() : withinElement.outerHeight()
+		};
+	}
+};
+
+$.fn.position = function( options ) {
+	if ( !options || !options.of ) {
+		return _position.apply( this, arguments );
+	}
+
+	// make a copy, we don't want to modify arguments
+	options = $.extend( {}, options );
+
+	var atOffset, targetWidth, targetHeight, targetOffset, basePosition, dimensions,
+		target = $( options.of ),
+		within = $.position.getWithinInfo( options.within ),
+		scrollInfo = $.position.getScrollInfo( within ),
+		collision = ( options.collision || "flip" ).split( " " ),
+		offsets = {};
+
+	dimensions = getDimensions( target );
+	if ( target[0].preventDefault ) {
+		// force left top to allow flipping
+		options.at = "left top";
+	}
+	targetWidth = dimensions.width;
+	targetHeight = dimensions.height;
+	targetOffset = dimensions.offset;
+	// clone to reuse original targetOffset later
+	basePosition = $.extend( {}, targetOffset );
+
+	// force my and at to have valid horizontal and vertical positions
+	// if a value is missing or invalid, it will be converted to center
+	$.each( [ "my", "at" ], function() {
+		var pos = ( options[ this ] || "" ).split( " " ),
+			horizontalOffset,
+			verticalOffset;
+
+		if ( pos.length === 1) {
+			pos = rhorizontal.test( pos[ 0 ] ) ?
+				pos.concat( [ "center" ] ) :
+				rvertical.test( pos[ 0 ] ) ?
+					[ "center" ].concat( pos ) :
+					[ "center", "center" ];
+		}
+		pos[ 0 ] = rhorizontal.test( pos[ 0 ] ) ? pos[ 0 ] : "center";
+		pos[ 1 ] = rvertical.test( pos[ 1 ] ) ? pos[ 1 ] : "center";
+
+		// calculate offsets
+		horizontalOffset = roffset.exec( pos[ 0 ] );
+		verticalOffset = roffset.exec( pos[ 1 ] );
+		offsets[ this ] = [
+			horizontalOffset ? horizontalOffset[ 0 ] : 0,
+			verticalOffset ? verticalOffset[ 0 ] : 0
+		];
+
+		// reduce to just the positions without the offsets
+		options[ this ] = [
+			rposition.exec( pos[ 0 ] )[ 0 ],
+			rposition.exec( pos[ 1 ] )[ 0 ]
+		];
+	});
+
+	// normalize collision option
+	if ( collision.length === 1 ) {
+		collision[ 1 ] = collision[ 0 ];
+	}
+
+	if ( options.at[ 0 ] === "right" ) {
+		basePosition.left += targetWidth;
+	} else if ( options.at[ 0 ] === "center" ) {
+		basePosition.left += targetWidth / 2;
+	}
+
+	if ( options.at[ 1 ] === "bottom" ) {
+		basePosition.top += targetHeight;
+	} else if ( options.at[ 1 ] === "center" ) {
+		basePosition.top += targetHeight / 2;
+	}
+
+	atOffset = getOffsets( offsets.at, targetWidth, targetHeight );
+	basePosition.left += atOffset[ 0 ];
+	basePosition.top += atOffset[ 1 ];
+
+	return this.each(function() {
+		var collisionPosition, using,
+			elem = $( this ),
+			elemWidth = elem.outerWidth(),
+			elemHeight = elem.outerHeight(),
+			marginLeft = parseCss( this, "marginLeft" ),
+			marginTop = parseCss( this, "marginTop" ),
+			collisionWidth = elemWidth + marginLeft + parseCss( this, "marginRight" ) + scrollInfo.width,
+			collisionHeight = elemHeight + marginTop + parseCss( this, "marginBottom" ) + scrollInfo.height,
+			position = $.extend( {}, basePosition ),
+			myOffset = getOffsets( offsets.my, elem.outerWidth(), elem.outerHeight() );
+
+		if ( options.my[ 0 ] === "right" ) {
+			position.left -= elemWidth;
+		} else if ( options.my[ 0 ] === "center" ) {
+			position.left -= elemWidth / 2;
+		}
+
+		if ( options.my[ 1 ] === "bottom" ) {
+			position.top -= elemHeight;
+		} else if ( options.my[ 1 ] === "center" ) {
+			position.top -= elemHeight / 2;
+		}
+
+		position.left += myOffset[ 0 ];
+		position.top += myOffset[ 1 ];
+
+		// if the browser doesn't support fractions, then round for consistent results
+		if ( !$.support.offsetFractions ) {
+			position.left = round( position.left );
+			position.top = round( position.top );
+		}
+
+		collisionPosition = {
+			marginLeft: marginLeft,
+			marginTop: marginTop
+		};
+
+		$.each( [ "left", "top" ], function( i, dir ) {
+			if ( $.ui.position[ collision[ i ] ] ) {
+				$.ui.position[ collision[ i ] ][ dir ]( position, {
+					targetWidth: targetWidth,
+					targetHeight: targetHeight,
+					elemWidth: elemWidth,
+					elemHeight: elemHeight,
+					collisionPosition: collisionPosition,
+					collisionWidth: collisionWidth,
+					collisionHeight: collisionHeight,
+					offset: [ atOffset[ 0 ] + myOffset[ 0 ], atOffset [ 1 ] + myOffset[ 1 ] ],
+					my: options.my,
+					at: options.at,
+					within: within,
+					elem : elem
+				});
+			}
+		});
+
+		if ( options.using ) {
+			// adds feedback as second argument to using callback, if present
+			using = function( props ) {
+				var left = targetOffset.left - position.left,
+					right = left + targetWidth - elemWidth,
+					top = targetOffset.top - position.top,
+					bottom = top + targetHeight - elemHeight,
+					feedback = {
+						target: {
+							element: target,
+							left: targetOffset.left,
+							top: targetOffset.top,
+							width: targetWidth,
+							height: targetHeight
+						},
+						element: {
+							element: elem,
+							left: position.left,
+							top: position.top,
+							width: elemWidth,
+							height: elemHeight
+						},
+						horizontal: right < 0 ? "left" : left > 0 ? "right" : "center",
+						vertical: bottom < 0 ? "top" : top > 0 ? "bottom" : "middle"
+					};
+				if ( targetWidth < elemWidth && abs( left + right ) < targetWidth ) {
+					feedback.horizontal = "center";
+				}
+				if ( targetHeight < elemHeight && abs( top + bottom ) < targetHeight ) {
+					feedback.vertical = "middle";
+				}
+				if ( max( abs( left ), abs( right ) ) > max( abs( top ), abs( bottom ) ) ) {
+					feedback.important = "horizontal";
+				} else {
+					feedback.important = "vertical";
+				}
+				options.using.call( this, props, feedback );
+			};
+		}
+
+		elem.offset( $.extend( position, { using: using } ) );
+	});
+};
+
+$.ui.position = {
+	fit: {
+		left: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.isWindow ? within.scrollLeft : within.offset.left,
+				outerWidth = within.width,
+				collisionPosLeft = position.left - data.collisionPosition.marginLeft,
+				overLeft = withinOffset - collisionPosLeft,
+				overRight = collisionPosLeft + data.collisionWidth - outerWidth - withinOffset,
+				newOverRight;
+
+			// element is wider than within
+			if ( data.collisionWidth > outerWidth ) {
+				// element is initially over the left side of within
+				if ( overLeft > 0 && overRight <= 0 ) {
+					newOverRight = position.left + overLeft + data.collisionWidth - outerWidth - withinOffset;
+					position.left += overLeft - newOverRight;
+				// element is initially over right side of within
+				} else if ( overRight > 0 && overLeft <= 0 ) {
+					position.left = withinOffset;
+				// element is initially over both left and right sides of within
+				} else {
+					if ( overLeft > overRight ) {
+						position.left = withinOffset + outerWidth - data.collisionWidth;
+					} else {
+						position.left = withinOffset;
+					}
+				}
+			// too far left -> align with left edge
+			} else if ( overLeft > 0 ) {
+				position.left += overLeft;
+			// too far right -> align with right edge
+			} else if ( overRight > 0 ) {
+				position.left -= overRight;
+			// adjust based on position and margin
+			} else {
+				position.left = max( position.left - collisionPosLeft, position.left );
+			}
+		},
+		top: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.isWindow ? within.scrollTop : within.offset.top,
+				outerHeight = data.within.height,
+				collisionPosTop = position.top - data.collisionPosition.marginTop,
+				overTop = withinOffset - collisionPosTop,
+				overBottom = collisionPosTop + data.collisionHeight - outerHeight - withinOffset,
+				newOverBottom;
+
+			// element is taller than within
+			if ( data.collisionHeight > outerHeight ) {
+				// element is initially over the top of within
+				if ( overTop > 0 && overBottom <= 0 ) {
+					newOverBottom = position.top + overTop + data.collisionHeight - outerHeight - withinOffset;
+					position.top += overTop - newOverBottom;
+				// element is initially over bottom of within
+				} else if ( overBottom > 0 && overTop <= 0 ) {
+					position.top = withinOffset;
+				// element is initially over both top and bottom of within
+				} else {
+					if ( overTop > overBottom ) {
+						position.top = withinOffset + outerHeight - data.collisionHeight;
+					} else {
+						position.top = withinOffset;
+					}
+				}
+			// too far up -> align with top
+			} else if ( overTop > 0 ) {
+				position.top += overTop;
+			// too far down -> align with bottom edge
+			} else if ( overBottom > 0 ) {
+				position.top -= overBottom;
+			// adjust based on position and margin
+			} else {
+				position.top = max( position.top - collisionPosTop, position.top );
+			}
+		}
+	},
+	flip: {
+		left: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.offset.left + within.scrollLeft,
+				outerWidth = within.width,
+				offsetLeft = within.isWindow ? within.scrollLeft : within.offset.left,
+				collisionPosLeft = position.left - data.collisionPosition.marginLeft,
+				overLeft = collisionPosLeft - offsetLeft,
+				overRight = collisionPosLeft + data.collisionWidth - outerWidth - offsetLeft,
+				myOffset = data.my[ 0 ] === "left" ?
+					-data.elemWidth :
+					data.my[ 0 ] === "right" ?
+						data.elemWidth :
+						0,
+				atOffset = data.at[ 0 ] === "left" ?
+					data.targetWidth :
+					data.at[ 0 ] === "right" ?
+						-data.targetWidth :
+						0,
+				offset = -2 * data.offset[ 0 ],
+				newOverRight,
+				newOverLeft;
+
+			if ( overLeft < 0 ) {
+				newOverRight = position.left + myOffset + atOffset + offset + data.collisionWidth - outerWidth - withinOffset;
+				if ( newOverRight < 0 || newOverRight < abs( overLeft ) ) {
+					position.left += myOffset + atOffset + offset;
+				}
+			}
+			else if ( overRight > 0 ) {
+				newOverLeft = position.left - data.collisionPosition.marginLeft + myOffset + atOffset + offset - offsetLeft;
+				if ( newOverLeft > 0 || abs( newOverLeft ) < overRight ) {
+					position.left += myOffset + atOffset + offset;
+				}
+			}
+		},
+		top: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.offset.top + within.scrollTop,
+				outerHeight = within.height,
+				offsetTop = within.isWindow ? within.scrollTop : within.offset.top,
+				collisionPosTop = position.top - data.collisionPosition.marginTop,
+				overTop = collisionPosTop - offsetTop,
+				overBottom = collisionPosTop + data.collisionHeight - outerHeight - offsetTop,
+				top = data.my[ 1 ] === "top",
+				myOffset = top ?
+					-data.elemHeight :
+					data.my[ 1 ] === "bottom" ?
+						data.elemHeight :
+						0,
+				atOffset = data.at[ 1 ] === "top" ?
+					data.targetHeight :
+					data.at[ 1 ] === "bottom" ?
+						-data.targetHeight :
+						0,
+				offset = -2 * data.offset[ 1 ],
+				newOverTop,
+				newOverBottom;
+			if ( overTop < 0 ) {
+				newOverBottom = position.top + myOffset + atOffset + offset + data.collisionHeight - outerHeight - withinOffset;
+				if ( ( position.top + myOffset + atOffset + offset) > overTop && ( newOverBottom < 0 || newOverBottom < abs( overTop ) ) ) {
+					position.top += myOffset + atOffset + offset;
+				}
+			}
+			else if ( overBottom > 0 ) {
+				newOverTop = position.top - data.collisionPosition.marginTop + myOffset + atOffset + offset - offsetTop;
+				if ( ( position.top + myOffset + atOffset + offset) > overBottom && ( newOverTop > 0 || abs( newOverTop ) < overBottom ) ) {
+					position.top += myOffset + atOffset + offset;
+				}
+			}
+		}
+	},
+	flipfit: {
+		left: function() {
+			$.ui.position.flip.left.apply( this, arguments );
+			$.ui.position.fit.left.apply( this, arguments );
+		},
+		top: function() {
+			$.ui.position.flip.top.apply( this, arguments );
+			$.ui.position.fit.top.apply( this, arguments );
+		}
+	}
+};
+
+// fraction support test
+(function () {
+	var testElement, testElementParent, testElementStyle, offsetLeft, i,
+		body = document.getElementsByTagName( "body" )[ 0 ],
+		div = document.createElement( "div" );
+
+	//Create a "fake body" for testing based on method used in jQuery.support
+	testElement = document.createElement( body ? "div" : "body" );
+	testElementStyle = {
+		visibility: "hidden",
+		width: 0,
+		height: 0,
+		border: 0,
+		margin: 0,
+		background: "none"
+	};
+	if ( body ) {
+		$.extend( testElementStyle, {
+			position: "absolute",
+			left: "-1000px",
+			top: "-1000px"
+		});
+	}
+	for ( i in testElementStyle ) {
+		testElement.style[ i ] = testElementStyle[ i ];
+	}
+	testElement.appendChild( div );
+	testElementParent = body || document.documentElement;
+	testElementParent.insertBefore( testElement, testElementParent.firstChild );
+
+	div.style.cssText = "position: absolute; left: 10.7432222px;";
+
+	offsetLeft = $( div ).offset().left;
+	$.support.offsetFractions = offsetLeft > 10 && offsetLeft < 11;
+
+	testElement.innerHTML = "";
+	testElementParent.removeChild( testElement );
+})();
+
+}( jQuery ) );
+
+},{"jquery":218}],215:[function(require,module,exports){
 var jQuery = require('jquery');
 require('./core');
 require('./widget');
@@ -35545,7 +36050,416 @@ $.widget( "ui.progressbar", {
 
 })( jQuery );
 
-},{"./core":213,"./widget":215,"jquery":216}],215:[function(require,module,exports){
+},{"./core":213,"./widget":217,"jquery":218}],216:[function(require,module,exports){
+var jQuery = require('jquery');
+require('./core');
+require('./widget');
+require('./position');
+
+/*!
+ * jQuery UI Tooltip 1.10.4
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/tooltip/
+ *
+ * Depends:
+ *	jquery.ui.core.js
+ *	jquery.ui.widget.js
+ *	jquery.ui.position.js
+ */
+(function( $ ) {
+
+var increments = 0;
+
+function addDescribedBy( elem, id ) {
+	var describedby = (elem.attr( "aria-describedby" ) || "").split( /\s+/ );
+	describedby.push( id );
+	elem
+		.data( "ui-tooltip-id", id )
+		.attr( "aria-describedby", $.trim( describedby.join( " " ) ) );
+}
+
+function removeDescribedBy( elem ) {
+	var id = elem.data( "ui-tooltip-id" ),
+		describedby = (elem.attr( "aria-describedby" ) || "").split( /\s+/ ),
+		index = $.inArray( id, describedby );
+	if ( index !== -1 ) {
+		describedby.splice( index, 1 );
+	}
+
+	elem.removeData( "ui-tooltip-id" );
+	describedby = $.trim( describedby.join( " " ) );
+	if ( describedby ) {
+		elem.attr( "aria-describedby", describedby );
+	} else {
+		elem.removeAttr( "aria-describedby" );
+	}
+}
+
+$.widget( "ui.tooltip", {
+	version: "1.10.4",
+	options: {
+		content: function() {
+			// support: IE<9, Opera in jQuery <1.7
+			// .text() can't accept undefined, so coerce to a string
+			var title = $( this ).attr( "title" ) || "";
+			// Escape title, since we're going from an attribute to raw HTML
+			return $( "<a>" ).text( title ).html();
+		},
+		hide: true,
+		// Disabled elements have inconsistent behavior across browsers (#8661)
+		items: "[title]:not([disabled])",
+		position: {
+			my: "left top+15",
+			at: "left bottom",
+			collision: "flipfit flip"
+		},
+		show: true,
+		tooltipClass: null,
+		track: false,
+
+		// callbacks
+		close: null,
+		open: null
+	},
+
+	_create: function() {
+		this._on({
+			mouseover: "open",
+			focusin: "open"
+		});
+
+		// IDs of generated tooltips, needed for destroy
+		this.tooltips = {};
+		// IDs of parent tooltips where we removed the title attribute
+		this.parents = {};
+
+		if ( this.options.disabled ) {
+			this._disable();
+		}
+	},
+
+	_setOption: function( key, value ) {
+		var that = this;
+
+		if ( key === "disabled" ) {
+			this[ value ? "_disable" : "_enable" ]();
+			this.options[ key ] = value;
+			// disable element style changes
+			return;
+		}
+
+		this._super( key, value );
+
+		if ( key === "content" ) {
+			$.each( this.tooltips, function( id, element ) {
+				that._updateContent( element );
+			});
+		}
+	},
+
+	_disable: function() {
+		var that = this;
+
+		// close open tooltips
+		$.each( this.tooltips, function( id, element ) {
+			var event = $.Event( "blur" );
+			event.target = event.currentTarget = element[0];
+			that.close( event, true );
+		});
+
+		// remove title attributes to prevent native tooltips
+		this.element.find( this.options.items ).addBack().each(function() {
+			var element = $( this );
+			if ( element.is( "[title]" ) ) {
+				element
+					.data( "ui-tooltip-title", element.attr( "title" ) )
+					.attr( "title", "" );
+			}
+		});
+	},
+
+	_enable: function() {
+		// restore title attributes
+		this.element.find( this.options.items ).addBack().each(function() {
+			var element = $( this );
+			if ( element.data( "ui-tooltip-title" ) ) {
+				element.attr( "title", element.data( "ui-tooltip-title" ) );
+			}
+		});
+	},
+
+	open: function( event ) {
+		var that = this,
+			target = $( event ? event.target : this.element )
+				// we need closest here due to mouseover bubbling,
+				// but always pointing at the same event target
+				.closest( this.options.items );
+
+		// No element to show a tooltip for or the tooltip is already open
+		if ( !target.length || target.data( "ui-tooltip-id" ) ) {
+			return;
+		}
+
+		if ( target.attr( "title" ) ) {
+			target.data( "ui-tooltip-title", target.attr( "title" ) );
+		}
+
+		target.data( "ui-tooltip-open", true );
+
+		// kill parent tooltips, custom or native, for hover
+		if ( event && event.type === "mouseover" ) {
+			target.parents().each(function() {
+				var parent = $( this ),
+					blurEvent;
+				if ( parent.data( "ui-tooltip-open" ) ) {
+					blurEvent = $.Event( "blur" );
+					blurEvent.target = blurEvent.currentTarget = this;
+					that.close( blurEvent, true );
+				}
+				if ( parent.attr( "title" ) ) {
+					parent.uniqueId();
+					that.parents[ this.id ] = {
+						element: this,
+						title: parent.attr( "title" )
+					};
+					parent.attr( "title", "" );
+				}
+			});
+		}
+
+		this._updateContent( target, event );
+	},
+
+	_updateContent: function( target, event ) {
+		var content,
+			contentOption = this.options.content,
+			that = this,
+			eventType = event ? event.type : null;
+
+		if ( typeof contentOption === "string" ) {
+			return this._open( event, target, contentOption );
+		}
+
+		content = contentOption.call( target[0], function( response ) {
+			// ignore async response if tooltip was closed already
+			if ( !target.data( "ui-tooltip-open" ) ) {
+				return;
+			}
+			// IE may instantly serve a cached response for ajax requests
+			// delay this call to _open so the other call to _open runs first
+			that._delay(function() {
+				// jQuery creates a special event for focusin when it doesn't
+				// exist natively. To improve performance, the native event
+				// object is reused and the type is changed. Therefore, we can't
+				// rely on the type being correct after the event finished
+				// bubbling, so we set it back to the previous value. (#8740)
+				if ( event ) {
+					event.type = eventType;
+				}
+				this._open( event, target, response );
+			});
+		});
+		if ( content ) {
+			this._open( event, target, content );
+		}
+	},
+
+	_open: function( event, target, content ) {
+		var tooltip, events, delayedShow,
+			positionOption = $.extend( {}, this.options.position );
+
+		if ( !content ) {
+			return;
+		}
+
+		// Content can be updated multiple times. If the tooltip already
+		// exists, then just update the content and bail.
+		tooltip = this._find( target );
+		if ( tooltip.length ) {
+			tooltip.find( ".ui-tooltip-content" ).html( content );
+			return;
+		}
+
+		// if we have a title, clear it to prevent the native tooltip
+		// we have to check first to avoid defining a title if none exists
+		// (we don't want to cause an element to start matching [title])
+		//
+		// We use removeAttr only for key events, to allow IE to export the correct
+		// accessible attributes. For mouse events, set to empty string to avoid
+		// native tooltip showing up (happens only when removing inside mouseover).
+		if ( target.is( "[title]" ) ) {
+			if ( event && event.type === "mouseover" ) {
+				target.attr( "title", "" );
+			} else {
+				target.removeAttr( "title" );
+			}
+		}
+
+		tooltip = this._tooltip( target );
+		addDescribedBy( target, tooltip.attr( "id" ) );
+		tooltip.find( ".ui-tooltip-content" ).html( content );
+
+		function position( event ) {
+			positionOption.of = event;
+			if ( tooltip.is( ":hidden" ) ) {
+				return;
+			}
+			tooltip.position( positionOption );
+		}
+		if ( this.options.track && event && /^mouse/.test( event.type ) ) {
+			this._on( this.document, {
+				mousemove: position
+			});
+			// trigger once to override element-relative positioning
+			position( event );
+		} else {
+			tooltip.position( $.extend({
+				of: target
+			}, this.options.position ) );
+		}
+
+		tooltip.hide();
+
+		this._show( tooltip, this.options.show );
+		// Handle tracking tooltips that are shown with a delay (#8644). As soon
+		// as the tooltip is visible, position the tooltip using the most recent
+		// event.
+		if ( this.options.show && this.options.show.delay ) {
+			delayedShow = this.delayedShow = setInterval(function() {
+				if ( tooltip.is( ":visible" ) ) {
+					position( positionOption.of );
+					clearInterval( delayedShow );
+				}
+			}, $.fx.interval );
+		}
+
+		this._trigger( "open", event, { tooltip: tooltip } );
+
+		events = {
+			keyup: function( event ) {
+				if ( event.keyCode === $.ui.keyCode.ESCAPE ) {
+					var fakeEvent = $.Event(event);
+					fakeEvent.currentTarget = target[0];
+					this.close( fakeEvent, true );
+				}
+			},
+			remove: function() {
+				this._removeTooltip( tooltip );
+			}
+		};
+		if ( !event || event.type === "mouseover" ) {
+			events.mouseleave = "close";
+		}
+		if ( !event || event.type === "focusin" ) {
+			events.focusout = "close";
+		}
+		this._on( true, target, events );
+	},
+
+	close: function( event ) {
+		var that = this,
+			target = $( event ? event.currentTarget : this.element ),
+			tooltip = this._find( target );
+
+		// disabling closes the tooltip, so we need to track when we're closing
+		// to avoid an infinite loop in case the tooltip becomes disabled on close
+		if ( this.closing ) {
+			return;
+		}
+
+		// Clear the interval for delayed tracking tooltips
+		clearInterval( this.delayedShow );
+
+		// only set title if we had one before (see comment in _open())
+		if ( target.data( "ui-tooltip-title" ) ) {
+			target.attr( "title", target.data( "ui-tooltip-title" ) );
+		}
+
+		removeDescribedBy( target );
+
+		tooltip.stop( true );
+		this._hide( tooltip, this.options.hide, function() {
+			that._removeTooltip( $( this ) );
+		});
+
+		target.removeData( "ui-tooltip-open" );
+		this._off( target, "mouseleave focusout keyup" );
+		// Remove 'remove' binding only on delegated targets
+		if ( target[0] !== this.element[0] ) {
+			this._off( target, "remove" );
+		}
+		this._off( this.document, "mousemove" );
+
+		if ( event && event.type === "mouseleave" ) {
+			$.each( this.parents, function( id, parent ) {
+				$( parent.element ).attr( "title", parent.title );
+				delete that.parents[ id ];
+			});
+		}
+
+		this.closing = true;
+		this._trigger( "close", event, { tooltip: tooltip } );
+		this.closing = false;
+	},
+
+	_tooltip: function( element ) {
+		var id = "ui-tooltip-" + increments++,
+			tooltip = $( "<div>" )
+				.attr({
+					id: id,
+					role: "tooltip"
+				})
+				.addClass( "ui-tooltip ui-widget ui-corner-all ui-widget-content " +
+					( this.options.tooltipClass || "" ) );
+		$( "<div>" )
+			.addClass( "ui-tooltip-content" )
+			.appendTo( tooltip );
+		tooltip.appendTo( this.document[0].body );
+		this.tooltips[ id ] = element;
+		return tooltip;
+	},
+
+	_find: function( target ) {
+		var id = target.data( "ui-tooltip-id" );
+		return id ? $( "#" + id ) : $();
+	},
+
+	_removeTooltip: function( tooltip ) {
+		tooltip.remove();
+		delete this.tooltips[ tooltip.attr( "id" ) ];
+	},
+
+	_destroy: function() {
+		var that = this;
+
+		// close open tooltips
+		$.each( this.tooltips, function( id, element ) {
+			// Delegate to close method to handle common cleanup
+			var event = $.Event( "blur" );
+			event.target = event.currentTarget = element[0];
+			that.close( event, true );
+
+			// Remove immediately; destroying an open tooltip doesn't use the
+			// hide animation
+			$( "#" + id ).remove();
+
+			// Restore the title
+			if ( element.data( "ui-tooltip-title" ) ) {
+				element.attr( "title", element.data( "ui-tooltip-title" ) );
+				element.removeData( "ui-tooltip-title" );
+			}
+		});
+	}
+});
+
+}( jQuery ) );
+
+},{"./core":213,"./position":214,"./widget":217,"jquery":218}],217:[function(require,module,exports){
 var jQuery = require('jquery');
 
 /*!
@@ -36070,7 +36984,7 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 
 })( jQuery );
 
-},{"jquery":216}],216:[function(require,module,exports){
+},{"jquery":218}],218:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -45282,7 +46196,7 @@ return jQuery;
 
 }));
 
-},{}],217:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 /**
  * Copyright (c) 2011-2014 Felix Gnass
  * Licensed under the MIT license
@@ -45661,7 +46575,7 @@ return jQuery;
 
 }));
 
-},{}],218:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -47211,7 +48125,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],219:[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -47237,6 +48151,8 @@ var _jquery = require('jquery');
 var _jquery2 = _interopRequireDefault(_jquery);
 
 require('jquery-ui/progressbar');
+
+require('jquery-ui/tooltip');
 
 var random_integer = function random_integer() {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -47527,20 +48443,32 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       max: '=max'
     },
     link: function link(scope, element) {
-      var $progressbar = (0, _jquery2['default'])(element).find('#progressbar').eq(0).progressbar({
+      var $element = (0, _jquery2['default'])(element);
+      var $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
-        value: 0
+        value: 0,
+        complete: function complete() {
+          if (scope.value > 0) {
+            scope.value = 0;
+            scope.$digest();
+          }
+        }
       });
       var progress = function progress(value) {
-        $progressbar.progressbar('option', 'value', value);
+        $bar.progressbar('option', 'value', value);
       };
       scope.$watch('progress', progress);
+      $element.tooltip({
+        position: {
+          my: 'left+115 top-25'
+        }
+      });
     },
-    template: '<div class="progressbar-container">' + '<div id="progressbar"></div>' + '</div>'
+    template: '<div class="progressbar-container" title="{{progress}} of {{max}} iterations processed">' + '<div id="progressbar"></div>' + '</div>'
   };
 }).filter('titlecase', function () {
   return function (word) {
     return '' + word.charAt(0).toUpperCase() + word.slice(1);
   };
 });
-},{"../../dist":10,"angular":13,"jquery":216,"jquery-ui/progressbar":214,"spin.js":217,"underscore":218}]},{},[219]);
+},{"../../dist":10,"angular":13,"jquery":218,"jquery-ui/progressbar":215,"jquery-ui/tooltip":216,"spin.js":219,"underscore":220}]},{},[221]);

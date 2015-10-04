@@ -1,9 +1,10 @@
 body {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+  position: relative;
 }
 
 .title {
-  color: #4d63bc;
+  color: dimgrey;
   margin-top: 20px;
   margin-left: 20px;
   font-size: 6em;
@@ -11,14 +12,25 @@ body {
   position: relative;
 }
 
-.title #github {
-  width: 48px;
-  height: 48px;
+#github {
+  width: 50px;
+  height: 50px;
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   left: 350px;
-  z-index: 10;
-  background: url(../img/github.png) no-repeat;
+  z-index: 1;
+  background: url(../img/octocat.png) no-repeat;
+  background-size: 100% auto;
+  cursor: pointer;
+}
+
+#npm {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  bottom: 18px;
+  left: 400px;
+  background: url(../img/npmjs.png) no-repeat;
   background-size: 100% auto;
   cursor: pointer;
 }
@@ -50,8 +62,8 @@ body {
   background-color: #4d63bc;
   width: 105px;
   padding-bottom: 20px;
-  -moz-box-shadow: -3px 0 5px 0 #555;
-  -webkit-box-shadow: -3px 0 5px 0 #555;
+  -moz-box-shadow: 3px 3px 1px 0 #555;
+  -webkit-box-shadow: 3px 3px 1px 0 #555;
   box-shadow: 3px 3px 1px 0 #555;
   margin-top: 20px;
 }
@@ -115,6 +127,7 @@ label {
   border-radius: 5px;
   z-index: 0;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .ui-progressbar {
@@ -128,4 +141,21 @@ label {
   height: 10px;
   border-radius: 5px;
   background-color: #4d63bc;
+}
+
+.ui-tooltip {
+  padding: 8px;
+  position: absolute;
+  z-index: 9999;
+  max-width: 300px;
+  background-color: #4d63bc;
+  color: #F0F0F0;
+  border-radius: 3px;
+  -moz-box-shadow: 3px 3px 1px 0 #555;
+  -webkit-box-shadow: 3px 3px 1px 0 #555;
+  box-shadow: 3px 3px 1px 0 #555;
+}
+
+body .ui-tooltip {
+  border-width: 2px;
 }
