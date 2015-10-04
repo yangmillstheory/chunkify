@@ -67,7 +67,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
     names: ['map', 'reduce', 'each', 'range'],
 
-    chunkify: false,
+    chunkify: true,
 
     progress_data: { value: 0, max: $scope.experiment.length },
 
@@ -310,7 +310,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         data: [{ label: 'Iters', value: scope.experiment.length }, { label: 'Chunk', value: scope.experiment.chunk }, { label: 'Delay', value: scope.experiment.delay + ' ms' }]
       };
     },
-    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Turning <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '</div>'
+    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Keeping <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '<p>' + 'Turning it off will <strong>lock your browser momentarily</strong> when you initiate an action.' + '</p>' + '</div>'
   };
 }).directive('progressbar', ['$timeout', function ($timeout) {
   return {

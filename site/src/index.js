@@ -44,7 +44,7 @@ angular
 
     names: ['map', 'reduce', 'each', 'range'],
 
-    chunkify: false,
+    chunkify: true,
 
     progress_data: {value: 0, max: $scope.experiment.length},
 
@@ -241,7 +241,10 @@ angular
         '</section>' +
       '</dl>' +
       '<p>' +
-        'Turning <strong>chunkify</strong> on keeps the animation active.' +
+        'Keeping <strong>chunkify</strong> on keeps the animation active.' +
+      '</p>' +
+      '<p>' +
+        'Turning it off will <strong>lock your browser momentarily</strong> when you initiate an action.' +
       '</p>' +
     '</div>'
   }
