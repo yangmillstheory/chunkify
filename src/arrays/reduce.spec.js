@@ -105,7 +105,7 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 10,
+    delay: 9,
 
     before_tick() {
       chunkify.reduce(['A', 'B', 'C', 'D'], fn, {memo: '', chunk: 3, delay: 10});
