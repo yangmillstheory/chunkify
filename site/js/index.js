@@ -309,14 +309,22 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       scope.table = {
         data: [{ label: 'Iters', value: scope.experiment.length }, { label: 'Chunk', value: scope.experiment.chunk }, { label: 'Delay', value: scope.experiment.delay + ' ms' }]
       };
+      (0, _jquery2['default'])(element).find('p').css({
+        'border-radius': '3px',
+        padding: '5px',
+        '-moz-box-shadow': '3px 3px 1px 0 #555',
+        '-webkit-box-shadow': '3px 3px 1px 0 #555',
+        'box-shadow': '3px 3px 1px 0 #555'
+      });
       (0, _jquery2['default'])(element).find('p:last-of-type').css({
         'color': '#a94442',
-        'background-color': '#f2dede',
-        'border-radius': '3px',
-        padding: '5px'
+        'background-color': '#f2dede'
+      });
+      (0, _jquery2['default'])(element).find('p:first-of-type').css({
+        'background-color': 'grey'
       });
     },
-    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Keeping <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '<p>' + 'Turning it off will <strong>lock your browser momentarily</strong> when you initiate an action.' + '</p>' + '</div>'
+    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Keeping <strong>chunkified</strong> on keeps the animation active.' + '</p>' + '<p>' + 'Turning it off will <strong>lock your browser momentarily</strong> when you initiate an action.' + '</p>' + '</div>'
   };
 }).directive('progressbar', ['$timeout', function ($timeout) {
   return {
