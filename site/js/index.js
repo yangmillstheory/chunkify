@@ -37,7 +37,7 @@ var random_integer = function random_integer() {
   var max = _$defaults.max;
   var min = _$defaults.min;
 
-  return Math.random() * (max - min) + min;
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
@@ -252,21 +252,18 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
         case 5:
           if (!true) {
-            context$2$0.next = 11;
+            context$2$0.next = 10;
             break;
           }
 
           context$2$0.next = 8;
-          return shifts[shifts_index++]();
+          return shifts[random_integer({ min: 0, max: length })]();
 
         case 8:
-          if (shifts_index % length === 0) {
-            shifts_index = 0;
-          }
           context$2$0.next = 5;
           break;
 
-        case 11:
+        case 10:
         case 'end':
           return context$2$0.stop();
       }
@@ -294,7 +291,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         } else {
           _underscore2['default'].extend(css, { opacity: 1 });
         }
-        $element.animate(css, 'slow', animate.bind(null, !transparent));
+        $element.animate(css, 400, animate.bind(null, !transparent));
       };
       animate();
     },

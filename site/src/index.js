@@ -12,7 +12,7 @@ let random_integer = (options = {}) => {
     max: Math.pow(10, 2),
     min: Math.pow(10, 2) * .75
   });
-  return Math.random() * (max - min) + min;
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
 angular
@@ -186,10 +186,7 @@ angular
     ];
     let length = shifts.length;
     while (true) {
-      yield shifts[shifts_index++]();
-      if (shifts_index % length === 0) {
-        shifts_index = 0;
-      }
+      yield shifts[random_integer({min: 0, max: length})]();
     }
   }
   return {
@@ -212,7 +209,7 @@ angular
         } else {
           _.extend(css, {opacity: 1})
         }
-        $element.animate(css, 'slow', animate.bind(null, !transparent));
+        $element.animate(css, 400, animate.bind(null, !transparent));
       };
       animate();
     },
