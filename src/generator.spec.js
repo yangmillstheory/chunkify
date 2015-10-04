@@ -10,7 +10,7 @@ const TOLERANCE = 5;
 test('should throw when not given a number start index', t => {
   for (let start of [undefined, null, 'string', {}, []]) {
     t.throws(() => {
-      chunkify.generator({start});
+      chunkify.generator(start);
     }, /start index `start` of generator range must be a number/);
   }
   t.end()
@@ -19,7 +19,7 @@ test('should throw when not given a number start index', t => {
 test('should throw when not given a number final index', t => {
   for (let final of [undefined, null, 'string', {}, []]) {
     t.throws(() => {
-      chunkify.generator({start: 0, final});
+      chunkify.generator(0, final);
     }, /final index `final` of generator range must be a number/);
   }
   t.end()
@@ -29,14 +29,14 @@ test('should pass `chunk` and `delay` to options helper class', t => {
   let chunk = 1;
   let delay = 0;
   ChunkifyOptionsSpy((spy) => {
-    chunkify.generator({start: 0, final: 1, chunk, delay});
+    chunkify.generator(0, 1, {chunk, delay});
     t.ok(spy.calledWith({chunk, delay}));
     t.end()
   });
 });
 
 test('should yield a "timeout promise" delay after `chunk` iterations', t => {
-  let it = chunkify.generator({start: 0, final: 3, chunk: 2, delay: DELAY});
+  let it = chunkify.generator(0, 3, {chunk: 2, delay: DELAY});
 
   t.deepEquals(it.next(), {done: false, value: 0});
   t.deepEquals(it.next(), {done: false, value: 1});
@@ -57,11 +57,11 @@ test('should yield a "timeout promise" delay after `chunk` iterations', t => {
 });
 
 test('should throw an error if advanced while delay is pending', t => {
-  let it = chunkify.generator({start: 0, final: 3, chunk: 2, delay: 100});
+  let it = chunkify.generator(0, 3, {chunk: 2, delay: 100});
 
   it.next();
   it.next();
-  it.next();  // paused
+  it.next();  // enters paused state
 
   t.throws(() => {
     it.next();
@@ -70,7 +70,7 @@ test('should throw an error if advanced while delay is pending', t => {
 });
 
 test('should yield a "timeout promise" after `chunk` iterations from a given `start`', t => {
-  let it = chunkify.generator({start: 1, final: 4, chunk: 2, delay: 10});
+  let it = chunkify.generator(1, 4, {chunk: 2, delay: 10});
 
   t.deepEquals(it.next(), {done: false, value: 1});
   t.deepEquals(it.next(), {done: false, value: 2});
@@ -92,11 +92,11 @@ test('should yield a "timeout promise" after `chunk` iterations from a given `st
 });
 
 test('should throw an error if advanced while delay is pending from a given start', t => {
-  let it = chunkify.generator({start: 1, final: 4, chunk: 2, delay: 100});
+  let it = chunkify.generator(1, 4, {chunk: 2, delay: 100});
 
   it.next();
   it.next();
-  it.next();  // paused
+  it.next();  // enters paused state
 
   t.throws(() => {
     it.next();
