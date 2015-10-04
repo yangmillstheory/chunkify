@@ -261,7 +261,6 @@ angular
         complete() {
           if (scope.progress > 0) {
             scope.progress = 0;
-            scope.$digest()
           }
         }
       });

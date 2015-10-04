@@ -327,7 +327,6 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         complete: function complete() {
           if (scope.progress > 0) {
             scope.progress = 0;
-            scope.$digest();
           }
         }
       });
