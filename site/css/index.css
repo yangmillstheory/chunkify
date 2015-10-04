@@ -58,23 +58,23 @@ body {
   margin-bottom: 20px;
   margin-left: 20px;
   text-align: center;
-  width: 100px;
+  width: 150px;
   float: left;
 }
 
 .main .blurb {
-  font-size: 10px;
+  font-size: 16px;
   opacity: 0.8;
   text-align: left;
   margin-top: 30px;
   line-height: 15px;
-  width: 105px;
+  width: 155px;
 }
 
 .main > .button-container {
   border-radius: 3px;
   background-color: #4d63bc;
-  width: 105px;
+  width: 155px;
   padding-bottom: 20px;
   -moz-box-shadow: 3px 3px 1px 0 #555;
   -webkit-box-shadow: 3px 3px 1px 0 #555;
@@ -92,11 +92,11 @@ body {
   background-color: #8BC53F;
   padding: 2px 0;
   padding-left: 10px;
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.471;
   border-radius: 6px;
   font-weight: 400;
-  width: 80px;
+  width: 110px;
   border: none;
   transition: border .25s linear,color .25s linear,background-color .25s linear;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -121,7 +121,7 @@ body {
 
 label {
   color: #F0F0F0;
-  font-size: 20px;
+  font-size: 25px;
   letter-spacing: -2px;
   cursor: pointer;
 }
@@ -137,7 +137,7 @@ label {
 .progressbar-container {
   background-color: #4d63bc;
   height: 10px;
-  width: 105px;
+  width: 155px;
   border-radius: 5px;
   z-index: 0;
   margin-bottom: 10px;
@@ -147,7 +147,7 @@ label {
 .ui-progressbar {
   height: 10px;
   text-align: left;
-  width: 105px;
+  width: 155px;
   overflow: hidden;
 }
 .ui-progressbar .ui-progressbar-value {
@@ -185,7 +185,7 @@ dl dt {
   margin-right: 10px;
   padding: 5px;
   border-radius: 3px;
-  width: 45px;
+  width: 90px;
   text-transform: uppercase;
 }
 

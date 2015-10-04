@@ -278,7 +278,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var $element = (0, _jquery2['default'])(element).css(intial_css);
       var $parent = $element.parent();
       var resize = function resize() {
-        var width = $window.innerWidth - 200;
+        var width = $window.innerWidth - 300;
         var height = $window.innerHeight - 250;
         $parent.css({ width: width, height: height });
         return true;
@@ -307,11 +307,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
     link: function link(scope, element) {
       scope.table = {
-        data: [{ label: 'Iters', value: scope.experiment.length }, { label: 'Chunk', value: scope.experiment.chunk }, { label: 'Delay', value: scope.experiment.delay + ' ms' }]
+        data: [{ label: 'Iterations', value: scope.experiment.length }, { label: 'Chunk Size', value: scope.experiment.chunk }, { label: 'Delay Size', value: scope.experiment.delay + ' ms' }]
       };
       (0, _jquery2['default'])(element).find('p').css({
         'border-radius': '3px',
         padding: '5px',
+        'font-size': '15px',
         '-moz-box-shadow': '3px 3px 1px 0 #555',
         '-webkit-box-shadow': '3px 3px 1px 0 #555',
         'box-shadow': '3px 3px 1px 0 #555'

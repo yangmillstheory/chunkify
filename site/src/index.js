@@ -198,7 +198,7 @@ angular
       let $element = $(element).css(intial_css);
       let $parent = $element.parent();
       let resize = () => {
-        let width = $window.innerWidth - 200;
+        let width = $window.innerWidth - 300;
         let height = $window.innerHeight - 250;
         $parent.css({width, height});
         return true
@@ -227,14 +227,15 @@ angular
     link(scope, element) {
       scope.table = {
         data: [
-          {label: 'Iters', value: scope.experiment.length},
-          {label: 'Chunk', value: scope.experiment.chunk},
-          {label: 'Delay', value: `${scope.experiment.delay} ms`}
+          {label: 'Iterations', value: scope.experiment.length},
+          {label: 'Chunk Size', value: scope.experiment.chunk},
+          {label: 'Delay Size', value: `${scope.experiment.delay} ms`}
         ]
       };
       $(element).find('p').css({
         'border-radius': '3px',
         padding: '5px',
+        'font-size': '15px',
         '-moz-box-shadow': '3px 3px 1px 0 #555',
         '-webkit-box-shadow': '3px 3px 1px 0 #555',
         'box-shadow': '3px 3px 1px 0 #555'
