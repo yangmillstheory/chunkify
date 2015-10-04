@@ -78,7 +78,7 @@ body {
 }
 
 .main > .button-container > .buttons > button {
-  color: #fff;
+  color: gray;
   background-color: #8BC53F;
   padding: 2px 0;
   padding-left: 10px;
