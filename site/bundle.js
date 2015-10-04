@@ -13,7 +13,7 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 var _utilities = require('./utilities');
 
-var _loops = require('../loops');
+var _core = require('../core');
 
 var USAGE = 'Usage: chunkify.each(Array array, Function fn, [Object options])';
 
@@ -21,8 +21,8 @@ var each = function each(array, fn) {
   var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
   (0, _utilities.ok_usage)(array, fn, USAGE);
-  return (0, _loops.loop)(function (index) {
-    // loop will scope this to options.scope
+  return (0, _core.range)(function (index) {
+    // range will scope this to options.scope
     return fn.call(this, array[index], index);
   }, array.length, options)['catch'](function (error) {
     // rethrow the error with the array item
@@ -32,7 +32,7 @@ var each = function each(array, fn) {
 
 exports['default'] = each;
 module.exports = exports['default'];
-},{"../loops":8,"./utilities":5,"underscore":214}],2:[function(require,module,exports){
+},{"../core":6,"./utilities":5,"underscore":215}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -98,7 +98,7 @@ var map = function map(array, fn) {
 
 exports['default'] = map;
 module.exports = exports['default'];
-},{"../options":11,"./each":1,"./utilities":5,"underscore":214}],4:[function(require,module,exports){
+},{"../options":11,"./each":1,"./utilities":5,"underscore":215}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -155,7 +155,7 @@ var reduce = function reduce(array, fn) {
 
 exports['default'] = reduce;
 module.exports = exports['default'];
-},{"../options":11,"./each":1,"./utilities":5,"underscore":214}],5:[function(require,module,exports){
+},{"../options":11,"./each":1,"./utilities":5,"underscore":215}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -178,55 +178,7 @@ exports['default'] = {
   }
 };
 module.exports = exports['default'];
-},{"underscore":214}],6:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var marked0$0 = [chunkify].map(regeneratorRuntime.mark);
-function chunkify(start, final, chunk) {
-  var index;
-  return regeneratorRuntime.wrap(function chunkify$(context$1$0) {
-    while (1) switch (context$1$0.prev = context$1$0.next) {
-      case 0:
-        index = start;
-
-      case 1:
-        if (!(index < final)) {
-          context$1$0.next = 7;
-          break;
-        }
-
-        context$1$0.next = 4;
-        return {
-          index: index,
-          pause: index > start && (index + 1) % (start + chunk) === 0
-        };
-
-      case 4:
-        index++;
-        context$1$0.next = 1;
-        break;
-
-      case 7:
-      case "end":
-        return context$1$0.stop();
-    }
-  }, marked0$0[0], this);
-}
-
-exports["default"] = {
-  range: function range(_ref) {
-    var start = _ref.start;
-    var final = _ref.final;
-    var chunk = _ref.chunk;
-
-    return chunkify(start, final, chunk);
-  }
-};
-module.exports = exports["default"];
-},{}],7:[function(require,module,exports){
+},{"underscore":215}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -235,44 +187,17 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-require('babel/polyfill');
+var _interval = require('./interval');
 
-var _arrays = require('./arrays');
-
-var _arrays2 = _interopRequireDefault(_arrays);
-
-var _loops = require('./loops');
-
-var _loops2 = _interopRequireDefault(_loops);
-
-exports['default'] = {
-  each: _arrays2['default'].each,
-  map: _arrays2['default'].map,
-  reduce: _arrays2['default'].reduce,
-  loop: _loops2['default'].loop,
-  range: _loops2['default'].range
-};
-module.exports = exports['default'];
-},{"./arrays":2,"./loops":8,"babel/polyfill":196}],8:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _loop = require('./loop');
-
-var _loop2 = _interopRequireDefault(_loop);
+var _interval2 = _interopRequireDefault(_interval);
 
 var _range = require('./range');
 
 var _range2 = _interopRequireDefault(_range);
 
-exports['default'] = { loop: _loop2['default'], range: _range2['default'] };
+exports['default'] = { interval: _interval2['default'], range: _range2['default'] };
 module.exports = exports['default'];
-},{"./loop":9,"./range":10}],9:[function(require,module,exports){
+},{"./interval":7,"./range":8}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -281,9 +206,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _range = require('./range');
+var _index = require('../index');
 
-var _range2 = _interopRequireDefault(_range);
+var _index2 = _interopRequireDefault(_index);
 
 var _options = require('../options');
 
@@ -293,48 +218,7 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var USAGE = 'Usage: chunkify.loop(Function fn, Number range, [Object options])';
-
-var ok_usage = function ok_usage(fn, range) {
-  if (!_underscore2['default'].isFunction(fn)) {
-    throw new Error(USAGE + ' - bad fn; not a function');
-  } else if (!_underscore2['default'].isNumber(range)) {
-    throw new Error(USAGE + ' - bad range; not a number');
-  }
-};
-
-var loop = function loop(fn, range) {
-  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-  ok_usage(fn, range);
-  delete options.start;
-  return (0, _range2['default'])(fn, range, options);
-};
-
-exports['default'] = loop;
-module.exports = exports['default'];
-},{"../options":11,"./range":10,"underscore":214}],10:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _chunkify = require('../chunkify');
-
-var _chunkify2 = _interopRequireDefault(_chunkify);
-
-var _options = require('../options');
-
-var _options2 = _interopRequireDefault(_options);
-
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var USAGE = 'Usage: chunkify.range(Function fn, Number final, [Object options])';
+var USAGE = 'Usage: chunkify.interval(Function fn, Number final, [Object options])';
 
 var ok_usage = function ok_usage(fn, final, options) {
   if (!_underscore2['default'].isFunction(fn)) {
@@ -353,48 +237,220 @@ var ok_usage = function ok_usage(fn, final, options) {
   }
 };
 
-var range = function range(fn, final) {
+var interval = function interval(fn, final) {
   var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
   ok_usage(fn, final, options);
-
-  var _ChunkifyOptions$of = _options2['default'].of(options);
-
-  var scope = _ChunkifyOptions$of.scope;
-  var chunk = _ChunkifyOptions$of.chunk;
-  var delay = _ChunkifyOptions$of.delay;
-
-  var iterator = _chunkify2['default'].range({
-    start: options.start || 0,
-    final: final,
-    chunk: chunk
-  });
-  var resume = function resume(resolve, reject) {
-    var next = iterator.next();
+  var start = options.start || 0;
+  var okoptions = _options2['default'].of(options);
+  var generator = _index2['default'].generator(start, final, okoptions);
+  var process_chunk_sync = function process_chunk_sync(resolve, reject) {
+    var next = generator.next();
+    while (!(next.value instanceof Promise) && !next.done) {
+      try {
+        fn.call(okoptions.scope, next.value);
+      } catch (error) {
+        return reject({ error: error, index: next.value });
+      }
+      next = generator.next();
+    }
     if (next.done) {
       return resolve();
     }
-    var _next$value = next.value;
-    var index = _next$value.index;
-    var pause = _next$value.pause;
-
-    try {
-      fn.call(scope, index);
-    } catch (error) {
-      return reject({ error: error, index: index });
-    }
-    if (pause) {
-      setTimeout(resume, delay, resolve, reject);
-    } else {
-      resume(resolve, reject);
-    }
+    return next.value.then(function () {
+      return process_chunk_sync(resolve, reject);
+    });
   };
-  return new Promise(resume);
+  return new Promise(process_chunk_sync);
+};
+
+exports['default'] = interval;
+module.exports = exports['default'];
+},{"../index":10,"../options":11,"underscore":215}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _interval = require('./interval');
+
+var _interval2 = _interopRequireDefault(_interval);
+
+var _options = require('../options');
+
+var _options2 = _interopRequireDefault(_options);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var USAGE = 'Usage: chunkify.range(Function fn, Number range, [Object options])';
+
+var ok_usage = function ok_usage(fn, range) {
+  if (!_underscore2['default'].isFunction(fn)) {
+    throw new Error(USAGE + ' - bad fn; not a function');
+  } else if (!_underscore2['default'].isNumber(range)) {
+    throw new Error(USAGE + ' - bad range; not a number');
+  }
+};
+
+var range = function range(fn, _range) {
+  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+  ok_usage(fn, _range);
+  delete options.start;
+  return (0, _interval2['default'])(fn, _range, options);
 };
 
 exports['default'] = range;
 module.exports = exports['default'];
-},{"../chunkify":6,"../options":11,"underscore":214}],11:[function(require,module,exports){
+},{"../options":11,"./interval":7,"underscore":215}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var marked0$0 = [chunkify].map(regeneratorRuntime.mark);
+
+var _options = require('./options');
+
+var _options2 = _interopRequireDefault(_options);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+// Return values from the range `start` to `final` synchronously
+// when between intervals of size `chunk`.
+//
+// On the chunk boundary, return a promise that resolves in `delay` milliseconds.
+//
+// An error will be thrown in case an iterator is advanced before a pending
+// promise has resolved.
+function chunkify(start, final, options) {
+  var marked1$0, chunk, delay, paused, paused_error, pause, index;
+  return regeneratorRuntime.wrap(function chunkify$(context$1$0) {
+    while (1) switch (context$1$0.prev = context$1$0.next) {
+      case 0:
+        pause = function pause() {
+          return regeneratorRuntime.wrap(function pause$(context$2$0) {
+            while (1) switch (context$2$0.prev = context$2$0.next) {
+              case 0:
+                context$2$0.next = 2;
+                return new Promise(function (resolve) {
+                  paused = true;
+                  setTimeout(function () {
+                    resolve();paused = false;
+                  }, delay);
+                });
+
+              case 2:
+              case 'end':
+                return context$2$0.stop();
+            }
+          }, marked1$0[0], this);
+        };
+
+        marked1$0 = [pause].map(regeneratorRuntime.mark);
+        chunk = options.chunk;
+        delay = options.delay;
+        paused = false;
+
+        paused_error = function paused_error(index) {
+          return new Error('paused at index ' + index + '; wait ' + delay + ' milliseconds before further invocations of .next()');
+        };
+
+        index = start;
+
+      case 7:
+        if (!(index < final)) {
+          context$1$0.next = 17;
+          break;
+        }
+
+        if (!(index > start && index % (start + chunk) === 0)) {
+          context$1$0.next = 10;
+          break;
+        }
+
+        return context$1$0.delegateYield(pause(), 't0', 10);
+
+      case 10:
+        if (!paused) {
+          context$1$0.next = 12;
+          break;
+        }
+
+        throw paused_error(index);
+
+      case 12:
+        context$1$0.next = 14;
+        return index;
+
+      case 14:
+        index++;
+        context$1$0.next = 7;
+        break;
+
+      case 17:
+      case 'end':
+        return context$1$0.stop();
+    }
+  }, marked0$0[0], this);
+}
+
+exports['default'] = {
+  from_keywords: function from_keywords(start, final) {
+    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+    if (!_underscore2['default'].isNumber(start)) {
+      throw new Error('start index `start` of generator range must be a number');
+    } else if (!_underscore2['default'].isNumber(final)) {
+      throw new Error('final index `final` of generator range must be a number');
+    }
+    return chunkify(start, final, _options2['default'].of(options));
+  }
+};
+module.exports = exports['default'];
+},{"./options":11,"underscore":215}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+require('babel/polyfill');
+
+var _arrays = require('./arrays');
+
+var _arrays2 = _interopRequireDefault(_arrays);
+
+var _core = require('./core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _generator = require('./generator');
+
+var _generator2 = _interopRequireDefault(_generator);
+
+exports['default'] = {
+  each: _arrays2['default'].each,
+  map: _arrays2['default'].map,
+  reduce: _arrays2['default'].reduce,
+  interval: _core2['default'].interval,
+  range: _core2['default'].range,
+  generator: _generator2['default'].from_keywords
+};
+module.exports = exports['default'];
+},{"./arrays":2,"./core":6,"./generator":9,"babel/polyfill":196}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -571,7 +627,7 @@ exports['default'] = {
   }
 };
 module.exports = exports['default'];
-},{"covenance":199,"frosty":212,"underscore":214}],12:[function(require,module,exports){
+},{"covenance":199,"frosty":212,"underscore":215}],12:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.0-beta.0
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -34605,7 +34661,7 @@ module.exports = {
   }
 };
 
-},{"../errors":203,"../mixin":209,"./options":207,"underscore":214}],207:[function(require,module,exports){
+},{"../errors":203,"../mixin":209,"./options":207,"underscore":215}],207:[function(require,module,exports){
 var UTILS, _, errors, first_alias_pair, parse_methodhook, parse_mixinghook, parse_omits,
   hasProp = {}.hasOwnProperty;
 
@@ -34703,7 +34759,7 @@ module.exports = {
   }
 };
 
-},{"../errors":203,"./utils":208,"underscore":214}],208:[function(require,module,exports){
+},{"../errors":203,"./utils":208,"underscore":215}],208:[function(require,module,exports){
 var _,
   slice = [].slice;
 
@@ -34746,7 +34802,7 @@ module.exports = {
   }
 };
 
-},{"underscore":214}],209:[function(require,module,exports){
+},{"underscore":215}],209:[function(require,module,exports){
 var Mixin, _, errors, make, validate,
   hasProp = {}.hasOwnProperty;
 
@@ -34899,7 +34955,7 @@ module.exports = {
   validate: validate
 };
 
-},{"../errors":203,"underscore":214}],210:[function(require,module,exports){
+},{"../errors":203,"underscore":215}],210:[function(require,module,exports){
 var PROTOMIXING_ALIASES, PROTOMIXING_KEY, enable_protomixing, mixer,
   slice = [].slice;
 
@@ -44227,6 +44283,385 @@ return jQuery;
 }));
 
 },{}],214:[function(require,module,exports){
+/**
+ * Copyright (c) 2011-2014 Felix Gnass
+ * Licensed under the MIT license
+ * http://spin.js.org/
+ *
+ * Example:
+    var opts = {
+      lines: 12             // The number of lines to draw
+    , length: 7             // The length of each line
+    , width: 5              // The line thickness
+    , radius: 10            // The radius of the inner circle
+    , scale: 1.0            // Scales overall size of the spinner
+    , corners: 1            // Roundness (0..1)
+    , color: '#000'         // #rgb or #rrggbb
+    , opacity: 1/4          // Opacity of the lines
+    , rotate: 0             // Rotation offset
+    , direction: 1          // 1: clockwise, -1: counterclockwise
+    , speed: 1              // Rounds per second
+    , trail: 100            // Afterglow percentage
+    , fps: 20               // Frames per second when using setTimeout()
+    , zIndex: 2e9           // Use a high z-index by default
+    , className: 'spinner'  // CSS class to assign to the element
+    , top: '50%'            // center vertically
+    , left: '50%'           // center horizontally
+    , shadow: false         // Whether to render a shadow
+    , hwaccel: false        // Whether to use hardware acceleration (might be buggy)
+    , position: 'absolute'  // Element positioning
+    }
+    var target = document.getElementById('foo')
+    var spinner = new Spinner(opts).spin(target)
+ */
+;(function (root, factory) {
+
+  /* CommonJS */
+  if (typeof module == 'object' && module.exports) module.exports = factory()
+
+  /* AMD module */
+  else if (typeof define == 'function' && define.amd) define(factory)
+
+  /* Browser global */
+  else root.Spinner = factory()
+}(this, function () {
+  "use strict"
+
+  var prefixes = ['webkit', 'Moz', 'ms', 'O'] /* Vendor prefixes */
+    , animations = {} /* Animation rules keyed by their name */
+    , useCssAnimations /* Whether to use CSS animations or setTimeout */
+    , sheet /* A stylesheet to hold the @keyframe or VML rules. */
+
+  /**
+   * Utility function to create elements. If no tag name is given,
+   * a DIV is created. Optionally properties can be passed.
+   */
+  function createEl (tag, prop) {
+    var el = document.createElement(tag || 'div')
+      , n
+
+    for (n in prop) el[n] = prop[n]
+    return el
+  }
+
+  /**
+   * Appends children and returns the parent.
+   */
+  function ins (parent /* child1, child2, ...*/) {
+    for (var i = 1, n = arguments.length; i < n; i++) {
+      parent.appendChild(arguments[i])
+    }
+
+    return parent
+  }
+
+  /**
+   * Creates an opacity keyframe animation rule and returns its name.
+   * Since most mobile Webkits have timing issues with animation-delay,
+   * we create separate rules for each line/segment.
+   */
+  function addAnimation (alpha, trail, i, lines) {
+    var name = ['opacity', trail, ~~(alpha * 100), i, lines].join('-')
+      , start = 0.01 + i/lines * 100
+      , z = Math.max(1 - (1-alpha) / trail * (100-start), alpha)
+      , prefix = useCssAnimations.substring(0, useCssAnimations.indexOf('Animation')).toLowerCase()
+      , pre = prefix && '-' + prefix + '-' || ''
+
+    if (!animations[name]) {
+      sheet.insertRule(
+        '@' + pre + 'keyframes ' + name + '{' +
+        '0%{opacity:' + z + '}' +
+        start + '%{opacity:' + alpha + '}' +
+        (start+0.01) + '%{opacity:1}' +
+        (start+trail) % 100 + '%{opacity:' + alpha + '}' +
+        '100%{opacity:' + z + '}' +
+        '}', sheet.cssRules.length)
+
+      animations[name] = 1
+    }
+
+    return name
+  }
+
+  /**
+   * Tries various vendor prefixes and returns the first supported property.
+   */
+  function vendor (el, prop) {
+    var s = el.style
+      , pp
+      , i
+
+    prop = prop.charAt(0).toUpperCase() + prop.slice(1)
+    if (s[prop] !== undefined) return prop
+    for (i = 0; i < prefixes.length; i++) {
+      pp = prefixes[i]+prop
+      if (s[pp] !== undefined) return pp
+    }
+  }
+
+  /**
+   * Sets multiple style properties at once.
+   */
+  function css (el, prop) {
+    for (var n in prop) {
+      el.style[vendor(el, n) || n] = prop[n]
+    }
+
+    return el
+  }
+
+  /**
+   * Fills in default values.
+   */
+  function merge (obj) {
+    for (var i = 1; i < arguments.length; i++) {
+      var def = arguments[i]
+      for (var n in def) {
+        if (obj[n] === undefined) obj[n] = def[n]
+      }
+    }
+    return obj
+  }
+
+  /**
+   * Returns the line color from the given string or array.
+   */
+  function getColor (color, idx) {
+    return typeof color == 'string' ? color : color[idx % color.length]
+  }
+
+  // Built-in defaults
+
+  var defaults = {
+    lines: 12             // The number of lines to draw
+  , length: 7             // The length of each line
+  , width: 5              // The line thickness
+  , radius: 10            // The radius of the inner circle
+  , scale: 1.0            // Scales overall size of the spinner
+  , corners: 1            // Roundness (0..1)
+  , color: '#000'         // #rgb or #rrggbb
+  , opacity: 1/4          // Opacity of the lines
+  , rotate: 0             // Rotation offset
+  , direction: 1          // 1: clockwise, -1: counterclockwise
+  , speed: 1              // Rounds per second
+  , trail: 100            // Afterglow percentage
+  , fps: 20               // Frames per second when using setTimeout()
+  , zIndex: 2e9           // Use a high z-index by default
+  , className: 'spinner'  // CSS class to assign to the element
+  , top: '50%'            // center vertically
+  , left: '50%'           // center horizontally
+  , shadow: false         // Whether to render a shadow
+  , hwaccel: false        // Whether to use hardware acceleration (might be buggy)
+  , position: 'absolute'  // Element positioning
+  }
+
+  /** The constructor */
+  function Spinner (o) {
+    this.opts = merge(o || {}, Spinner.defaults, defaults)
+  }
+
+  // Global defaults that override the built-ins:
+  Spinner.defaults = {}
+
+  merge(Spinner.prototype, {
+    /**
+     * Adds the spinner to the given target element. If this instance is already
+     * spinning, it is automatically removed from its previous target b calling
+     * stop() internally.
+     */
+    spin: function (target) {
+      this.stop()
+
+      var self = this
+        , o = self.opts
+        , el = self.el = createEl(null, {className: o.className})
+
+      css(el, {
+        position: o.position
+      , width: 0
+      , zIndex: o.zIndex
+      , left: o.left
+      , top: o.top
+      })
+
+      if (target) {
+        target.insertBefore(el, target.firstChild || null)
+      }
+
+      el.setAttribute('role', 'progressbar')
+      self.lines(el, self.opts)
+
+      if (!useCssAnimations) {
+        // No CSS animation support, use setTimeout() instead
+        var i = 0
+          , start = (o.lines - 1) * (1 - o.direction) / 2
+          , alpha
+          , fps = o.fps
+          , f = fps / o.speed
+          , ostep = (1 - o.opacity) / (f * o.trail / 100)
+          , astep = f / o.lines
+
+        ;(function anim () {
+          i++
+          for (var j = 0; j < o.lines; j++) {
+            alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity)
+
+            self.opacity(el, j * o.direction + start, alpha, o)
+          }
+          self.timeout = self.el && setTimeout(anim, ~~(1000 / fps))
+        })()
+      }
+      return self
+    }
+
+    /**
+     * Stops and removes the Spinner.
+     */
+  , stop: function () {
+      var el = this.el
+      if (el) {
+        clearTimeout(this.timeout)
+        if (el.parentNode) el.parentNode.removeChild(el)
+        this.el = undefined
+      }
+      return this
+    }
+
+    /**
+     * Internal method that draws the individual lines. Will be overwritten
+     * in VML fallback mode below.
+     */
+  , lines: function (el, o) {
+      var i = 0
+        , start = (o.lines - 1) * (1 - o.direction) / 2
+        , seg
+
+      function fill (color, shadow) {
+        return css(createEl(), {
+          position: 'absolute'
+        , width: o.scale * (o.length + o.width) + 'px'
+        , height: o.scale * o.width + 'px'
+        , background: color
+        , boxShadow: shadow
+        , transformOrigin: 'left'
+        , transform: 'rotate(' + ~~(360/o.lines*i + o.rotate) + 'deg) translate(' + o.scale*o.radius + 'px' + ',0)'
+        , borderRadius: (o.corners * o.scale * o.width >> 1) + 'px'
+        })
+      }
+
+      for (; i < o.lines; i++) {
+        seg = css(createEl(), {
+          position: 'absolute'
+        , top: 1 + ~(o.scale * o.width / 2) + 'px'
+        , transform: o.hwaccel ? 'translate3d(0,0,0)' : ''
+        , opacity: o.opacity
+        , animation: useCssAnimations && addAnimation(o.opacity, o.trail, start + i * o.direction, o.lines) + ' ' + 1 / o.speed + 's linear infinite'
+        })
+
+        if (o.shadow) ins(seg, css(fill('#000', '0 0 4px #000'), {top: '2px'}))
+        ins(el, ins(seg, fill(getColor(o.color, i), '0 0 1px rgba(0,0,0,.1)')))
+      }
+      return el
+    }
+
+    /**
+     * Internal method that adjusts the opacity of a single line.
+     * Will be overwritten in VML fallback mode below.
+     */
+  , opacity: function (el, i, val) {
+      if (i < el.childNodes.length) el.childNodes[i].style.opacity = val
+    }
+
+  })
+
+
+  function initVML () {
+
+    /* Utility function to create a VML tag */
+    function vml (tag, attr) {
+      return createEl('<' + tag + ' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">', attr)
+    }
+
+    // No CSS transforms but VML support, add a CSS rule for VML elements:
+    sheet.addRule('.spin-vml', 'behavior:url(#default#VML)')
+
+    Spinner.prototype.lines = function (el, o) {
+      var r = o.scale * (o.length + o.width)
+        , s = o.scale * 2 * r
+
+      function grp () {
+        return css(
+          vml('group', {
+            coordsize: s + ' ' + s
+          , coordorigin: -r + ' ' + -r
+          })
+        , { width: s, height: s }
+        )
+      }
+
+      var margin = -(o.width + o.length) * o.scale * 2 + 'px'
+        , g = css(grp(), {position: 'absolute', top: margin, left: margin})
+        , i
+
+      function seg (i, dx, filter) {
+        ins(
+          g
+        , ins(
+            css(grp(), {rotation: 360 / o.lines * i + 'deg', left: ~~dx})
+          , ins(
+              css(
+                vml('roundrect', {arcsize: o.corners})
+              , { width: r
+                , height: o.scale * o.width
+                , left: o.scale * o.radius
+                , top: -o.scale * o.width >> 1
+                , filter: filter
+                }
+              )
+            , vml('fill', {color: getColor(o.color, i), opacity: o.opacity})
+            , vml('stroke', {opacity: 0}) // transparent stroke to fix color bleeding upon opacity change
+            )
+          )
+        )
+      }
+
+      if (o.shadow)
+        for (i = 1; i <= o.lines; i++) {
+          seg(i, -2, 'progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)')
+        }
+
+      for (i = 1; i <= o.lines; i++) seg(i)
+      return ins(el, g)
+    }
+
+    Spinner.prototype.opacity = function (el, i, val, o) {
+      var c = el.firstChild
+      o = o.shadow && o.lines || 0
+      if (c && i + o < c.childNodes.length) {
+        c = c.childNodes[i + o]; c = c && c.firstChild; c = c && c.firstChild
+        if (c) c.opacity = val
+      }
+    }
+  }
+
+  if (typeof document !== 'undefined') {
+    sheet = (function () {
+      var el = createEl('style', {type : 'text/css'})
+      ins(document.getElementsByTagName('head')[0], el)
+      return el.sheet || el.styleSheet
+    }())
+
+    var probe = css(createEl('group'), {behavior: 'url(#default#VML)'})
+
+    if (!vendor(probe, 'transform') && probe.adj) initVML()
+    else useCssAnimations = vendor(probe, 'animation')
+  }
+
+  return Spinner
+
+}));
+
+},{}],215:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -45776,7 +46211,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],215:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -45789,6 +46224,10 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
+var _spinJs = require('spin.js');
+
+var _spinJs2 = _interopRequireDefault(_spinJs);
+
 var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -45797,14 +46236,25 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var random_integer = function random_integer() {
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  var _$defaults = _underscore2['default'].defaults(options, {
+    max: Math.pow(10, 2),
+    min: Math.pow(10, 2) * .75
+  });
+
+  var max = _$defaults.max;
+  var min = _$defaults.min;
+
+  return Math.random() * (max - min) + min;
+};
+
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
-  var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 6));
+  var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
+  var CHUNK = 100;
+  var DELAY = 10;
   var simulate_work = function simulate_work() {
-    var random_integer = function random_integer() {
-      var max = Math.pow(10, 3);
-      var min = Math.pow(10, 3) * .75;
-      return Math.random() * (max - min) + min;
-    };
     var i = 0;
     while (i < random_integer()) {
       i++;
@@ -45825,7 +46275,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
   $scope.actions = {
 
-    names: ['map', 'reduce', 'each', 'loop'],
+    names: ['map', 'reduce', 'each', 'range'],
 
     chunkify: false,
 
@@ -45849,25 +46299,25 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     },
 
     _reduce: function _reduce() {
-      var reducer = function reducer(memo, item) {
+      var reducer = function reducer(memo, item, index) {
         simulate_work();
         return memo + item;
       };
       var memo = 0;
       if ($scope.actions.chunkify) {
-        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: 1000, delay: 10 });
+        return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: CHUNK, delay: DELAY });
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo));
       }
     },
 
     _map: function _map() {
-      var mapper = function mapper(item) {
+      var mapper = function mapper(item, index) {
         simulate_work();
         return item + 1;
       };
       if ($scope.actions.chunkify) {
-        return _dist2['default'].map(RANGE, mapper, { chunk: 1000, delay: 10 });
+        return _dist2['default'].map(RANGE, mapper, { chunk: CHUNK, delay: DELAY });
       } else {
         return Promise.resolve(RANGE.map(mapper));
       }
@@ -45879,7 +46329,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       });
     },
 
-    _loop: function _loop() {
+    _range: function _range() {
       return new Promise(function (resolve) {
         return setTimeout(resolve, 5000);
       });
@@ -45893,7 +46343,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
   var _iteratorError = undefined;
 
   try {
-    var _loop2 = function () {
+    var _loop = function () {
       var method = _step.value;
 
       $scope.actions[method] = _underscore2['default'].compose(function (promise) {
@@ -45906,7 +46356,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     };
 
     for (var _iterator = $scope.actions.names[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      _loop2();
+      _loop();
     }
   } catch (err) {
     _didIteratorError = true;
@@ -45922,29 +46372,97 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       }
     }
   }
-})
-// Fills parent with a fixed number of cells.
-//
-//  On resize, resizes those cells too.
-.directive('animationGrid', function ($interval, $window) {
+}).directive('animation', function ($interval, $window) {
+  var marked1$0 = [shifts_generator].map(regeneratorRuntime.mark);
+
+  var intial_css = {
+    'background-color': '#4d63bc',
+    'border-radius': '25px',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '25px',
+    height: '25px',
+    opacity: .8
+  };
+  function shifts_generator($element, $parent) {
+    var shifts_index, random_left, random_top, shifts, length;
+    return regeneratorRuntime.wrap(function shifts_generator$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          shifts_index = 0;
+
+          random_left = function random_left() {
+            return random_integer({ min: 0, max: $parent.width() });
+          };
+
+          random_top = function random_top() {
+            return random_integer({ min: 0, max: $parent.height() });
+          };
+
+          shifts = [function () {
+            return {
+              left: '+=' + Math.min(random_left(), $parent.offset().left + $parent.width() - $element.offset().left)
+            };
+          }, function () {
+            return {
+              top: '+=' + Math.min(random_top(), $parent.offset().top + $parent.height() - $element.offset().top)
+            };
+          }, function () {
+            return {
+              left: '-=' + Math.min(random_left(), $element.offset().left - $parent.offset().left) };
+          }, function () {
+            return {
+              top: '-=' + Math.min(random_top(), $element.offset().top - $parent.offset().top)
+            };
+          }];
+          length = shifts.length;
+
+        case 5:
+          if (!true) {
+            context$2$0.next = 11;
+            break;
+          }
+
+          context$2$0.next = 8;
+          return shifts[shifts_index++]();
+
+        case 8:
+          if (shifts_index % length === 0) {
+            shifts_index = 0;
+          }
+          context$2$0.next = 5;
+          break;
+
+        case 11:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, marked1$0[0], this);
+  }
   return {
     replace: true,
     link: function link(scope, element) {
-      var $parent = (0, _jquery2['default'])(element).parent();
+      var $element = (0, _jquery2['default'])(element).css(intial_css);
+      var $parent = $element.parent();
       var resize = function resize() {
-        $parent.css({
-          width: $window.innerWidth - 200,
-          height: $window.innerHeight - 250
-        });
+        var width = $window.innerWidth - 200;
+        var height = $window.innerHeight - 250;
+        $parent.css({ width: width, height: height });
+        return true;
       };
-      resize();
-      $window.onresize = resize;
+      resize() && ($window.onresize = resize);
+      var shifts = shifts_generator($element, $parent);
+      var animate = function animate() {
+        $element.animate(shifts.next().value, 'slow', animate);
+      };
+      animate();
     },
-    template: '<div class="animation"></div>'
+    template: '<div id="animation"></div>'
   };
 }).filter('titlecase', function () {
   return function (word) {
     return '' + word.charAt(0).toUpperCase() + word.slice(1);
   };
 });
-},{"../../dist":7,"angular":13,"jquery":213,"underscore":214}]},{},[215]);
+},{"../../dist":10,"angular":13,"jquery":213,"spin.js":214,"underscore":215}]},{},[216]);

@@ -76,10 +76,10 @@ label {
   letter-spacing: -2px;
 }
 
-.grid-container {
+.animation-container {
   display: inline-block;
-  background-color: beige;
   margin: 20px;
   margin-left: 25px;
   border-radius: 5px;
+  position: relative;
 }
