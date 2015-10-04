@@ -103,6 +103,14 @@ body {
   cursor: pointer;
   text-align: left;
   letter-spacing: -1px;
+  -moz-box-shadow: 3px 3px 1px 0 #555;
+  -webkit-box-shadow: 3px 3px 1px 0 #555;
+  box-shadow: 3px 3px 1px 0 #555;
+  opacity: .9;
+}
+
+.main > .button-container > .buttons > button:hover {
+  opacity: 1;
 }
 
 .main > .button-container > div:first-of-type > button:first-of-type {
@@ -135,25 +143,30 @@ label {
 }
 
 .progressbar-container {
-  background-color: #4d63bc;
-  height: 10px;
+  background-color: darkgrey;
+  opacity: .9;
+  height: 20px;
   width: 155px;
-  border-radius: 5px;
+  border-radius: 15px;
   z-index: 0;
   margin-bottom: 10px;
   cursor: pointer;
 }
 
+.progressbar-container:hover {
+  opacity: 1;
+}
+
 .ui-progressbar {
-  height: 10px;
+  height: 20px;
   text-align: left;
   width: 155px;
   overflow: hidden;
 }
 .ui-progressbar .ui-progressbar-value {
   z-index: 1;
-  height: 10px;
-  border-radius: 5px;
+  height: 20px;
+  border-radius: 15px;
   background-color: #8BC53F;
 }
 
@@ -168,6 +181,7 @@ label {
   -moz-box-shadow: 3px 3px 1px 0 #555;
   -webkit-box-shadow: 3px 3px 1px 0 #555;
   box-shadow: 3px 3px 1px 0 #555;
+  opacity: .8;
 }
 
 body .ui-tooltip {

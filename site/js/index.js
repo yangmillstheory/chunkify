@@ -336,7 +336,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       scope.$watch('progress', progress);
       $element.tooltip({
         position: {
-          my: 'left+115 top-25'
+          my: 'left+' + ($bar.width() + 10) + ' top-' + 1.5 * $bar.height()
         }
       });
     },
