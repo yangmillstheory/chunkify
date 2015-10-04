@@ -229,7 +229,7 @@ angular
         data: [
           {label: 'Iterations', value: scope.experiment.length},
           {label: 'Chunk Size', value: scope.experiment.chunk},
-          {label: 'Delay Size', value: `${scope.experiment.delay} ms`}
+          {label: 'Delay Time', value: `${scope.experiment.delay} ms`}
         ]
       };
       $(element).find('p').css({

@@ -307,7 +307,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
     link: function link(scope, element) {
       scope.table = {
-        data: [{ label: 'Iterations', value: scope.experiment.length }, { label: 'Chunk Size', value: scope.experiment.chunk }, { label: 'Delay Size', value: scope.experiment.delay + ' ms' }]
+        data: [{ label: 'Iterations', value: scope.experiment.length }, { label: 'Chunk Size', value: scope.experiment.chunk }, { label: 'Delay Time', value: scope.experiment.delay + ' ms' }]
       };
       (0, _jquery2['default'])(element).find('p').css({
         'border-radius': '3px',
