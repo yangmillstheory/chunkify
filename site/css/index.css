@@ -53,8 +53,8 @@ body {
   opacity: 0.8;
   text-align: left;
   margin-top: 30px;
-  margin-left: 10px;
   line-height: 15px;
+  width: 105px;
 }
 
 .main > .button-container {
@@ -121,7 +121,7 @@ label {
 }
 
 .progressbar-container {
-  background-color: lightgray;
+  background-color: #4d63bc;
   height: 10px;
   width: 105px;
   border-radius: 5px;
@@ -140,7 +140,7 @@ label {
   z-index: 1;
   height: 10px;
   border-radius: 5px;
-  background-color: #4d63bc;
+  background-color: #8BC53F;
 }
 
 .ui-tooltip {
@@ -158,4 +158,25 @@ label {
 
 body .ui-tooltip {
   border-width: 2px;
+}
+
+dl {
+  margin-bottom: 20px;
+}
+
+dl dt {
+  background-color: grey;
+  float: left;
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 3px;
+  width: 45px;
+  text-transform: uppercase;
+}
+
+dl dd {
+  margin: 2px 0;
+  padding: 5px 0;
+  font-weight: 700;
 }

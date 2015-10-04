@@ -224,12 +224,22 @@ angular
     scope: {
       experiment: '='
     },
+    link(scope) {
+      scope.table = {
+        data: [
+          {label: 'Iters', value: scope.experiment.length},
+          {label: 'Chunk', value: scope.experiment.chunk},
+          {label: 'Delay', value: scope.experiment.delay}
+        ]
+      }
+    },
     template: '<div class="blurb">' +
-      '<p>' +
-        'Works on arrays and loops of length <strong>{{experiment.length}}</strong> ' +
-        'in synchronous chunks of size <strong>{{experiment.chunk}}</strong> with delays of <strong>{{experiment.delay}} milliseconds</strong> ' +
-        'in between.'+
-      '</p>' +
+      '<dl>' +
+        '<section ng-repeat="data in table.data">' +
+          '<dt>{{data.label}}</dt>' +
+          '<dd>{{data.value}}</dd>' +
+        '</section>' +
+      '</dl>' +
       '<p>' +
         'Turning <strong>chunkify</strong> on keeps the animation active.' +
       '</p>' +

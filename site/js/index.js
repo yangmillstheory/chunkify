@@ -305,7 +305,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     scope: {
       experiment: '='
     },
-    template: '<div class="blurb">' + '<p>' + 'Works on arrays and loops of length <strong>{{experiment.length}}</strong> ' + 'in synchronous chunks of size <strong>{{experiment.chunk}}</strong> with delays of <strong>{{experiment.delay}} milliseconds</strong> ' + 'in between.' + '</p>' + '<p>' + 'Turning <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '</div>'
+    link: function link(scope) {
+      scope.table = {
+        data: [{ label: 'Iters', value: scope.experiment.length }, { label: 'Chunk', value: scope.experiment.chunk }, { label: 'Delay', value: scope.experiment.delay }]
+      };
+    },
+    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Turning <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '</div>'
   };
 }).directive('progressbar', ['$timeout', function ($timeout) {
   return {
