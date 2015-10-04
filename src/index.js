@@ -9,5 +9,5 @@ export default {
   reduce: arrays.reduce,
   interval: core.interval,
   range: core.range,
-  generator: generator.from_keywords
+  generator: generator.of
 }
