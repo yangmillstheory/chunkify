@@ -8,7 +8,7 @@ const TOLERANCE = 5;
 
 
 test('should yield a "timeout promise" delay after `chunk` iterations', t => {
-  let it = chunkify.range({start: 0, final: 3, chunk: 2, delay: DELAY});
+  let it = chunkify.interval({start: 0, final: 3, chunk: 2, delay: DELAY});
 
   t.deepEquals(it.next(), {done: false, value: 0});
   t.deepEquals(it.next(), {done: false, value: 1});
@@ -30,7 +30,7 @@ test('should yield a "timeout promise" delay after `chunk` iterations', t => {
 
 
 test('should yield a "timeout promise" after `chunk` iterations from a given `start`', t => {
-  let it = chunkify.range({start: 1, final: 4, chunk: 2, delay: 10});
+  let it = chunkify.interval({start: 1, final: 4, chunk: 2, delay: 10});
 
   t.deepEquals(it.next(), {done: false, value: 1});
   t.deepEquals(it.next(), {done: false, value: 2});

@@ -8,7 +8,7 @@ function* chunkify(start, final, chunk, delay) {
 }
 
 export default {
-  range: ({start, final, chunk, delay}) => {
+  interval: ({start, final, chunk, delay}) => {
     return chunkify(start, final, chunk, delay)
   }
 }

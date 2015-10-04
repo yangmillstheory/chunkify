@@ -3,7 +3,7 @@ import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
 
-const USAGE = 'Usage: chunkify.range(Function fn, Number final, [Object options])';
+const USAGE = 'Usage: chunkify.interval(Function fn, Number final, [Object options])';
 
 let ok_usage = (fn, final, options) => {
   if (!_.isFunction(fn)) {
@@ -22,10 +22,10 @@ let ok_usage = (fn, final, options) => {
 };
 
 
-let range = (fn, final, options = {}) => {
+let interval = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
   let {scope, chunk, delay} = ChunkifyOptions.of(options);
-  let iterator = chunkify.range({
+  let iterator = chunkify.interval({
     start: options.start || 0,
     final,
     chunk,
@@ -51,4 +51,4 @@ let range = (fn, final, options = {}) => {
   return new Promise(process_chunk);
 };
 
-export default range
+export default interval
