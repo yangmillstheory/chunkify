@@ -83,3 +83,25 @@ label {
   border-radius: 5px;
   position: relative;
 }
+
+.progressbar-container {
+  background-color: lightgray;
+  height: 10px;
+  width: 105px;
+  border-radius: 5px;
+  z-index: 0;
+  margin-bottom: 10px;
+}
+
+.ui-progressbar {
+  height: 10px;
+  text-align: left;
+  width: 105px;
+  overflow: hidden;
+}
+.ui-progressbar .ui-progressbar-value {
+  z-index: 1;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #4d63bc;
+}

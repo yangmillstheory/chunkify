@@ -3,6 +3,7 @@ import angular from 'angular'
 import Spinner from 'spin.js'
 import _ from 'underscore'
 import $ from 'jquery'
+import 'jquery-ui/progressbar'
 
 
 let random_integer = (options = {}) => {
@@ -15,15 +16,15 @@ let random_integer = (options = {}) => {
 
 angular
 .module('chunkify-demo', [])
-.controller('ChunkifyCtrl', ($scope) => {
+.controller('ChunkifyCtrl', ($scope, $timeout) => {
   const RANGE = _.range(0.5 * Math.pow(10, 5));
-  const CHUNK = 100;
+  const CHUNK = 88;
   const DELAY = 10;
-  let simulate_work = () => {
-    let i = 0;
-    while (i < random_integer()) {
-      i++
-    }
+
+  $scope.experiment = {
+    length: RANGE.length,
+    chunk: CHUNK,
+    delay: DELAY
   };
 
   $scope.buttons = {
@@ -44,6 +45,21 @@ angular
 
     chunkify: false,
 
+    progress_data: {value: 0, max: $scope.experiment.length},
+
+    progress() {
+      this.progress_data.value += 1
+    },
+
+    simulate_work(index) {
+      $timeout(() => { this.progress(); });
+      let i = 0;
+      while (i < random_integer()) {
+        i++
+      }
+      return index
+    },
+
     _clean_options(options) {
       // currently a no-op
       return options;
@@ -56,18 +72,19 @@ angular
 
     _after_action(promise) {
       promise.then((value) => {
-        $scope.buttons.enable();
-        $scope.$digest();
+        $timeout(() => {
+          $scope.actions.progress_data.value = 0;
+          $scope.buttons.enable();
+        }, 1000);
       });
     },
 
     _reduce() {
-      let reducer = (memo, item, index) => {
-        simulate_work();
-        return memo + item
+      let reducer =(memo, item, index) => {
+        return memo + this.simulate_work(index);
       };
       let memo = 0;
-      if ($scope.actions.chunkify) {
+      if (this.chunkify) {
         return chunkify.reduce(RANGE, reducer, {memo, chunk: CHUNK, delay: DELAY})
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo))
@@ -76,10 +93,9 @@ angular
 
     _map() {
       let mapper = (item, index) => {
-        simulate_work();
-        return item + 1
+        return this.simulate_work(index) + 1
       };
-      if ($scope.actions.chunkify) {
+      if (this.chunkify) {
         return chunkify.map(RANGE, mapper, {chunk: CHUNK, delay: DELAY})
       } else {
         return Promise.resolve(RANGE.map(mapper))
@@ -116,8 +132,7 @@ angular
     top: 0,
     left: 0,
     width: '25px',
-    height: '25px',
-    opacity: .8
+    height: '25px'
   };
   function* shifts_generator($element, $parent) {
     let shifts_index = 0;
@@ -158,7 +173,7 @@ angular
   }
   return {
     replace: true,
-    link: function(scope, element) {
+    link(__, element) {
       let $element = $(element).css(intial_css);
       let $parent = $element.parent();
       let resize = () => {
@@ -169,12 +184,46 @@ angular
       };
       resize() && ($window.onresize = resize);
       let shifts = shifts_generator($element, $parent);
-      var animate = () => {
-        $element.animate(shifts.next().value, 'slow', animate);
+      var animate = (transparent = false) => {
+        let css = shifts.next().value;
+        if (transparent) {
+          _.extend(css, {opacity: 0.5})
+        } else {
+          _.extend(css, {opacity: 1})
+        }
+        $element.animate(css, 'slow', animate.bind(null, !transparent));
       };
       animate();
     },
     template: '<div id="animation"></div>'
+  }
+})
+.directive('chunkifyInfo', () => {
+  return {
+    transclude: true
+  }
+})
+.directive('progressbar', $timeout => {
+  return {
+    restrict: 'E',
+    scope: {
+      progress: '=progress',
+      max: '=max'
+    },
+    link(scope, element) {
+      let $progressbar = $(element).find('#progressbar').eq(0).progressbar({
+        max: scope.max,
+        value: 0
+      });
+      var progress = value => {
+        $progressbar.progressbar('option', 'value', value)
+      };
+      scope.$watch('progress', progress)
+    },
+    template:
+      '<div class="progressbar-container">' +
+        '<div id="progressbar"></div>' +
+      '</div>'
   }
 })
 .filter('titlecase', () => {

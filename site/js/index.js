@@ -22,6 +22,8 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+require('jquery-ui/progressbar');
+
 var random_integer = function random_integer() {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -36,15 +38,15 @@ var random_integer = function random_integer() {
   return Math.random() * (max - min) + min;
 };
 
-_angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope) {
+_angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope, $timeout) {
   var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
-  var CHUNK = 100;
+  var CHUNK = 88;
   var DELAY = 10;
-  var simulate_work = function simulate_work() {
-    var i = 0;
-    while (i < random_integer()) {
-      i++;
-    }
+
+  $scope.experiment = {
+    length: RANGE.length,
+    chunk: CHUNK,
+    delay: DELAY
   };
 
   $scope.buttons = {
@@ -65,6 +67,25 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     chunkify: false,
 
+    progress_data: { value: 0, max: $scope.experiment.length },
+
+    progress: function progress() {
+      this.progress_data.value += 1;
+    },
+
+    simulate_work: function simulate_work(index) {
+      var _this = this;
+
+      $timeout(function () {
+        _this.progress();
+      });
+      var i = 0;
+      while (i < random_integer()) {
+        i++;
+      }
+      return index;
+    },
+
     _clean_options: function _clean_options(options) {
       // currently a no-op
       return options;
@@ -79,18 +100,21 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
     _after_action: function _after_action(promise) {
       promise.then(function (value) {
-        $scope.buttons.enable();
-        $scope.$digest();
+        $timeout(function () {
+          $scope.actions.progress_data.value = 0;
+          $scope.buttons.enable();
+        }, 1000);
       });
     },
 
     _reduce: function _reduce() {
+      var _this2 = this;
+
       var reducer = function reducer(memo, item, index) {
-        simulate_work();
-        return memo + item;
+        return memo + _this2.simulate_work(index);
       };
       var memo = 0;
-      if ($scope.actions.chunkify) {
+      if (this.chunkify) {
         return _dist2['default'].reduce(RANGE, reducer, { memo: memo, chunk: CHUNK, delay: DELAY });
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo));
@@ -98,11 +122,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     },
 
     _map: function _map() {
+      var _this3 = this;
+
       var mapper = function mapper(item, index) {
-        simulate_work();
-        return item + 1;
+        return _this3.simulate_work(index) + 1;
       };
-      if ($scope.actions.chunkify) {
+      if (this.chunkify) {
         return _dist2['default'].map(RANGE, mapper, { chunk: CHUNK, delay: DELAY });
       } else {
         return Promise.resolve(RANGE.map(mapper));
@@ -168,8 +193,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     top: 0,
     left: 0,
     width: '25px',
-    height: '25px',
-    opacity: .8
+    height: '25px'
   };
   function shifts_generator($element, $parent) {
     var shifts_index, random_left, random_top, shifts, length;
@@ -228,7 +252,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
   }
   return {
     replace: true,
-    link: function link(scope, element) {
+    link: function link(__, element) {
       var $element = (0, _jquery2['default'])(element).css(intial_css);
       var $parent = $element.parent();
       var resize = function resize() {
@@ -240,11 +264,42 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
       resize() && ($window.onresize = resize);
       var shifts = shifts_generator($element, $parent);
       var animate = function animate() {
-        $element.animate(shifts.next().value, 'slow', animate);
+        var transparent = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+        var css = shifts.next().value;
+        if (transparent) {
+          _underscore2['default'].extend(css, { opacity: 0.5 });
+        } else {
+          _underscore2['default'].extend(css, { opacity: 1 });
+        }
+        $element.animate(css, 'slow', animate.bind(null, !transparent));
       };
       animate();
     },
     template: '<div id="animation"></div>'
+  };
+}).directive('chunkifyInfo', function () {
+  return {
+    transclude: true
+  };
+}).directive('progressbar', function ($timeout) {
+  return {
+    restrict: 'E',
+    scope: {
+      progress: '=progress',
+      max: '=max'
+    },
+    link: function link(scope, element) {
+      var $progressbar = (0, _jquery2['default'])(element).find('#progressbar').eq(0).progressbar({
+        max: scope.max,
+        value: 0
+      });
+      var progress = function progress(value) {
+        $progressbar.progressbar('option', 'value', value);
+      };
+      scope.$watch('progress', progress);
+    },
+    template: '<div class="progressbar-container">' + '<div id="progressbar"></div>' + '</div>'
   };
 }).filter('titlecase', function () {
   return function (word) {

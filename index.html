@@ -13,6 +13,10 @@
   </div>
   <div class='main-wrapper'>
     <div class='main' ng-controller='ChunkifyCtrl'>
+      <chunkify-info length='experiment.length' chunk='experiment.chunk' delay='experiment.delay'>
+      </chunkify-info>
+      <progressbar progress='actions.progress_data.value' max='experiment.length'>
+      </progressbar>
       <label for='chunkify-checkbox'>
         <input type="checkbox" id='chunkify-checkbox' ng-model="actions.chunkify" />
         chunkify
