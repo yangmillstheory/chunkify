@@ -224,14 +224,20 @@ angular
     scope: {
       experiment: '='
     },
-    link(scope) {
+    link(scope, element) {
       scope.table = {
         data: [
           {label: 'Iters', value: scope.experiment.length},
           {label: 'Chunk', value: scope.experiment.chunk},
           {label: 'Delay', value: `${scope.experiment.delay} ms`}
         ]
-      }
+      };
+      $(element).find('p:last-of-type').css({
+        'color': '#a94442',
+        'background-color': '#f2dede',
+        'border-radius': '3px',
+        padding: '5px'
+      })
     },
     template: '<div class="blurb">' +
       '<dl>' +
