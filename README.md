@@ -56,15 +56,15 @@ Exactly like the [native reduce](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 ### ***Loops***
 
-#### <a name='range'>chunkify.range(Function fn, Number final, [Object options])</a>
+#### <a name='interval'>chunkify.interval(Function fn, Number final, [Object options])</a>
 
-Invoke `fn` in chunks from the range `options.start` to `final`. If `options.start` is given, it must be a `Number` less than or equal to `final`. Its default value is `0`. 
+Invoke `fn` in chunks from the interval `options.start` to `final`. If `options.start` is given, it must be a `Number` less than or equal to `final`. Its default value is `0`. 
 
 Returns a `Promise` that resolves with `undefined` when the entire range has been traversed.  
 
-#### chunkify.loop(Function fn, Number range, [Object options])
+#### chunkify.range(Function fn, Number range, [Object options])
 
-Like [chunkify.range](#range), with `options.start` forced to `0`. 
+Like [chunkify.interval](#interval), with `options.start` forced to `0`. 
  
 **If any invocation of `fn` throws an `Error`, the promise is rejected with an object `{error, index}`, where `error` is the caught `Error` and `index` is the index in `array` where the invocation threw. No further processing happens after the failure.**
 
