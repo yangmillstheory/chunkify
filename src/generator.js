@@ -28,7 +28,7 @@ function* chunkify(start, final, chunk, delay) {
 }
 
 export default {
-  interval: ({start, final, chunk, delay}) => {
+  from_keywords: ({start, final, chunk, delay}) => {
     return chunkify(start, final, chunk, delay)
   }
 }
