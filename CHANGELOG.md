@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0] - 2015-10-03
+### BREAKING CHANGES
+* `chunkify.range` renamed to `chunkify.interval`
+* `chunkify.loop` renamed to `chunkify.range`
+
+Also, asynchronous logic was removed from the generator-consumer `chunkify.interval` and put in the `chunkify` generator.
+
 ## [2.0.3 - 2.1.1] - 2015-09-21
 ### Added
 * `chunkify.map`
