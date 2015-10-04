@@ -29,7 +29,6 @@ body {
 
 .main {
   display: inline-block;
-  margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 20px;
   text-align: center;
@@ -37,13 +36,32 @@ body {
   float: left;
 }
 
-.main > .buttons {
-  padding: 5px 10px;
-  border-radius: 6px;
-  margin-right: 10px;
+.main .blurb {
+  font-size: 10px;
+  opacity: 0.8;
+  text-align: left;
+  margin-top: 30px;
+  margin-left: 10px;
+  line-height: 15px;
 }
 
-.main > .buttons > button {
+.main > .button-container {
+  border-radius: 3px;
+  background-color: #4d63bc;
+  width: 105px;
+  padding-bottom: 20px;
+  -moz-box-shadow: -3px 0 5px 0 #555;
+  -webkit-box-shadow: -3px 0 5px 0 #555;
+  box-shadow: 3px 3px 1px 0 #555;
+  margin-top: 20px;
+}
+
+.main > .button-container > .buttons {
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.main > .button-container > .buttons > button {
   color: #fff;
   background-color: #8BC53F;
   padding: 2px 0;
@@ -61,19 +79,25 @@ body {
   letter-spacing: -1px;
 }
 
-.main > div:first-of-type > button:first-of-type {
+.main > .button-container > div:first-of-type > button:first-of-type {
   margin-top: 20px;
 }
 
-.main > .buttons > button:disabled {
+.main > .button-container > .buttons > button:disabled {
   background-color: lightgray;
   color: black;
+  cursor: default;
+}
+
+.main > .button-container > div:last-of-type > button:last-of-type {
+  margin-bottom: 15px;
 }
 
 label {
-  color: #4d63bc;
-  font-size: 25px;
+  color: #F0F0F0;
+  font-size: 20px;
   letter-spacing: -2px;
+  cursor: pointer;
 }
 
 .animation-container {

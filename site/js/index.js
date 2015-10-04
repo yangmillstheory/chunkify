@@ -40,7 +40,7 @@ var random_integer = function random_integer() {
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', function ($scope, $timeout) {
   var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
-  var CHUNK = 88;
+  var CHUNK = 100;
   var DELAY = 10;
 
   $scope.experiment = {
@@ -135,15 +135,35 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
     },
 
     _each: function _each() {
-      return new Promise(function (resolve) {
-        return setTimeout(resolve, 3000);
-      });
+      var _this4 = this;
+
+      var each_fn = function each_fn(index) {
+        _this4.simulate_work(index);
+      };
+      if (this.chunkify) {
+        return _dist2['default'].each(RANGE, each_fn, { chunk: CHUNK, delay: DELAY });
+      } else {
+        return Promise.resolve(RANGE.forEach(each_fn));
+      }
     },
 
     _range: function _range() {
-      return new Promise(function (resolve) {
-        return setTimeout(resolve, 5000);
-      });
+      var _this5 = this;
+
+      var loop_fn = function loop_fn(index) {
+        _this5.simulate_work(index);
+      };
+      if (this.chunkify) {
+        return _dist2['default'].range(loop_fn, RANGE.length, { chunk: CHUNK, delay: DELAY });
+      } else {
+        return Promise.resolve(this._blocking_range(loop_fn));
+      }
+    },
+
+    _blocking_range: function _blocking_range(loop_fn) {
+      for (var index = 0; index < RANGE.length; index++) {
+        loop_fn(index);
+      }
     }
 
   };
@@ -188,12 +208,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
   var intial_css = {
     'background-color': '#4d63bc',
-    'border-radius': '25px',
+    'border-radius': '50px',
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '25px',
-    height: '25px'
+    width: '50px',
+    height: '50px'
   };
   function shifts_generator($element, $parent) {
     var shifts_index, random_left, random_top, shifts, length;
@@ -212,11 +232,11 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
 
           shifts = [function () {
             return {
-              left: '+=' + Math.min(random_left(), $parent.offset().left + $parent.width() - $element.offset().left)
+              left: '+=' + Math.min(random_left(), $parent.offset().left + $parent.width() - ($element.offset().left + $element.width()))
             };
           }, function () {
             return {
-              top: '+=' + Math.min(random_top(), $parent.offset().top + $parent.height() - $element.offset().top)
+              top: '+=' + Math.min(random_top(), $parent.offset().top + $parent.height() - ($element.offset().top + $element.height()))
             };
           }, function () {
             return {
@@ -280,7 +300,10 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', func
   };
 }).directive('chunkifyInfo', function () {
   return {
-    transclude: true
+    scope: {
+      experiment: '='
+    },
+    template: '<div class="blurb">' + '<p>' + 'Works on arrays and loops of length <strong>{{experiment.length}}</strong> ' + 'in synchronous chunks of size <strong>{{experiment.chunk}}</strong> with delays of <strong>{{experiment.delay}} milliseconds</strong> ' + 'in between.' + '</p>' + '<p>' + 'Turning <strong>chunkify</strong> on keeps the animation active.' + '</p>' + '</div>'
   };
 }).directive('progressbar', function ($timeout) {
   return {

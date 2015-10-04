@@ -18,7 +18,7 @@ angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', ($scope, $timeout) => {
   const RANGE = _.range(0.5 * Math.pow(10, 5));
-  const CHUNK = 88;
+  const CHUNK = 100;
   const DELAY = 10;
 
   $scope.experiment = {
@@ -103,11 +103,31 @@ angular
     },
 
     _each() {
-      return new Promise(resolve => setTimeout(resolve, 3000));
+      let each_fn = (index) => {
+        this.simulate_work(index)
+      };
+      if (this.chunkify) {
+        return chunkify.each(RANGE, each_fn, {chunk: CHUNK, delay: DELAY})
+      } else {
+        return Promise.resolve(RANGE.forEach(each_fn))
+      }
     },
 
     _range() {
-      return new Promise(resolve => setTimeout(resolve, 5000));
+      let loop_fn = (index) => {
+        this.simulate_work(index)
+      };
+      if (this.chunkify) {
+        return chunkify.range(loop_fn, RANGE.length, {chunk: CHUNK, delay: DELAY})
+      } else {
+        return Promise.resolve(this._blocking_range(loop_fn))
+      }
+    },
+
+    _blocking_range(loop_fn) {
+      for (let index = 0; index < RANGE.length; index++) {
+        loop_fn(index)
+      }
     }
 
   };
@@ -127,12 +147,12 @@ angular
 .directive('animation', ($interval, $window) => {
   const intial_css = {
     'background-color': '#4d63bc',
-    'border-radius': '25px',
+    'border-radius': '50px',
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '25px',
-    height: '25px'
+    width: '50px',
+    height: '50px'
   };
   function* shifts_generator($element, $parent) {
     let shifts_index = 0;
@@ -145,12 +165,12 @@ angular
     let shifts = [
       () => {
         return {
-          left: `+=${Math.min(random_left(), ($parent.offset().left + $parent.width()) - $element.offset().left)}`
+          left: `+=${Math.min(random_left(), ($parent.offset().left + $parent.width()) - ($element.offset().left + $element.width()))}`
         }
       },
       () => {
         return {
-          top: `+=${Math.min(random_top(), ($parent.offset().top + $parent.height()) - $element.offset().top)}`
+          top: `+=${Math.min(random_top(), ($parent.offset().top + $parent.height()) - ($element.offset().top + $element.height()))}`
         }
       },
       () => {
@@ -200,7 +220,19 @@ angular
 })
 .directive('chunkifyInfo', () => {
   return {
-    transclude: true
+    scope: {
+      experiment: '='
+    },
+    template: '<div class="blurb">' +
+      '<p>' +
+        'Works on arrays and loops of length <strong>{{experiment.length}}</strong> ' +
+        'in synchronous chunks of size <strong>{{experiment.chunk}}</strong> with delays of <strong>{{experiment.delay}} milliseconds</strong> ' +
+        'in between.'+
+      '</p>' +
+      '<p>' +
+        'Turning <strong>chunkify</strong> on keeps the animation active.' +
+      '</p>' +
+    '</div>'
   }
 })
 .directive('progressbar', $timeout => {

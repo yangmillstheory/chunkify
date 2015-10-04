@@ -13,19 +13,21 @@
   </div>
   <div class='main-wrapper'>
     <div class='main' ng-controller='ChunkifyCtrl'>
-      <chunkify-info length='experiment.length' chunk='experiment.chunk' delay='experiment.delay'>
-      </chunkify-info>
       <progressbar progress='actions.progress_data.value' max='experiment.length'>
       </progressbar>
-      <label for='chunkify-checkbox'>
-        <input type="checkbox" id='chunkify-checkbox' ng-model="actions.chunkify" />
-        chunkify
-      </label>
-      <div class='buttons' ng-repeat="action in actions.names">
-        <button ng-disabled='buttons.disabled' ng-click='actions[action]()'>
-          {{action | titlecase}}
-        </button>
+      <div class='button-container'>
+        <div class='buttons' ng-repeat="action in actions.names">
+          <button ng-disabled='buttons.disabled' ng-click='actions[action]()'>
+            {{action | titlecase}}
+          </button>
+        </div>
+        <label for='chunkify-checkbox'>
+          <input type="checkbox" id='chunkify-checkbox' ng-model="actions.chunkify" />
+          chunkify
+        </label>
       </div>
+      <chunkify-info experiment='experiment'>
+      </chunkify-info>
     </div>
     <div class='animation-container'>
       <animation></animation>
