@@ -23,22 +23,18 @@ let ok_usage = (fn, final, options) => {
 
 let interval = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
-  let {scope, chunk, delay} = ChunkifyOptions.of(options);
-  let iterator = chunkify.generator({
-    start: options.start || 0,
-    final,
-    chunk,
-    delay
-  });
+  let {start} = _.defaults(options, {start: 0});
+  let okoptions = ChunkifyOptions.of(options);
+  let generator = chunkify.generator(start, final, okoptions);
   var process_chunk_sync = (resolve, reject) => {
-    let next = iterator.next();
+    let next = generator.next();
     while (!(next.value instanceof Promise) && !next.done) {
       try {
-        fn.call(scope, next.value)
+        fn.call(okoptions.scope, next.value)
       } catch (error) {
         return reject({error, index: next.value});
       }
-      next = iterator.next();
+      next = generator.next();
     }
     if (next.done) {
       return resolve();
