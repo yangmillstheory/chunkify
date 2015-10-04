@@ -1,7 +1,7 @@
 import 'babel/polyfill'
 import arrays from './arrays'
 import core from './core'
-import chunkify from './chunkify'
+import generator from './generator'
 
 export default {
   each: arrays.each,
@@ -9,5 +9,5 @@ export default {
   reduce: arrays.reduce,
   interval: core.interval,
   range: core.range,
-  generator: chunkify.interval
+  generator: generator.from_keywords
 }

@@ -1,4 +1,4 @@
-import chunkify from '../chunkify'
+import chunkify from '../index'
 import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
@@ -24,7 +24,7 @@ let ok_usage = (fn, final, options) => {
 let interval = (fn, final, options = {}) => {
   ok_usage(fn, final, options);
   let {scope, chunk, delay} = ChunkifyOptions.of(options);
-  let iterator = chunkify.interval({
+  let iterator = chunkify.generator({
     start: options.start || 0,
     final,
     chunk,
