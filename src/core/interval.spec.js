@@ -9,36 +9,36 @@ import ChunkifyOptions from '../options'
 
 test('should require a function', t => {
   t.throws(() => {
-    chunkify.range()
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad fn; not a function/);
+    chunkify.interval()
+  }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad fn; not a function/);
   t.end()
 });
 
 test('should require a final index', t => {
   t.throws(() => {
-    chunkify.range(() => {})
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad final; not a number/);
+    chunkify.interval(() => {})
+  }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad final; not a number/);
   t.end()
 });
 
 test('should require a number start option if given', t => {
   t.throws(() => {
-    chunkify.range(() => {}, 10, {start: 'string'})
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad start; not a number/);
+    chunkify.interval(() => {}, 10, {start: 'string'})
+  }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad start; not a number/);
   t.end()
 });
 
 test('should require a number start option less than final if given', t => {
   t.throws(() => {
-    chunkify.range(() => {}, 10, {start: 11})
-  }, /Usage: chunkify.range\(Function fn, Number final, \[Object options]\) - bad start; it's greater than final/);
+    chunkify.interval(() => {}, 10, {start: 11})
+  }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad start; it's greater than final/);
   t.end()
 });
 
 test('should deserialize options', t => {
   ChunkifyOptionsSpy((spy) => {
     let options = {};
-    chunkify.range(sinon.spy(), 10, options);
+    chunkify.interval(sinon.spy(), 10, options);
     t.ok(spy.calledWith(options));
     t.end()
   });
@@ -46,21 +46,21 @@ test('should deserialize options', t => {
 
 test('should default options to an empty object', t => {
   ChunkifyOptionsSpy((spy) => {
-    chunkify.range(sinon.spy(), 10);
+    chunkify.interval(sinon.spy(), 10);
     t.ok(spy.calledWith({}));
     t.end()
   });
 });
 
 test('should return a promise', t => {
-  t.ok(chunkify.range(sinon.spy(), 10) instanceof Promise);
+  t.ok(chunkify.interval(sinon.spy(), 10) instanceof Promise);
   t.end()
 });
 
 test('should not invoke fn when range is 0', t => {
   let fn = sinon.spy();
 
-  chunkify.range(fn, 0).then(() => {
+  chunkify.interval(fn, 0).then(() => {
     t.notOk(fn.called);
     t.end();
   });
@@ -69,7 +69,7 @@ test('should not invoke fn when range is 0', t => {
 test('should invoke fn with the default scope', t => {
   let fn = sinon.spy();
 
-  chunkify.range(fn, 3, {start: 1, chunk: 3}).then(() => {
+  chunkify.interval(fn, 3, {start: 1, chunk: 3}).then(() => {
     t.ok(fn.alwaysCalledOn(null));
     t.end()
   });
@@ -79,7 +79,7 @@ test('should invoke fn with the provided scope', t => {
   let fn = sinon.spy();
   let scope = {};
 
-  chunkify.range(fn, 3, {start: 1, chunk: 3, scope}).then(() => {
+  chunkify.interval(fn, 3, {start: 1, chunk: 3, scope}).then(() => {
     t.ok(fn.alwaysCalledOn(scope));
     t.end()
   });
@@ -88,7 +88,7 @@ test('should invoke fn with the provided scope', t => {
 test('should invoke fn with the correct loop index', t => {
   let fn = sinon.spy();
 
-  chunkify.range(fn, 4, {start: 1, chunk: 3}).then(() => {
+  chunkify.interval(fn, 4, {start: 1, chunk: 3}).then(() => {
     t.equals(fn.callCount, 3);
     t.deepEqual(fn.getCall(0).args, [1]);
     t.deepEqual(fn.getCall(1).args, [2]);
@@ -101,29 +101,28 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 999,
+    delay: 9,
 
     before_tick() {
-      chunkify.range(fn, 5, {start: 1, chunk: 3, delay: 1000});
+      chunkify.interval(fn, 5, {start: 1, chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
     after_tick() {
-      // 1000 milliseconds hasn't elapsed yet
       t.equals(fn.callCount, 3);
       t.end();
     }
   });
 });
 
-test('should start again in `delay` milliseconds after yielding', t => {
+test('should start again after `delay` milliseconds from last yielding', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
-      chunkify.range(fn, 5, {start: 1, chunk: 3, delay: 1000});
+      chunkify.interval(fn, 5, {start: 1, chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
@@ -139,10 +138,10 @@ test('should resolve with undefined', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
-      let promise = chunkify.range(fn, 5, {start: 1, chunk: 3, delay: 1000});
+      let promise = chunkify.interval(fn, 5, {start: 1, chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
       return promise
     },
@@ -165,7 +164,7 @@ test('should reject the promise with rejection object and stop processing', t =>
     }
   });
 
-  chunkify.range(fn, 5, {start: 1, chunk: 3}).then(null, (rejection) => {
+  chunkify.interval(fn, 5, {start: 1, chunk: 3}).then(null, (rejection) => {
     t.deepEquals(rejection, {error, index: 2});
     t.equals(fn.callCount, 2);
     t.end()
@@ -176,10 +175,10 @@ test('should not yield after `chunk` iterations if processing is complete', t =>
   let fn = sinon.spy();
 
   tick({
-    delay: 2000,
+    delay: 20,
 
     before_tick() {
-      chunkify.range(fn, 4, {start: 1, chunk: 3, delay: 1000});
+      chunkify.interval(fn, 4, {start: 1, chunk: 3, delay: 10});
       t.equals(fn.callCount, 3)
     },
 

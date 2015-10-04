@@ -1,9 +1,9 @@
-import rangeloop from './range'
+import interval from './interval'
 import ChunkifyOptions from '../options'
 import _ from 'underscore'
 
 
-const USAGE = 'Usage: chunkify.loop(Function fn, Number range, [Object options])';
+const USAGE = 'Usage: chunkify.range(Function fn, Number range, [Object options])';
 
 let ok_usage = (fn, range) => {
   if (!_.isFunction(fn)) {
@@ -13,10 +13,10 @@ let ok_usage = (fn, range) => {
   }
 };
 
-let loop = (fn, range, options = {}) => {
+let range = (fn, range, options = {}) => {
   ok_usage(fn, range);
   delete options.start;
-  return rangeloop(fn, range, options);
+  return interval(fn, range, options);
 };
 
-export default loop
+export default range

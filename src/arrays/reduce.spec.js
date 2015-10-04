@@ -105,32 +105,31 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
   let fn = sinon.spy();
 
   tick({
-    delay: 999,
+    delay: 9,
 
     before_tick() {
-      chunkify.reduce(['A', 'B', 'C', 'D'], fn, {memo: '', chunk: 3, delay: 1000});
+      chunkify.reduce(['A', 'B', 'C', 'D'], fn, {memo: '', chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
     after_tick() {
-      // 1000 milliseconds hasn't elapsed yet
       t.equals(fn.callCount, 3);
       t.end();
     }
   });
 });
 
-test('should start again in `delay` milliseconds after yielding', t => {
+test('should start again after `delay` milliseconds from last yielding', t => {
   let fn = sinon.spy((memo) => {
     return memo
   });
   let array = ['A', 'B', 'C', 'D'];
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
-      chunkify.reduce(array, fn, {memo: '', chunk: 3, delay: 1000});
+      chunkify.reduce(array, fn, {memo: '', chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
@@ -148,10 +147,10 @@ test('should resolve with the reduced result from a default memo', t => {
   });
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
-      let promise = chunkify.reduce(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000});
+      let promise = chunkify.reduce(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 2);
       return promise
     },
@@ -172,11 +171,11 @@ test('should resolve with the reduced result from a given memo', t => {
   });
 
   tick({
-    delay: 1000,
+    delay: 11,
 
     before_tick() {
       let promise = chunkify.reduce(
-        ['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 1000, memo: 'MEMO'});
+        ['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10, memo: 'MEMO'});
       t.equals(fn.callCount, 3);
       return promise
     },
@@ -210,10 +209,10 @@ test('should not yield after `chunk` iterations if processing is complete', t =>
   let fn = sinon.spy();
 
   tick({
-    delay: 2000,
+    delay: 20,
 
     before_tick() {
-      chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, delay: 1000, memo: ''});
+      chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, delay: 10, memo: ''});
       t.equals(fn.callCount, 3)
     },
 
