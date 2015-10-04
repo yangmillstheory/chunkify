@@ -16,8 +16,8 @@ body {
   width: 50px;
   height: 50px;
   position: absolute;
-  bottom: 15px;
-  left: 350px;
+  bottom: 0;
+  left: 315px;
   z-index: 1;
   background: url(../img/octocat.png) no-repeat;
   background-size: 100% auto;
@@ -28,8 +28,8 @@ body {
   width: 50px;
   height: 50px;
   position: absolute;
-  bottom: 18px;
-  left: 400px;
+  bottom: 4px;
+  left: 360px;
   background: url(../img/npmjs.png) no-repeat;
   background-size: 100% auto;
   cursor: pointer;
