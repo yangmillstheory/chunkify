@@ -1,7 +1,7 @@
 {
   "name": "chunkify",
-  "version": "2.1.1",
-  "description": "A functional API to unblock your JavaScript thread.",
+  "version": "3.0.0",
+  "description": "A functional API to periodically unblock your JavaScript thread.",
   "main": "dist/index.js",
   "scripts": {
     "test": "./test.js src/**/*.spec.js src/*.spec.js | node_modules/.bin/faucet",
