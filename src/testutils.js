@@ -19,11 +19,7 @@ let tick = ({before_tick, after_tick, delay}) => {
     }
   };
   ok_tick();
-  let clock = sinon.useFakeTimers();
-  let before_tick_result = before_tick();
-  clock.tick(delay);
-  after_tick(before_tick_result);
-  clock.restore();
+  setTimeout(after_tick, delay, before_tick())
 };
 
 export default {ChunkifyOptionsSpy, tick}
