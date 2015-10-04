@@ -100,7 +100,7 @@ body {
 }
 
 .main > .button-container > .buttons > button:disabled {
-  background-color: lightgray;
+  background-color: grey;
   color: black;
   cursor: default;
 }

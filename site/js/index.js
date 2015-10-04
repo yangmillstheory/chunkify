@@ -210,12 +210,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
   var intial_css = {
     'background-color': '#4d63bc',
-    'border-radius': '50px',
+    'border-radius': '100px',
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '50px',
-    height: '50px'
+    width: '100px',
+    height: '100px'
   };
   function shifts_generator($element, $parent) {
     var shifts_index, random_left, random_top, shifts, length;
