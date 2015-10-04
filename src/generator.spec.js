@@ -6,6 +6,25 @@ import test from 'tape'
 const DELAY = 10;
 const TOLERANCE = 5;
 
+test('should throw when not given a number start index', t => {
+
+});
+
+test('should throw when not given a number final index', t => {
+
+});
+
+test('should throw when not given a number chunk', t => {
+
+});
+
+test('should throw when not given a number delay', t => {
+
+});
+
+test('should default chunk and delay', t => {
+
+});
 
 test('should yield a "timeout promise" delay after `chunk` iterations', t => {
   let it = chunkify.generator({start: 0, final: 3, chunk: 2, delay: DELAY});
