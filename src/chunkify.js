@@ -1,14 +1,14 @@
-function* chunkify(start, final, chunk) {
+function* chunkify(start, final, chunk, delay) {
   for (let index = start; index < final; index++) {
-    yield {
-      index,
-      pause: ((index > start) && ((index + 1) % (start + chunk) === 0))
-    };
+    if ((index > start) && (index % (start + chunk) === 0)) {
+      yield new Promise(resolve => setTimeout(resolve, delay))
+    }
+    yield index
   }
 }
 
 export default {
-  range: ({start, final, chunk}) => {
-    return chunkify(start, final, chunk)
+  range: ({start, final, chunk, delay}) => {
+    return chunkify(start, final, chunk, delay)
   }
 }

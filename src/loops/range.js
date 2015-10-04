@@ -28,24 +28,25 @@ let range = (fn, final, options = {}) => {
   let iterator = chunkify.range({
     start: options.start || 0,
     final,
-    chunk
+    chunk,
+    delay
   });
   var resume = (resolve, reject) => {
     let next = iterator.next();
+    while (!(next.value instanceof Promise) && !next.done) {
+      try {
+        fn.call(scope, next.value)
+      } catch (error) {
+        return reject({error, index: next.value});
+      }
+      next = iterator.next();
+    }
     if (next.done) {
       return resolve();
     }
-    let {index, pause} = next.value;
-    try {
-      fn.call(scope, index)
-    } catch (error) {
-      return reject({error, index});
-    }
-    if (pause) {
-      setTimeout(resume, delay, resolve, reject);
-    } else {
-      resume(resolve, reject);
-    }
+    return next.value.then(() => {
+      return resume(resolve, reject)
+    });
   };
   return new Promise(resume);
 };
