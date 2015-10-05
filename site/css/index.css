@@ -95,6 +95,17 @@ body {
   cursor: pointer;
 }
 
+#hn {
+  width: 130px;
+  height: 130px;
+  position: absolute;
+  bottom: -51px;
+  left: 500px;
+  background: url(../img/hn.png) no-repeat;
+  background-size: 100% auto;
+  cursor: pointer;
+}
+
 .main-wrapper {
   margin-top: 20px;
 }
