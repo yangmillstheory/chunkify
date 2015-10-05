@@ -304,7 +304,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         data: [{ label: 'Iterations', value: scope.data.length }, { label: 'Chunk Size', value: scope.data.chunk }, { label: 'Delay Time', value: scope.data.delay + ' ms' }]
       };
     },
-    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'Unchunkified actions will <strong>lock your browser momentarily</strong>.' + '</p>' + '</div>'
+    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'Unchunkified actions will <strong>momentarily lock your browser</strong>.' + '</p>' + '</div>'
   };
 }).directive('progressbar', ['$timeout', function ($timeout) {
   return {
