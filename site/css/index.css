@@ -134,12 +134,22 @@ label {
   cursor: pointer;
 }
 
-.animation-container {
+.wisp-container {
   display: inline-block;
   margin: 20px;
   margin-left: 25px;
   border-radius: 5px;
   position: relative;
+}
+
+#wisp {
+  background-color: #4d63bc;
+  border-radius: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
 }
 
 .progressbar-container {

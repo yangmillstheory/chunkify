@@ -81,7 +81,7 @@ angular
     },
 
     _reduce() {
-      let reducer =(memo, item, index) => {
+      let reducer = (memo, item, index) => {
         return memo + this.simulate_work(index);
       };
       let memo = 0;
@@ -145,44 +145,41 @@ angular
   }
 
 }])
-.directive('animation', ['$interval', '$window', ($interval, $window) => {
-  const intial_css = {
-    'background-color': '#4d63bc',
-    'border-radius': '100px',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100px',
-    height: '100px'
-  };
+.directive('wisp', ['$interval', '$window', ($interval, $window) => {
   function* shifts_generator($element, $parent) {
     let shifts_index = 0;
-    let random_left = () => {
+    let random_horizontal_offset = () => {
       let width = $parent.width();
       return random_integer({min: 0.25 * width, max: width});
     };
-    let random_top = () => {
+    let random_vertical_offset = () => {
       let height = $parent.height();
       return random_integer({min: 0.25 * height, max: height});
     };
     let shifts = [
       () => {
+        let max_horizontal_offset = ($parent.offset().left + $parent.width()) -
+          ($element.offset().left + $element.width());
         return {
-          left: `+=${Math.min(random_left(), ($parent.offset().left + $parent.width()) - ($element.offset().left + $element.width()))}`
+          left: `+=${Math.min(random_horizontal_offset(), max_horizontal_offset)}`
         }
       },
       () => {
+        let max_vertical_offset = ($parent.offset().top + $parent.height()) -
+          ($element.offset().top + $element.height());
         return {
-          top: `+=${Math.min(random_top(), ($parent.offset().top + $parent.height()) - ($element.offset().top + $element.height()))}`
+          top: `+=${Math.min(random_vertical_offset(), max_vertical_offset)}`
         }
       },
       () => {
+        let max_horizontal_offset = $element.offset().left - $parent.offset().left;
         return {
-          left: `-=${Math.min(random_left(), $element.offset().left - $parent.offset().left)}`}
+          left: `-=${Math.min(random_horizontal_offset(), max_horizontal_offset)}`}
       },
       () => {
+        let max_vertical_offset = $element.offset().top - $parent.offset().top;
         return {
-          top: `-=${Math.min(random_top(), $element.offset().top - $parent.offset().top)}`
+          top: `-=${Math.min(random_vertical_offset(), max_vertical_offset)}`
         }
       }
     ];
@@ -194,7 +191,7 @@ angular
   return {
     replace: true,
     link(__, element) {
-      let $element = $(element).css(intial_css);
+      let $element = $(element);
       let $parent = $element.parent();
       let resize = () => {
         let width = $window.innerWidth - 300;
@@ -215,20 +212,20 @@ angular
       };
       animate();
     },
-    template: '<div id="animation"></div>'
+    template: '<div id="wisp"></div>'
   }
 }])
-.directive('chunkifyInfo', () => {
+.directive('experiment', () => {
   return {
     scope: {
-      experiment: '='
+      data: '='
     },
-    link(scope, element) {
+    link(scope) {
       scope.table = {
         data: [
-          {label: 'Iterations', value: scope.experiment.length},
-          {label: 'Chunk Size', value: scope.experiment.chunk},
-          {label: 'Delay Time', value: `${scope.experiment.delay} ms`}
+          {label: 'Iterations', value: scope.data.length},
+          {label: 'Chunk Size', value: scope.data.chunk},
+          {label: 'Delay Time', value: `${scope.data.delay} ms`}
         ]
       };
     },
@@ -240,10 +237,10 @@ angular
         '</section>' +
       '</dl>' +
       '<p>' +
-        'Keeping <strong>chunkified</strong> on keeps the animation active.' +
+        '<strong>chunkified</strong> actions keep the animation active.' +
       '</p>' +
       '<p>' +
-        'Turning it off will <strong>lock your browser momentarily</strong> when you initiate an action.' +
+        'Unchunkified actions will <strong>lock your browser momentarily</strong>.' +
       '</p>' +
     '</div>'
   }

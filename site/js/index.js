@@ -205,49 +205,44 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       }
     }
   }
-}]).directive('animation', ['$interval', '$window', function ($interval, $window) {
+}]).directive('wisp', ['$interval', '$window', function ($interval, $window) {
   var marked1$0 = [shifts_generator].map(regeneratorRuntime.mark);
 
-  var intial_css = {
-    'background-color': '#4d63bc',
-    'border-radius': '100px',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100px',
-    height: '100px'
-  };
   function shifts_generator($element, $parent) {
-    var shifts_index, random_left, random_top, shifts, length;
+    var shifts_index, random_horizontal_offset, random_vertical_offset, shifts, length;
     return regeneratorRuntime.wrap(function shifts_generator$(context$2$0) {
       while (1) switch (context$2$0.prev = context$2$0.next) {
         case 0:
           shifts_index = 0;
 
-          random_left = function random_left() {
+          random_horizontal_offset = function random_horizontal_offset() {
             var width = $parent.width();
             return random_integer({ min: 0.25 * width, max: width });
           };
 
-          random_top = function random_top() {
+          random_vertical_offset = function random_vertical_offset() {
             var height = $parent.height();
             return random_integer({ min: 0.25 * height, max: height });
           };
 
           shifts = [function () {
+            var max_horizontal_offset = $parent.offset().left + $parent.width() - ($element.offset().left + $element.width());
             return {
-              left: '+=' + Math.min(random_left(), $parent.offset().left + $parent.width() - ($element.offset().left + $element.width()))
+              left: '+=' + Math.min(random_horizontal_offset(), max_horizontal_offset)
             };
           }, function () {
+            var max_vertical_offset = $parent.offset().top + $parent.height() - ($element.offset().top + $element.height());
             return {
-              top: '+=' + Math.min(random_top(), $parent.offset().top + $parent.height() - ($element.offset().top + $element.height()))
+              top: '+=' + Math.min(random_vertical_offset(), max_vertical_offset)
             };
           }, function () {
+            var max_horizontal_offset = $element.offset().left - $parent.offset().left;
             return {
-              left: '-=' + Math.min(random_left(), $element.offset().left - $parent.offset().left) };
+              left: '-=' + Math.min(random_horizontal_offset(), max_horizontal_offset) };
           }, function () {
+            var max_vertical_offset = $element.offset().top - $parent.offset().top;
             return {
-              top: '-=' + Math.min(random_top(), $element.offset().top - $parent.offset().top)
+              top: '-=' + Math.min(random_vertical_offset(), max_vertical_offset)
             };
           }];
           length = shifts.length;
@@ -274,7 +269,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
   return {
     replace: true,
     link: function link(__, element) {
-      var $element = (0, _jquery2['default'])(element).css(intial_css);
+      var $element = (0, _jquery2['default'])(element);
       var $parent = $element.parent();
       var resize = function resize() {
         var width = $window.innerWidth - 300;
@@ -297,19 +292,19 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       };
       animate();
     },
-    template: '<div id="animation"></div>'
+    template: '<div id="wisp"></div>'
   };
-}]).directive('chunkifyInfo', function () {
+}]).directive('experiment', function () {
   return {
     scope: {
-      experiment: '='
+      data: '='
     },
-    link: function link(scope, element) {
+    link: function link(scope) {
       scope.table = {
-        data: [{ label: 'Iterations', value: scope.experiment.length }, { label: 'Chunk Size', value: scope.experiment.chunk }, { label: 'Delay Time', value: scope.experiment.delay + ' ms' }]
+        data: [{ label: 'Iterations', value: scope.data.length }, { label: 'Chunk Size', value: scope.data.chunk }, { label: 'Delay Time', value: scope.data.delay + ' ms' }]
       };
     },
-    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + 'Keeping <strong>chunkified</strong> on keeps the animation active.' + '</p>' + '<p>' + 'Turning it off will <strong>lock your browser momentarily</strong> when you initiate an action.' + '</p>' + '</div>'
+    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'Unchunkified actions will <strong>lock your browser momentarily</strong>.' + '</p>' + '</div>'
   };
 }).directive('progressbar', ['$timeout', function ($timeout) {
   return {
