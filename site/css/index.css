@@ -14,6 +14,7 @@ body {
   font-size: 6em;
   letter-spacing: -10px;
   position: relative;
+  min-width: 750px;
 }
 
 .title .title-blurb {
@@ -24,6 +25,7 @@ body {
   font-size: 35px;
   letter-spacing: -3px;
   font-weight: 600;
+  min-width: inherit;
 }
 
 #github {
