@@ -194,8 +194,8 @@ angular
       let $element = $(element);
       let $parent = $element.parent();
       let resize = () => {
-        let width = $window.innerWidth - 300;
-        let height = $window.innerHeight - 250;
+        let width = $window.innerWidth - 250;
+        let height = $window.innerHeight - 225;
         $parent.css({width, height});
         return true
       };

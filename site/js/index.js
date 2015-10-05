@@ -272,8 +272,8 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var $element = (0, _jquery2['default'])(element);
       var $parent = $element.parent();
       var resize = function resize() {
-        var width = $window.innerWidth - 300;
-        var height = $window.innerHeight - 250;
+        var width = $window.innerWidth - 250;
+        var height = $window.innerHeight - 225;
         $parent.css({ width: width, height: height });
         return true;
       };

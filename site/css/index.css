@@ -57,6 +57,7 @@ body {
   display: inline-block;
   margin-bottom: 20px;
   margin-left: 20px;
+  margin-top: 20px;
   text-align: center;
   width: 150px;
   float: left;
@@ -137,9 +138,10 @@ label {
 .wisp-container {
   display: inline-block;
   margin: 20px;
-  margin-left: 25px;
+  margin-left: 35px;
   border-radius: 5px;
   position: relative;
+  border: 1px dashed #4d63bc;
 }
 
 #wisp {
