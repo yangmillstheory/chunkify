@@ -246,6 +246,10 @@ body .ui-tooltip {
   border-width: 2px;
 }
 
+.blurb section {
+  font-size: 14px;
+}
+
 dl {
   margin-bottom: 20px;
 }
