@@ -208,7 +208,6 @@ label {
   border-radius: 15px;
   z-index: 0;
   margin-bottom: 10px;
-  cursor: pointer;
 }
 
 .progressbar-container:hover {

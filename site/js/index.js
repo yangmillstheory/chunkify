@@ -48,7 +48,8 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
   $scope.experiment = {
     length: RANGE.length,
     chunk: CHUNK,
-    delay: DELAY
+    delay: DELAY,
+    progress: 0
   };
 
   $scope.buttons = {
@@ -69,10 +70,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
     chunkify: true,
 
-    progress_data: { value: 0, max: $scope.experiment.length },
-
-    progress: function progress() {
-      this.progress_data.value += 1;
+    progress: function progress(value) {
+      if (_underscore2['default'].isNumber(value)) {
+        $scope.experiment.progress = value;
+      } else {
+        $scope.experiment.progress += 1;
+      }
     },
 
     simulate_work: function simulate_work(index) {
@@ -101,19 +104,21 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
 
     _after_action: function _after_action(promise) {
+      var _this2 = this;
+
       promise.then(function (value) {
         $timeout(function () {
-          $scope.actions.progress_data.value = 0;
+          _this2.progress(0);
           $scope.buttons.enable();
         }, 1000);
       });
     },
 
     _reduce: function _reduce() {
-      var _this2 = this;
+      var _this3 = this;
 
       var reducer = function reducer(memo, item, index) {
-        return memo + _this2.simulate_work(index);
+        return memo + _this3.simulate_work(index);
       };
       var memo = 0;
       if (this.chunkify) {
@@ -124,10 +129,10 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
 
     _map: function _map() {
-      var _this3 = this;
+      var _this4 = this;
 
       var mapper = function mapper(item, index) {
-        return _this3.simulate_work(index) + 1;
+        return _this4.simulate_work(index) + 1;
       };
       if (this.chunkify) {
         return _dist2['default'].map(RANGE, mapper, { chunk: CHUNK, delay: DELAY });
@@ -137,10 +142,10 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
 
     _each: function _each() {
-      var _this4 = this;
+      var _this5 = this;
 
       var each_fn = function each_fn(index) {
-        _this4.simulate_work(index);
+        _this5.simulate_work(index);
       };
       if (this.chunkify) {
         return _dist2['default'].each(RANGE, each_fn, { chunk: CHUNK, delay: DELAY });
@@ -150,10 +155,10 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
 
     _range: function _range() {
-      var _this5 = this;
+      var _this6 = this;
 
       var loop_fn = function loop_fn(index) {
-        _this5.simulate_work(index);
+        _this6.simulate_work(index);
       };
       if (this.chunkify) {
         return _dist2['default'].range(loop_fn, RANGE.length, { chunk: CHUNK, delay: DELAY });
@@ -301,12 +306,19 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
     link: function link(scope) {
       scope.table = {
-        data: [{ label: 'Iterations', value: scope.data.length }, { label: 'Chunk Size', value: scope.data.chunk }, { label: 'Delay Time', value: scope.data.delay + ' ms' }]
+        data: {
+          'Iterations': scope.data.progress,
+          'Chunk Size': scope.data.chunk,
+          'Delay Time': scope.data.delay + ' ms'
+        }
       };
+      scope.$watch('data.progress', function (value) {
+        scope.table.data['Iterations'] = value;
+      });
     },
-    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="data in table.data">' + '<dt>{{data.label}}</dt>' + '<dd>{{data.value}}</dd>' + '</section>' + '</dl>' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'un-chunkified actions will <strong>momentarily lock your browser</strong>.' + '</p>' + '</div>'
+    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="(label, value) in table.data">' + '<dt>{{label}}</dt>' + '<dd>{{value}}</dd>' + '</section>' + '</dl>' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'un-chunkified actions will <strong>momentarily lock your browser</strong>.' + '</p>' + '</div>'
   };
-}).directive('progressbar', ['$timeout', function ($timeout) {
+}).directive('progressbar', function () {
   return {
     restrict: 'E',
     scope: {
@@ -317,26 +329,16 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var $element = (0, _jquery2['default'])(element);
       var $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
-        value: 0,
-        complete: function complete() {
-          if (scope.progress > 0) {
-            scope.progress = 0;
-          }
-        }
+        value: 0
       });
       var progress = function progress(value) {
         $bar.progressbar('option', 'value', value);
       };
       scope.$watch('progress', progress);
-      $element.tooltip({
-        position: {
-          my: 'left+' + ($bar.width() + 10) + ' top-' + 1.5 * $bar.height()
-        }
-      });
     },
-    template: '<div class="progressbar-container" title="{{progress}} of {{max}} iterations processed">' + '<div id="progressbar"></div>' + '</div>'
+    template: '<div class="progressbar-container">' + '<div id="progressbar"></div>' + '</div>'
   };
-}]).filter('titlecase', function () {
+}).filter('titlecase', function () {
   return function (word) {
     return '' + word.charAt(0).toUpperCase() + word.slice(1);
   };

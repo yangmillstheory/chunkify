@@ -25,7 +25,8 @@ angular
   $scope.experiment = {
     length: RANGE.length,
     chunk: CHUNK,
-    delay: DELAY
+    delay: DELAY,
+    progress: 0
   };
 
   $scope.buttons = {
@@ -46,10 +47,12 @@ angular
 
     chunkify: true,
 
-    progress_data: {value: 0, max: $scope.experiment.length},
-
-    progress() {
-      this.progress_data.value += 1
+    progress(value) {
+      if (_.isNumber(value)) {
+        $scope.experiment.progress = value
+      } else {
+        $scope.experiment.progress += 1
+      }
     },
 
     simulate_work(index) {
@@ -74,7 +77,7 @@ angular
     _after_action(promise) {
       promise.then((value) => {
         $timeout(() => {
-          $scope.actions.progress_data.value = 0;
+          this.progress(0);
           $scope.buttons.enable();
         }, 1000);
       });
@@ -222,18 +225,21 @@ angular
     },
     link(scope) {
       scope.table = {
-        data: [
-          {label: 'Iterations', value: scope.data.length},
-          {label: 'Chunk Size', value: scope.data.chunk},
-          {label: 'Delay Time', value: `${scope.data.delay} ms`}
-        ]
+        data: {
+          'Iterations': scope.data.progress,
+          'Chunk Size': scope.data.chunk,
+          'Delay Time': `${scope.data.delay} ms`
+        }
       };
+      scope.$watch('data.progress', (value) => {
+        scope.table.data['Iterations'] = value
+      });
     },
     template: '<div class="blurb">' +
       '<dl>' +
-        '<section ng-repeat="data in table.data">' +
-          '<dt>{{data.label}}</dt>' +
-          '<dd>{{data.value}}</dd>' +
+        '<section ng-repeat="(label, value) in table.data">' +
+          '<dt>{{label}}</dt>' +
+          '<dd>{{value}}</dd>' +
         '</section>' +
       '</dl>' +
       '<p>' +
@@ -245,7 +251,7 @@ angular
     '</div>'
   }
 })
-.directive('progressbar', ['$timeout', $timeout => {
+.directive('progressbar', () => {
   return {
     restrict: 'E',
     scope: {
@@ -256,29 +262,19 @@ angular
       let $element = $(element);
       let $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
-        value: 0,
-        complete() {
-          if (scope.progress > 0) {
-            scope.progress = 0;
-          }
-        }
+        value: 0
       });
       var progress = value => {
         $bar.progressbar('option', 'value', value)
       };
       scope.$watch('progress', progress);
-      $element.tooltip({
-        position: {
-          my: `left+${$bar.width() + 10} top-${1.5 * $bar.height()}`
-        }
-      })
     },
     template:
-      '<div class="progressbar-container" title="{{progress}} of {{max}} iterations processed">' +
+      '<div class="progressbar-container">' +
         '<div id="progressbar"></div>' +
       '</div>'
   }
-}])
+})
 .filter('titlecase', () => {
    return word => {
      return `${word.charAt(0).toUpperCase()}${word.slice(1)}`
