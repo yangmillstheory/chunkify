@@ -65,7 +65,7 @@ body {
   position: absolute;
   color: dimgrey;
   bottom: -15px;
-  left: 250px;
+  left: 295px;
   font-size: 35px;
   letter-spacing: -3px;
   font-weight: 600;
@@ -76,8 +76,8 @@ body {
   width: 75px;
   height: 75px;
   position: absolute;
-  bottom: -20px;
-  left: 855px;
+  bottom: 10px;
+  left: 340px;
   z-index: 1;
   background: url(../img/octocat.png) no-repeat;
   background-size: 100% auto;
@@ -88,8 +88,8 @@ body {
   width: 75px;
   height: 75px;
   position: absolute;
-  bottom: -15px;
-  left: 915px;
+  bottom: 15px;
+  left: 410px;
   background: url(../img/npmjs.png) no-repeat;
   background-size: 100% auto;
   cursor: pointer;
