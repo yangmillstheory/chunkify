@@ -240,7 +240,7 @@ angular
         '<strong>chunkified</strong> actions keep the animation active.' +
       '</p>' +
       '<p>' +
-        'Unchunkified actions will <strong>momentarily lock your browser</strong>.' +
+        'un-chunkified actions will <strong>momentarily lock your browser</strong>.' +
       '</p>' +
     '</div>'
   }
