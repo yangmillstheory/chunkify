@@ -32,16 +32,15 @@ const SITE = {
 };
 
 
-gulp.task('site', (done) => {
-  gulp
+gulp.task('site', () => {
+  return gulp
     .src(`${SITE.src()}/index.js`)
     .pipe(babel())
     .pipe(gulp.dest(`${SITE.js()}`));
-  done()
 });
 
 gulp.task('bundle', () => {
-  browserify({entries: `${SITE.js()}/index.js`, debug: false})
+  return browserify({entries: `${SITE.js()}/index.js`, debug: false})
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
