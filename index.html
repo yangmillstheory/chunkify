@@ -16,7 +16,7 @@
   </div>
   <div class='main-wrapper'>
     <div class='main' ng-controller='ChunkifyCtrl'>
-      <progressbar progress='experiment.progress' max='experiment.length'>
+      <progressbar progress='experiment.progress' max='experiment.range'>
       </progressbar>
       <div class='button-container'>
         <div class='buttons' ng-repeat="action in actions.names">
@@ -33,6 +33,7 @@
       </experiment>
     </div>
     <div class='wisp-container'>
+      <experiment-backdrop data="experiment"></experiment-backdrop>
       <wisp></wisp>
     </div>
   </div>

@@ -46,7 +46,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
   var DELAY = 10;
 
   $scope.experiment = {
-    length: RANGE.length,
+    range: RANGE.length,
     chunk: CHUNK,
     delay: DELAY,
     progress: 0
@@ -299,7 +299,18 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
     template: '<div id="wisp"></div>'
   };
-}]).directive('experiment', function () {
+}]).directive('experimentBackdrop', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      data: '='
+    },
+    link: function link(scope, element) {
+      console.log('experiment-backdrop scope ' + scope);
+    },
+    template: '<div class="experiment-code">' + '<code></code>' + '</div>'
+  };
+}).directive('experiment', function () {
   return {
     scope: {
       data: '='
