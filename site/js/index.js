@@ -306,7 +306,10 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       data: '='
     },
     link: function link(scope, element) {
-      console.log('experiment-backdrop scope ' + scope);
+      (0, _jquery2['default'])(element).find('.experiment-code').css({
+        width: '100%',
+        height: '100%'
+      });
     },
     template: '<div class="experiment-code">' + '<code></code>' + '</div>'
   };

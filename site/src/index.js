@@ -225,7 +225,10 @@ angular
         data: '='
       },
       link(scope, element) {
-        console.log(`experiment-backdrop scope ${scope}`)
+        $(element).find('.experiment-code').css({
+          width: '100%',
+          height: '100%'
+        })
       },
       template:
         '<div class="experiment-code">' +
