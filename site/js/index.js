@@ -43,14 +43,14 @@ var random_integer = function random_integer() {
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
   var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
   var CHUNK = 100;
-  var DELAY = 10;
+  var DELAY = 50;
 
-  $scope.experiment = {
+  $scope.experiment = _underscore2['default'].defaults({}, {
     range: RANGE.length,
     chunk: CHUNK,
     delay: DELAY,
     progress: 0
-  };
+  });
 
   $scope.buttons = {
     disabled: false,
@@ -63,6 +63,10 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       this.disabled = false;
     }
   };
+
+  setInterval(function () {
+    console.log($scope.experiment);
+  }, 1000);
 
   $scope.actions = {
 
@@ -319,18 +323,15 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       data: '='
     },
     link: function link(scope) {
-      scope.table = {
-        data: {
-          'Iterations': scope.data.progress,
-          'Chunk Size': scope.data.chunk,
-          'Delay Time': scope.data.delay + ' ms'
-        }
+      scope.iterations = {
+        label: 'Iterations',
+        value: scope.data.progress
       };
       scope.$watch('data.progress', function (value) {
-        scope.table.data['Iterations'] = value;
+        scope.iterations.value = value;
       });
     },
-    template: '<div class="blurb">' + '<dl>' + '<section ng-repeat="(label, value) in table.data">' + '<dt>{{label}}</dt>' + '<dd>{{value}}</dd>' + '</section>' + '</dl>' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'un-chunkified actions will <strong>momentarily lock your browser</strong>.' + '</p>' + '</div>'
+    template: '<div class="blurb">' + '<dl>' + '<section>' + '<dt>{{iterations.label}}</dt>' + '<dd>{{iterations.value}}</dd>' + '</section>' + '</dl>' + '<section>' + '<label for="chunk">Chunk</label>' + '<input class="form-control" type="number" required name="chunk" min="100" max="1000" ng-model="data.chunk" />' + '</section>' + '<section>' + '<label for="delay">Delay (ms)</label>' + '<input class="form-control" type="number" required name="delay" min="10" max="1000" ng-model="data.delay" />' + '</section>{{delay | json}}' + '<p>' + '<strong>chunkified</strong> actions keep the animation active.' + '</p>' + '<p>' + 'un-chunkified actions will <strong>momentarily lock your browser</strong>.' + '</p>' + '</div>'
   };
 }).directive('progressbar', function () {
   return {

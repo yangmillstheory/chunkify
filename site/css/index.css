@@ -301,3 +301,30 @@ dl dd {
   background-color: #f2dede;
   margin-top: 20px;
 }
+
+input.form-control {
+  box-shadow: none;
+  font-family: Lato,Helvetica,Arial,sans-serif;
+  font-size: 15px;
+  line-height: 1.467;
+  color: #34495e;
+  border: 2px solid #bdc3c7;
+  border-radius: 6px;
+  -webkit-transition: border .25s linear,color .25s linear,background-color .25s linear;
+  transition: border .25s linear,color .25s linear,background-color .25s linear;
+}
+
+input.form-control:not(.ng-invalid):focus {
+  box-shadow: 0 0 5px #4d63bc;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid #4d63bc;
+}
+
+input.form-control.ng-invalid {
+  color: #e74c3c;
+  border-color: #e74c3c;
+  box-shadow: 0 0 5px #e74c3c;
+  padding: 3px 0px 3px 3px;
+  outline: none;
+}
