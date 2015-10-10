@@ -257,11 +257,7 @@ body .ui-tooltip {
 }
 
 .blurb section {
-  font-size: 14px;
-}
-
-dl {
-  margin-bottom: 20px;
+  font-size: 15px;
 }
 
 dl dt {
@@ -272,7 +268,7 @@ dl dt {
   margin-right: 10px;
   padding: 5px;
   border-radius: 3px;
-  width: 90px;
+  width: 82px;
   text-transform: uppercase;
 }
 
@@ -280,6 +276,50 @@ dl dd {
   margin: 2px 0;
   padding: 5px 0;
   font-weight: 700;
+}
+
+.blurb > section:last-of-type {
+  margin-bottom: 20px;
+}
+
+.blurb > section > label {
+  background-color: grey;
+  cursor: default;
+  color: white;
+  float: left;
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 5px;
+  font-size: 15px;
+  border-radius: 3px;
+  width: 82px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  margin-bottom: 2px;
+}
+
+.blurb > section > input.form-control {
+  box-shadow: none;
+  width: 47px;
+  line-height: 1.467;
+  color: #34495e;
+  border: 1px solid #bdc3c7;
+  border-radius: 3px;
+  -webkit-transition: border .25s linear,color .25s linear,background-color .25s linear;
+  transition: border .25s linear,color .25s linear,background-color .25s linear;
+  margin-bottom: 2px;
+  height: 22px;
+  font-weight: bold;
+}
+
+.blurb > section > input.form-control:not(.ng-invalid):focus {
+  border: 1px solid #4d63bc;
+}
+
+.blurb > section > input.form-control.ng-invalid {
+  color: #e74c3c;
+  border-color: #e74c3c;
+  outline: none;
 }
 
 .blurb p {
@@ -300,31 +340,4 @@ dl dd {
   color: #a94442;
   background-color: #f2dede;
   margin-top: 20px;
-}
-
-input.form-control {
-  box-shadow: none;
-  font-family: Lato,Helvetica,Arial,sans-serif;
-  font-size: 15px;
-  line-height: 1.467;
-  color: #34495e;
-  border: 2px solid #bdc3c7;
-  border-radius: 6px;
-  -webkit-transition: border .25s linear,color .25s linear,background-color .25s linear;
-  transition: border .25s linear,color .25s linear,background-color .25s linear;
-}
-
-input.form-control:not(.ng-invalid):focus {
-  box-shadow: 0 0 5px #4d63bc;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #4d63bc;
-}
-
-input.form-control.ng-invalid {
-  color: #e74c3c;
-  border-color: #e74c3c;
-  box-shadow: 0 0 5px #e74c3c;
-  padding: 3px 0px 3px 3px;
-  outline: none;
 }

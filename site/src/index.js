@@ -262,13 +262,13 @@ angular
         '</section>' +
       '</dl>' +
       '<section>' +
-        '<label for="chunk">Chunk</label>' +
+        '<label for="chunk">chunk size</label>' +
         '<input class="form-control" type="number" required name="chunk" min="100" max="1000" ng-model="data.chunk" />' +
       '</section>' +
       '<section>' +
-        '<label for="delay">Delay (ms)</label>' +
+        '<label for="delay">delay time</label>' +
         '<input class="form-control" type="number" required name="delay" min="10" max="1000" ng-model="data.delay" />' +
-      '</section>{{delay | json}}' +
+      '</section>' +
       '<p>' +
         '<strong>chunkified</strong> actions keep the animation active.' +
       '</p>' +
