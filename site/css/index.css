@@ -167,7 +167,7 @@ body {
   opacity: .9;
 }
 
-.main > .button-container > .buttons > button:hover {
+.main > .button-container > .buttons > button:not(:disabled):hover {
   opacity: 1;
 }
 
