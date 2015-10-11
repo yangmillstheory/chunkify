@@ -409,6 +409,7 @@ ${code_by_action[selected](chunkified)}
           scope.iterations.value = state.progress;
           scope.inputs.disabled = true;
         } else {
+          scope.iterations.value = 0;
           scope.inputs.disabled = false;
         }
       }, true);

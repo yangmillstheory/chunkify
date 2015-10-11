@@ -437,6 +437,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
           scope.iterations.value = state.progress;
           scope.inputs.disabled = true;
         } else {
+          scope.iterations.value = 0;
           scope.inputs.disabled = false;
         }
       }, true);
