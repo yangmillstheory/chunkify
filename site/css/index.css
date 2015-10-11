@@ -267,7 +267,11 @@ body .ui-tooltip {
   font-size: 14px;
 }
 
-dl dt {
+.blurb > dl {
+  margin-bottom: 3px;
+}
+
+.blurb > dl dt {
   background-color: grey;
   color: white;
   float: left;
@@ -279,7 +283,7 @@ dl dt {
   text-transform: uppercase;
 }
 
-dl dd {
+.blurb > dl dd {
   margin: 2px 0;
   padding: 5px 0;
   font-weight: 700;
