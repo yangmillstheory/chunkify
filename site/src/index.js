@@ -31,7 +31,6 @@ angular
     }
   });
 
-
   $scope.buttons = {
     disabled: false,
 
@@ -61,10 +60,6 @@ angular
       this.state.selected = action
     },
 
-    deselect(action) {
-      this.state.selected = null
-    },
-
     progress(value) {
       if (_.isNumber(value)) {
         $scope.experiment.progress = value
@@ -88,7 +83,6 @@ angular
     },
 
     _before_action(action, options = {}) {
-      //this.state.current = action;
       this.select(action);
       $scope.buttons.disable();
       return this._clean_options(options);
@@ -166,7 +160,6 @@ angular
       return $scope.actions._before_action(action, options);
     });
   }
-
 }])
 .directive('wisp', ['$interval', ($interval) => {
   function* shifts_generator($element, $parent) {
@@ -341,7 +334,7 @@ return RANGE.forEach(each_fn)`
     range(chunkified = false) {
       let setup = `
 let loop_fn = (index) => {
-  this.simulate_work(index)
+  simulate_work(index)
 };`;
       if (chunkified) {
         return `

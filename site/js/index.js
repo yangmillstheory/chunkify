@@ -80,10 +80,6 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       this.state.selected = action;
     },
 
-    deselect: function deselect(action) {
-      this.state.selected = null;
-    },
-
     progress: function progress(value) {
       if (_underscore2['default'].isNumber(value)) {
         $scope.experiment.progress = value;
@@ -113,7 +109,6 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     _before_action: function _before_action(action) {
       var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-      //this.state.current = action;
       this.select(action);
       $scope.buttons.disable();
       return this._clean_options(options);
@@ -379,7 +374,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     range: function range() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\nlet loop_fn = (index) => {\n  this.simulate_work(index)\n};';
+      var setup = '\nlet loop_fn = (index) => {\n  simulate_work(index)\n};';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.range(loop_fn, RANGE.length, {chunk, delay})';
       } else {
