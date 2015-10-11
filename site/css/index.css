@@ -278,11 +278,11 @@ dl dd {
   font-weight: 700;
 }
 
-.blurb > section:last-of-type {
+.blurb > form > section:last-of-type {
   margin-bottom: 20px;
 }
 
-.blurb > section > label {
+.blurb > form > section > label {
   background-color: grey;
   cursor: default;
   color: white;
@@ -298,7 +298,7 @@ dl dd {
   margin-bottom: 2px;
 }
 
-.blurb > section > input.form-control {
+.blurb > form > section > input.form-control {
   box-shadow: none;
   width: 47px;
   line-height: 1.467;
@@ -312,11 +312,11 @@ dl dd {
   font-weight: bold;
 }
 
-.blurb > section > input.form-control:not(.ng-invalid):focus {
+.blurb > form > section > input.form-control:not(.ng-invalid):focus {
   border: 1px solid #4d63bc;
 }
 
-.blurb > section > input.form-control.ng-invalid {
+.blurb > form > section > input.form-control.ng-invalid {
   color: #e74c3c;
   border-color: #e74c3c;
   outline: none;
