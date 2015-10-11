@@ -20,8 +20,8 @@
       </progressbar>
       <div class='button-container'>
         <div class='buttons' ng-repeat="action in actions.names">
-          <button ng-disabled='buttons.disabled' ng-click='actions[action]()' ng-mouseover="actions.select(action)">
-            {{action | titlecase}}
+          <button ng-class='{active: actions.selected(action)}' ng-disabled='buttons.disabled' ng-click='actions[action]()' ng-mouseover="actions.select(action)">
+            {{action | titlecase}}&nbsp;<span ng-if="actions.selected(action)">✓</span>
           </button>
         </div>
         <label for='chunkify-checkbox'>

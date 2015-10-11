@@ -50,15 +50,19 @@ angular
 
     state: {
       chunkified: true,
-      current: null
+      selected: null
+    },
+
+    selected(action) {
+      return this.state.selected === action
     },
 
     select(action) {
-      this.state.current = action
+      this.state.selected = action
     },
 
     deselect(action) {
-      this.state.current = null
+      this.state.selected = null
     },
 
     progress(value) {
@@ -93,7 +97,6 @@ angular
     _after_action(promise) {
       promise.then((value) => {
         $timeout(() => {
-          this.state.current = null;
           this.progress(0);
           $scope.buttons.enable();
         }, 1000);
@@ -288,10 +291,9 @@ let simulate_work = (index) => {
     }
 })
 .filter('code', () => {
-  const CODE = {
+  const code_by_action = {
     map(chunkified = false) {
       let setup = `
-// map (chunkified: ${chunkified})
 let mapper = (item, index) => {
   return simulate_work(index) + 1
 };`;
@@ -307,7 +309,6 @@ return RANGE.map(mapper))`
     },
     reduce(chunkified = false) {
       let setup = `
-// reduce (chunkified: ${chunkified})
 let reducer = (memo, item, index) => {
   return memo + simulate_work(index);
 };
@@ -324,7 +325,6 @@ return RANGE.reduce(reducer, memo)`;
     },
     each(chunkified = false) {
       let setup = `
-// each (chunkified: ${chunkified})
 let each_fn = (index) => {
   simulate_work(index)
 };`;
@@ -340,7 +340,6 @@ return RANGE.forEach(each_fn)`
     },
     range(chunkified = false) {
       let setup = `
-// range (chunkified: ${chunkified})
 let loop_fn = (index) => {
   this.simulate_work(index)
 };`;
@@ -357,12 +356,17 @@ for (let index = 0; index < RANGE.length; index++) {
       }
     }
   };
-
   return state => {
-    if (state.current === null) {
-      return ''
+    if (state.selected === null) {
+      return `
+Hover over an action button on the left sidebar.`
     } else {
-      return CODE[state.current](state.chunkified)
+      let {selected, chunkified} = state;
+      return `
+// action: ${selected}
+// chunkified: ${chunkified}
+${code_by_action[selected](chunkified)}
+`
     }
   };
 })

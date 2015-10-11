@@ -69,15 +69,19 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
     state: {
       chunkified: true,
-      current: null
+      selected: null
+    },
+
+    selected: function selected(action) {
+      return this.state.selected === action;
     },
 
     select: function select(action) {
-      this.state.current = action;
+      this.state.selected = action;
     },
 
     deselect: function deselect(action) {
-      this.state.current = null;
+      this.state.selected = null;
     },
 
     progress: function progress(value) {
@@ -120,7 +124,6 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
       promise.then(function (value) {
         $timeout(function () {
-          _this2.state.current = null;
           _this2.progress(0);
           $scope.buttons.enable();
         }, 1000);
@@ -342,11 +345,11 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     template: '<div class="action-code">\n          <pre>\n// <strong>chunkified</strong> actions keep the animation active.\n// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.\n\nconst RANGE = _.range(0.5 * Math.pow(10, 5));\n<strong>let chunk = {{chunk}};</strong>\n<strong>let delay = {{delay}};</strong>\nlet simulate_work = (index) => {\n  let i = 0;\n  while (i < random_integer()) {\n    i++\n  }\n  return index\n};\n          </pre>\n          <pre>\n            {{state | code}}\n          </pre>\n        </div>'
   };
 }).filter('code', function () {
-  var CODE = {
+  var code_by_action = {
     map: function map() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\n// map (chunkified: ' + chunkified + ')\nlet mapper = (item, index) => {\n  return simulate_work(index) + 1\n};';
+      var setup = '\nlet mapper = (item, index) => {\n  return simulate_work(index) + 1\n};';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.map(RANGE, mapper, {chunk, delay})';
       } else {
@@ -356,7 +359,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     reduce: function reduce() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\n// reduce (chunkified: ' + chunkified + ')\nlet reducer = (memo, item, index) => {\n  return memo + simulate_work(index);\n};\nlet memo = 0;';
+      var setup = '\nlet reducer = (memo, item, index) => {\n  return memo + simulate_work(index);\n};\nlet memo = 0;';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
       } else {
@@ -366,7 +369,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     each: function each() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\n// each (chunkified: ' + chunkified + ')\nlet each_fn = (index) => {\n  simulate_work(index)\n};';
+      var setup = '\nlet each_fn = (index) => {\n  simulate_work(index)\n};';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.each(RANGE, each_fn, {chunk, delay})';
       } else {
@@ -376,7 +379,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     range: function range() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\n// range (chunkified: ' + chunkified + ')\nlet loop_fn = (index) => {\n  this.simulate_work(index)\n};';
+      var setup = '\nlet loop_fn = (index) => {\n  this.simulate_work(index)\n};';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.range(loop_fn, RANGE.length, {chunk, delay})';
       } else {
@@ -384,12 +387,14 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       }
     }
   };
-
   return function (state) {
-    if (state.current === null) {
-      return '';
+    if (state.selected === null) {
+      return '\nHover over an action button on the left sidebar.';
     } else {
-      return CODE[state.current](state.chunkified);
+      var selected = state.selected;
+      var chunkified = state.chunkified;
+
+      return '\n// action: ' + selected + '\n// chunkified: ' + chunkified + '\n' + code_by_action[selected](chunkified) + '\n';
     }
   };
 }).directive('experiment', function () {

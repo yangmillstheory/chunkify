@@ -168,7 +168,13 @@ body {
   opacity: .9;
 }
 
-.main > .button-container > .buttons > button:not(:disabled):hover {
+.main > .button-container > .buttons > button > span {
+  float: right;
+  margin-right: 5px;
+}
+
+.main > .button-container > .buttons > button:not(:disabled):hover,
+.main > .button-container > .buttons > button:not(:disabled).active {
   opacity: 1;
 }
 
