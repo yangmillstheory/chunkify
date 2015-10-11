@@ -267,7 +267,7 @@ angular
         initial_delay: scope.state.delay,
         disabled: false,
         reset() {
-          if (!state.progress) {
+          if (!scope.state.progress) {
             scope.state.chunk = this.initial_chunk;
             scope.state.delay = this.initial_delay;
           }

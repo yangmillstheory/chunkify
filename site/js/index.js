@@ -343,7 +343,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         initial_delay: scope.state.delay,
         disabled: false,
         reset: function reset() {
-          if (!state.progress) {
+          if (!scope.state.progress) {
             scope.state.chunk = this.initial_chunk;
             scope.state.delay = this.initial_delay;
           }
