@@ -14,28 +14,28 @@
     <a id='npm' href='https://www.npmjs.com/package/chunkify' target="_blank"></a>
     <a id='hn' href='https://news.ycombinator.com/item?id=10328277' target="_blank"></a>
   </div>
-  <div class='main-wrapper'>
-    <div class='main' ng-controller='ChunkifyCtrl'>
+  <div class='main-wrapper' ng-controller='ChunkifyCtrl'>
+    <div class='main'>
       <progressbar progress='experiment.progress' max='experiment.range'>
       </progressbar>
       <div class='button-container'>
         <div class='buttons' ng-repeat="action in actions.names">
-          <button ng-disabled='buttons.disabled' ng-click='actions[action]()'>
+          <button ng-disabled='buttons.disabled' ng-click='actions[action]()' ng-mouseover="actions.select(action)">
             {{action | titlecase}}
           </button>
         </div>
         <label for='chunkify-checkbox'>
-          <input type="checkbox" id='chunkify-checkbox' ng-model="actions.chunkify" />
+          <input type="checkbox" id='chunkify-checkbox' ng-disabled="buttons.disabled" ng-model="actions.state.chunkified" />
           chunkified
         </label>
       </div>
       <experiment state='experiment' disable="buttons.disable()" enable="buttons.enable()">
       </experiment>
     </div>
-    <div class='wisp-container'>
-      <experiment-backdrop data="experiment"></experiment-backdrop>
+    <wisp-container min-width="750" min-height="450">
+      <action-code state="actions.state" chunk="experiment.chunk" delay="experiment.delay"></action-code>
       <wisp></wisp>
-    </div>
+    </wisp-container>
   </div>
 </body>
 </html>

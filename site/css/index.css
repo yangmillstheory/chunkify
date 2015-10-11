@@ -108,6 +108,7 @@ body {
 
 .main-wrapper {
   margin-top: 20px;
+  min-width: 1000px;
 }
 
 .main {
@@ -360,4 +361,17 @@ dl dd {
   color: #a94442;
   background-color: #f2dede;
   margin-top: 20px;
+}
+
+.action-code {
+  margin: 20px;
+}
+
+.action-code pre {
+  font-family: "monofur", monospace;
+  font-size: 18px;
+}
+
+.action-code pre:last-of-type, .action-code pre strong {
+  font-weight: bolder;
 }

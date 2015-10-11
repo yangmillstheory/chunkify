@@ -1,6 +1,5 @@
 import chunkify from '../../dist'
 import angular from 'angular'
-import Spinner from 'spin.js'
 import _ from 'underscore'
 import $ from 'jquery'
 import 'jquery-ui/progressbar'
@@ -19,18 +18,19 @@ angular
 .module('chunkify-demo', [])
 .controller('ChunkifyCtrl', ['$scope', '$timeout', ($scope, $timeout) => {
   const RANGE = _.range(0.5 * Math.pow(10, 5));
-  const CHUNK = 100;
-  const DELAY = 50;
+  const DEFAULT_CHUNK = 100;
+  const DEFAULT_DELAY = 50;
 
   $scope.experiment = _.defaults({}, {
     progress: 0,
     range: RANGE.length,
-    chunk: CHUNK,
-    delay: DELAY,
+    chunk: DEFAULT_CHUNK,
+    delay: DEFAULT_DELAY,
     options() {
       return {delay: this.delay, chunk: this.chunk}
     }
   });
+
 
   $scope.buttons = {
     disabled: false,
@@ -44,12 +44,22 @@ angular
     }
   };
 
-
   $scope.actions = {
 
     names: ['map', 'reduce', 'each', 'range'],
 
-    chunkify: true,
+    state: {
+      chunkified: true,
+      current: null
+    },
+
+    select(action) {
+      this.state.current = action
+    },
+
+    deselect(action) {
+      this.state.current = null
+    },
 
     progress(value) {
       if (_.isNumber(value)) {
@@ -73,7 +83,9 @@ angular
       return options;
     },
 
-    _before_action(options = {}) {
+    _before_action(action, options = {}) {
+      //this.state.current = action;
+      this.select(action);
       $scope.buttons.disable();
       return this._clean_options(options);
     },
@@ -81,6 +93,7 @@ angular
     _after_action(promise) {
       promise.then((value) => {
         $timeout(() => {
+          this.state.current = null;
           this.progress(0);
           $scope.buttons.enable();
         }, 1000);
@@ -92,7 +105,7 @@ angular
         return memo + this.simulate_work(index);
       };
       let memo = 0;
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return chunkify.reduce(RANGE, reducer, _.extend({memo}, $scope.experiment.options()))
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo))
@@ -103,7 +116,7 @@ angular
       let mapper = (item, index) => {
         return this.simulate_work(index) + 1
       };
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return chunkify.map(RANGE, mapper, $scope.experiment.options())
       } else {
         return Promise.resolve(RANGE.map(mapper))
@@ -114,7 +127,7 @@ angular
       let each_fn = (index) => {
         this.simulate_work(index)
       };
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return chunkify.each(RANGE, each_fn, $scope.experiment.options())
       } else {
         return Promise.resolve(RANGE.forEach(each_fn))
@@ -125,7 +138,7 @@ angular
       let loop_fn = (index) => {
         this.simulate_work(index)
       };
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return chunkify.range(loop_fn, RANGE.length, $scope.experiment.options())
       } else {
         return Promise.resolve(this._blocking_range(loop_fn))
@@ -141,18 +154,18 @@ angular
   };
 
   // some metaprogramming to avoid boilerplate
-  for (let method of $scope.actions.names) {
-    $scope.actions[method] = _.compose(promise => {
+  for (let action of $scope.actions.names) {
+    $scope.actions[action] = _.compose(promise => {
       $scope.actions._after_action(promise);
     }, options => {
-      return $scope.actions[`_${method}`](options)
+      return $scope.actions[`_${action}`](options)
     }, options => {
-      return $scope.actions._before_action(options);
+      return $scope.actions._before_action(action, options);
     });
   }
 
 }])
-.directive('wisp', ['$interval', '$window', ($interval, $window) => {
+.directive('wisp', ['$interval', ($interval) => {
   function* shifts_generator($element, $parent) {
     let shifts_index = 0;
     let random_horizontal_offset = () => {
@@ -200,13 +213,6 @@ angular
     link(__, element) {
       let $element = $(element);
       let $parent = $element.parent();
-      let resize = () => {
-        let width = $(window).width() - 250;
-        let height = $(window).height() - 225;
-        $parent.css({width, height});
-        return true
-      };
-      resize() && ($window.onresize = resize);
       let shifts = shifts_generator($element, $parent);
       var animate = (transparent = false) => {
         let css = shifts.next().value;
@@ -222,23 +228,143 @@ angular
     template: '<div id="wisp"></div>'
   }
 }])
-.directive('experimentBackdrop', () => {
+
+.directive('wispContainer', ['$window', ($window) => {
+  return {
+    restrict: 'E',
+    transclude: true,
+    replace: true,
+    scope: {},
+    link(__, element, attrs) {
+      const min_width = parseInt(attrs.minWidth);
+      const min_height = parseInt(attrs.minHeight);
+      let $element = $(element);
+      let resize = () => {
+        let width = Math.max($(window).width() - 250, min_width);
+        let height = Math.max($(window).height() - 225, min_height);
+        $element.css({width, height});
+        return true
+      };
+      resize() && ($window.onresize = resize);
+    },
+    template: `<div class='wisp-container' ng-transclude></div>`
+  }
+}])
+.directive('actionCode', () => {
     return {
       restrict: 'E',
       scope: {
-        data: '='
+        state: '=',
+        chunk: '=',
+        delay: '='
       },
       link(__, element) {
-        $(element).find('.experiment-code').css({
+        $(element).find('.action-code').css({
           width: '100%',
           height: '100%'
-        })
+        });
       },
       template:
-        '<div class="experiment-code">' +
-          '<code></code>' +
-        '</div>'
+        `<div class="action-code">
+          <pre>
+// <strong>chunkified</strong> actions keep the animation active.
+// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.
+
+const RANGE = _.range(0.5 * Math.pow(10, 5));
+<strong>let chunk = {{chunk}};</strong>
+<strong>let delay = {{delay}};</strong>
+let simulate_work = (index) => {
+  let i = 0;
+  while (i < random_integer()) {
+    i++
+  }
+  return index
+};
+          </pre>
+          <pre>
+            {{state | code}}
+          </pre>
+        </div>`
     }
+})
+.filter('code', () => {
+  const CODE = {
+    map(chunkified = false) {
+      let setup = `
+// map (chunkified: ${chunkified})
+let mapper = (item, index) => {
+  return simulate_work(index) + 1
+};`;
+      if (chunkified) {
+        return `
+${setup}
+return chunkify.map(RANGE, mapper, {chunk, delay})`
+      } else {
+        return `
+${setup}
+return RANGE.map(mapper))`
+      }
+    },
+    reduce(chunkified = false) {
+      let setup = `
+// reduce (chunkified: ${chunkified})
+let reducer = (memo, item, index) => {
+  return memo + simulate_work(index);
+};
+let memo = 0;`;
+      if (chunkified) {
+        return `
+${setup}
+return chunkify.reduce(RANGE, reducer, {memo, chunk, delay})`;
+      } else {
+        return `
+${setup}
+return RANGE.reduce(reducer, memo)`;
+      }
+    },
+    each(chunkified = false) {
+      let setup = `
+// each (chunkified: ${chunkified})
+let each_fn = (index) => {
+  simulate_work(index)
+};`;
+      if (chunkified) {
+        return `
+${setup}
+return chunkify.each(RANGE, each_fn, {chunk, delay})`
+      } else {
+        return `
+${setup}
+return RANGE.forEach(each_fn)`
+      }
+    },
+    range(chunkified = false) {
+      let setup = `
+// range (chunkified: ${chunkified})
+let loop_fn = (index) => {
+  this.simulate_work(index)
+};`;
+      if (chunkified) {
+        return `
+${setup}
+return chunkify.range(loop_fn, RANGE.length, {chunk, delay})`
+      } else {
+        return `
+${setup}
+for (let index = 0; index < RANGE.length; index++) {
+  loop_fn(index)
+}`
+      }
+    }
+  };
+
+  return state => {
+    if (state.current === null) {
+      return ''
+    } else {
+      return CODE[state.current](state.chunkified)
+    }
+  };
 })
 .directive('experiment', () => {
   return {
@@ -311,12 +437,6 @@ angular
           </section>
           <a ng-click="inputs.reset()">reset</a>
         </form>
-        <p>
-          <strong>chunkified</strong> actions keep the animation active.
-        </p>
-        <p>
-          un-chunkified actions will <strong>momentarily lock your browser</strong>.
-        </p>
       </div>`
   }
 })
@@ -339,9 +459,9 @@ angular
       scope.$watch('progress', progress);
     },
     template:
-      '<div class="progressbar-container">' +
-        '<div id="progressbar"></div>' +
-      '</div>'
+      `<div class="progressbar-container">
+        <div id="progressbar"></div>
+      </div>`
   }
 })
 .filter('titlecase', () => {

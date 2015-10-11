@@ -10,10 +10,6 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _spinJs = require('spin.js');
-
-var _spinJs2 = _interopRequireDefault(_spinJs);
-
 var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -42,14 +38,14 @@ var random_integer = function random_integer() {
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
   var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
-  var CHUNK = 100;
-  var DELAY = 50;
+  var DEFAULT_CHUNK = 100;
+  var DEFAULT_DELAY = 50;
 
   $scope.experiment = _underscore2['default'].defaults({}, {
     progress: 0,
     range: RANGE.length,
-    chunk: CHUNK,
-    delay: DELAY,
+    chunk: DEFAULT_CHUNK,
+    delay: DEFAULT_DELAY,
     options: function options() {
       return { delay: this.delay, chunk: this.chunk };
     }
@@ -71,7 +67,18 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
     names: ['map', 'reduce', 'each', 'range'],
 
-    chunkify: true,
+    state: {
+      chunkified: true,
+      current: null
+    },
+
+    select: function select(action) {
+      this.state.current = action;
+    },
+
+    deselect: function deselect(action) {
+      this.state.current = null;
+    },
 
     progress: function progress(value) {
       if (_underscore2['default'].isNumber(value)) {
@@ -99,9 +106,11 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       return options;
     },
 
-    _before_action: function _before_action() {
-      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    _before_action: function _before_action(action) {
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
+      //this.state.current = action;
+      this.select(action);
       $scope.buttons.disable();
       return this._clean_options(options);
     },
@@ -111,6 +120,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
       promise.then(function (value) {
         $timeout(function () {
+          _this2.state.current = null;
           _this2.progress(0);
           $scope.buttons.enable();
         }, 1000);
@@ -124,7 +134,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         return memo + _this3.simulate_work(index);
       };
       var memo = 0;
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return _dist2['default'].reduce(RANGE, reducer, _underscore2['default'].extend({ memo: memo }, $scope.experiment.options()));
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo));
@@ -137,7 +147,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var mapper = function mapper(item, index) {
         return _this4.simulate_work(index) + 1;
       };
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return _dist2['default'].map(RANGE, mapper, $scope.experiment.options());
       } else {
         return Promise.resolve(RANGE.map(mapper));
@@ -150,7 +160,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var each_fn = function each_fn(index) {
         _this5.simulate_work(index);
       };
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return _dist2['default'].each(RANGE, each_fn, $scope.experiment.options());
       } else {
         return Promise.resolve(RANGE.forEach(each_fn));
@@ -163,7 +173,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var loop_fn = function loop_fn(index) {
         _this6.simulate_work(index);
       };
-      if (this.chunkify) {
+      if (this.state.chunkified) {
         return _dist2['default'].range(loop_fn, RANGE.length, $scope.experiment.options());
       } else {
         return Promise.resolve(this._blocking_range(loop_fn));
@@ -185,14 +195,14 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
   try {
     var _loop = function () {
-      var method = _step.value;
+      var action = _step.value;
 
-      $scope.actions[method] = _underscore2['default'].compose(function (promise) {
+      $scope.actions[action] = _underscore2['default'].compose(function (promise) {
         $scope.actions._after_action(promise);
       }, function (options) {
-        return $scope.actions['_' + method](options);
+        return $scope.actions['_' + action](options);
       }, function (options) {
-        return $scope.actions._before_action(options);
+        return $scope.actions._before_action(action, options);
       });
     };
 
@@ -213,7 +223,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       }
     }
   }
-}]).directive('wisp', ['$interval', '$window', function ($interval, $window) {
+}]).directive('wisp', ['$interval', function ($interval) {
   var marked1$0 = [shifts_generator].map(regeneratorRuntime.mark);
 
   function shifts_generator($element, $parent) {
@@ -279,13 +289,6 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     link: function link(__, element) {
       var $element = (0, _jquery2['default'])(element);
       var $parent = $element.parent();
-      var resize = function resize() {
-        var width = (0, _jquery2['default'])(window).width() - 250;
-        var height = (0, _jquery2['default'])(window).height() - 225;
-        $parent.css({ width: width, height: height });
-        return true;
-      };
-      resize() && ($window.onresize = resize);
       var shifts = shifts_generator($element, $parent);
       var animate = function animate() {
         var transparent = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
@@ -302,19 +305,92 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
     template: '<div id="wisp"></div>'
   };
-}]).directive('experimentBackdrop', function () {
+}]).directive('wispContainer', ['$window', function ($window) {
+  return {
+    restrict: 'E',
+    transclude: true,
+    replace: true,
+    scope: {},
+    link: function link(__, element, attrs) {
+      var min_width = parseInt(attrs.minWidth);
+      var min_height = parseInt(attrs.minHeight);
+      var $element = (0, _jquery2['default'])(element);
+      var resize = function resize() {
+        var width = Math.max((0, _jquery2['default'])(window).width() - 250, min_width);
+        var height = Math.max((0, _jquery2['default'])(window).height() - 225, min_height);
+        $element.css({ width: width, height: height });
+        return true;
+      };
+      resize() && ($window.onresize = resize);
+    },
+    template: '<div class=\'wisp-container\' ng-transclude></div>'
+  };
+}]).directive('actionCode', function () {
   return {
     restrict: 'E',
     scope: {
-      data: '='
+      state: '=',
+      chunk: '=',
+      delay: '='
     },
     link: function link(__, element) {
-      (0, _jquery2['default'])(element).find('.experiment-code').css({
+      (0, _jquery2['default'])(element).find('.action-code').css({
         width: '100%',
         height: '100%'
       });
     },
-    template: '<div class="experiment-code">' + '<code></code>' + '</div>'
+    template: '<div class="action-code">\n          <pre>\n// <strong>chunkified</strong> actions keep the animation active.\n// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.\n\nconst RANGE = _.range(0.5 * Math.pow(10, 5));\n<strong>let chunk = {{chunk}};</strong>\n<strong>let delay = {{delay}};</strong>\nlet simulate_work = (index) => {\n  let i = 0;\n  while (i < random_integer()) {\n    i++\n  }\n  return index\n};\n          </pre>\n          <pre>\n            {{state | code}}\n          </pre>\n        </div>'
+  };
+}).filter('code', function () {
+  var CODE = {
+    map: function map() {
+      var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var setup = '\n// map (chunkified: ' + chunkified + ')\nlet mapper = (item, index) => {\n  return simulate_work(index) + 1\n};';
+      if (chunkified) {
+        return '\n' + setup + '\nreturn chunkify.map(RANGE, mapper, {chunk, delay})';
+      } else {
+        return '\n' + setup + '\nreturn RANGE.map(mapper))';
+      }
+    },
+    reduce: function reduce() {
+      var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var setup = '\n// reduce (chunkified: ' + chunkified + ')\nlet reducer = (memo, item, index) => {\n  return memo + simulate_work(index);\n};\nlet memo = 0;';
+      if (chunkified) {
+        return '\n' + setup + '\nreturn chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
+      } else {
+        return '\n' + setup + '\nreturn RANGE.reduce(reducer, memo)';
+      }
+    },
+    each: function each() {
+      var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var setup = '\n// each (chunkified: ' + chunkified + ')\nlet each_fn = (index) => {\n  simulate_work(index)\n};';
+      if (chunkified) {
+        return '\n' + setup + '\nreturn chunkify.each(RANGE, each_fn, {chunk, delay})';
+      } else {
+        return '\n' + setup + '\nreturn RANGE.forEach(each_fn)';
+      }
+    },
+    range: function range() {
+      var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var setup = '\n// range (chunkified: ' + chunkified + ')\nlet loop_fn = (index) => {\n  this.simulate_work(index)\n};';
+      if (chunkified) {
+        return '\n' + setup + '\nreturn chunkify.range(loop_fn, RANGE.length, {chunk, delay})';
+      } else {
+        return '\n' + setup + '\nfor (let index = 0; index < RANGE.length; index++) {\n  loop_fn(index)\n}';
+      }
+    }
+  };
+
+  return function (state) {
+    if (state.current === null) {
+      return '';
+    } else {
+      return CODE[state.current](state.chunkified);
+    }
   };
 }).directive('experiment', function () {
   return {
@@ -365,7 +441,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         }
       }, true);
     },
-    template: '<div class="blurb">\n        <dl>\n          <section>\n            <dt>{{iterations.label}}</dt>\n            <dd>{{iterations.value}}</dd>\n          </section>\n        </dl>\n        <form name="form">\n          <section>\n            <label for="chunk">chunk size</label>\n            <input class="form-control" type="number" required ng-disabled="inputs.disabled"\n                   name="chunk" min="{{chunk.min}}" max="{{chunk.max}}" ng-model="state.chunk" />\n          </section>\n          <section>\n            <label for="delay">delay time</label>\n            <input class="form-control" type="number" required ng-disabled="inputs.disabled"\n                   name="delay" min="{{delay.min}}" max="{{delay.max}}" ng-model="state.delay" />\n          </section>\n          <a ng-click="inputs.reset()">reset</a>\n        </form>\n        <p>\n          <strong>chunkified</strong> actions keep the animation active.\n        </p>\n        <p>\n          un-chunkified actions will <strong>momentarily lock your browser</strong>.\n        </p>\n      </div>'
+    template: '<div class="blurb">\n        <dl>\n          <section>\n            <dt>{{iterations.label}}</dt>\n            <dd>{{iterations.value}}</dd>\n          </section>\n        </dl>\n        <form name="form">\n          <section>\n            <label for="chunk">chunk size</label>\n            <input class="form-control" type="number" required ng-disabled="inputs.disabled"\n                   name="chunk" min="{{chunk.min}}" max="{{chunk.max}}" ng-model="state.chunk" />\n          </section>\n          <section>\n            <label for="delay">delay time</label>\n            <input class="form-control" type="number" required ng-disabled="inputs.disabled"\n                   name="delay" min="{{delay.min}}" max="{{delay.max}}" ng-model="state.delay" />\n          </section>\n          <a ng-click="inputs.reset()">reset</a>\n        </form>\n      </div>'
   };
 }).directive('progressbar', function () {
   return {
@@ -385,7 +461,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       };
       scope.$watch('progress', progress);
     },
-    template: '<div class="progressbar-container">' + '<div id="progressbar"></div>' + '</div>'
+    template: '<div class="progressbar-container">\n        <div id="progressbar"></div>\n      </div>'
   };
 }).filter('titlecase', function () {
   return function (word) {
