@@ -278,8 +278,12 @@ dl dd {
   font-weight: 700;
 }
 
+.blurb > form {
+  position: relative;
+}
+
 .blurb > form > section:last-of-type {
-  margin-bottom: 20px;
+  margin-bottom: 35px;
 }
 
 .blurb > form > section > label {
@@ -322,10 +326,26 @@ dl dd {
   outline: none;
 }
 
+.blurb > form > section > input.form-control:disabled {
+  background-color: darkgray;
+}
+
+.blurb > form > a {
+  float: right;
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  color: #4d63bc;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-size: 14px;
+}
+
 .blurb p {
   border-radius: 3px;
   padding: 5px;
-  font-size: 15px;
+  font-size: 18px;
   -moz-box-shadow: 3px 3px 1px 0 #555;
   -webkit-box-shadow: 3px 3px 1px 0 #555;
   box-shadow: 3px 3px 1px 0 #555;
