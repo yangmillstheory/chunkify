@@ -20,7 +20,7 @@ const ALIASES = {
 
 const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);
 
-class ChunkifyOptions {
+let ChunkifyOptions = covenance.covenant(class {
 
   get covenance() {
     return covenance.of(
@@ -99,10 +99,9 @@ class ChunkifyOptions {
     return new this(options)
   }
 
-}
+});
 
 frosty.freeze(ChunkifyOptions.prototype, ...SCHEMA);
-covenance.covenant(ChunkifyOptions);
 
 export default {
   of() {
