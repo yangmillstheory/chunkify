@@ -1,5 +1,7 @@
 import ChunkifyOptions from './options'
-import _ from 'underscore'
+import {
+  isNumber
+} from './utility'
 
 // Return values from the range `start` to `final` synchronously
 // when between intervals of size `chunk`.
@@ -11,7 +13,7 @@ import _ from 'underscore'
 function* chunkify(start, final, options) {
   let {chunk, delay} = options;
   let paused = false;
-  let paused_error = (index) => {
+  let stillPaused = (index) => {
     return new Error(`paused at index ${index}; wait ${delay} milliseconds before further invocations of .next()`)
   };
   function* pause() {
@@ -25,7 +27,7 @@ function* chunkify(start, final, options) {
       yield* pause()
     }
     if (paused) {
-      throw paused_error(index);
+      throw stillPaused(index);
     }
     yield index
   }
@@ -33,9 +35,9 @@ function* chunkify(start, final, options) {
 
 export default {
   of: (start, final, options = {}) => {
-    if (!_.isNumber(start)) {
+    if (!isNumber(start)) {
       throw new Error('start index `start` of generator range must be a number')
-    } else if (!_.isNumber(final)) {
+    } else if (!isNumber(final)) {
       throw new Error('final index `final` of generator range must be a number')
     }
     return chunkify(start, final, ChunkifyOptions.of(options))
