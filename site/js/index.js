@@ -10,9 +10,9 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _lodash = require('lodash');
+var _underscore = require('underscore');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _underscore2 = _interopRequireDefault(_underscore);
 
 var _jquery = require('jquery');
 
@@ -22,10 +22,10 @@ require('jquery-ui/progressbar');
 
 require('jquery-ui/tooltip');
 
-var random_integer = function random_integer() {
+var randomInteger = function randomInteger() {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  var _$defaults = _lodash2['default'].defaults(options, {
+  var _$defaults = _underscore2['default'].defaults(options, {
     max: Math.pow(10, 2),
     min: Math.pow(10, 2) * .75
   });
@@ -37,11 +37,11 @@ var random_integer = function random_integer() {
 };
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
-  var RANGE = _lodash2['default'].range(0.5 * Math.pow(10, 5));
+  var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
   var DEFAULT_CHUNK = 100;
   var DEFAULT_DELAY = 50;
 
-  $scope.experiment = _lodash2['default'].defaults({}, {
+  $scope.experiment = _underscore2['default'].defaults({}, {
     progress: 0,
     range: RANGE.length,
     chunk: DEFAULT_CHUNK,
@@ -81,40 +81,40 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
 
     progress: function progress(value) {
-      if (_lodash2['default'].isNumber(value)) {
+      if (_underscore2['default'].isNumber(value)) {
         $scope.experiment.progress = value;
       } else {
         $scope.experiment.progress += 1;
       }
     },
 
-    simulate_work: function simulate_work(index) {
+    simulateWork: function simulateWork(index) {
       var _this = this;
 
       $timeout(function () {
         _this.progress();
       });
       var i = 0;
-      while (i < random_integer()) {
+      while (i < randomInteger()) {
         i++;
       }
       return index;
     },
 
-    _clean_options: function _clean_options(options) {
+    _cleanOptions: function _cleanOptions(options) {
       // currently a no-op
       return options;
     },
 
-    _before_action: function _before_action(action) {
+    _beforeAction: function _beforeAction(action) {
       var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
       this.select(action);
       $scope.buttons.disable();
-      return this._clean_options(options);
+      return this._cleanOptions(options);
     },
 
-    _after_action: function _after_action(promise) {
+    _afterAction: function _afterAction(promise) {
       var _this2 = this;
 
       promise.then(function (value) {
@@ -129,11 +129,11 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var _this3 = this;
 
       var reducer = function reducer(memo, item, index) {
-        return memo + _this3.simulate_work(index);
+        return memo + _this3.simulateWork(index);
       };
       var memo = 0;
       if (this.state.chunkified) {
-        return _dist2['default'].reduce(RANGE, reducer, _lodash2['default'].extend({ memo: memo }, $scope.experiment.options()));
+        return _dist2['default'].reduce(RANGE, reducer, _underscore2['default'].extend({ memo: memo }, $scope.experiment.options()));
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo));
       }
@@ -143,7 +143,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       var _this4 = this;
 
       var mapper = function mapper(item, index) {
-        return _this4.simulate_work(index) + 1;
+        return _this4.simulateWork(index) + 1;
       };
       if (this.state.chunkified) {
         return _dist2['default'].map(RANGE, mapper, $scope.experiment.options());
@@ -155,32 +155,32 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     _each: function _each() {
       var _this5 = this;
 
-      var each_fn = function each_fn(index) {
-        _this5.simulate_work(index);
+      var eachFn = function eachFn(index) {
+        _this5.simulateWork(index);
       };
       if (this.state.chunkified) {
-        return _dist2['default'].each(RANGE, each_fn, $scope.experiment.options());
+        return _dist2['default'].each(RANGE, eachFn, $scope.experiment.options());
       } else {
-        return Promise.resolve(RANGE.forEach(each_fn));
+        return Promise.resolve(RANGE.forEach(eachFn));
       }
     },
 
     _range: function _range() {
       var _this6 = this;
 
-      var loop_fn = function loop_fn(index) {
-        _this6.simulate_work(index);
+      var loopFn = function loopFn(index) {
+        _this6.simulateWork(index);
       };
       if (this.state.chunkified) {
-        return _dist2['default'].range(loop_fn, RANGE.length, $scope.experiment.options());
+        return _dist2['default'].range(loopFn, RANGE.length, $scope.experiment.options());
       } else {
-        return Promise.resolve(this._blocking_range(loop_fn));
+        return Promise.resolve(this._blockingRange(loopFn));
       }
     },
 
-    _blocking_range: function _blocking_range(loop_fn) {
+    _blockingRange: function _blockingRange(loopFn) {
       for (var index = 0; index < RANGE.length; index++) {
-        loop_fn(index);
+        loopFn(index);
       }
     }
 
@@ -195,12 +195,12 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     var _loop = function () {
       var action = _step.value;
 
-      $scope.actions[action] = _lodash2['default'].compose(function (promise) {
-        $scope.actions._after_action(promise);
+      $scope.actions[action] = _underscore2['default'].compose(function (promise) {
+        $scope.actions._afterAction(promise);
       }, function (options) {
         return $scope.actions['_' + action](options);
       }, function (options) {
-        return $scope.actions._before_action(action, options);
+        return $scope.actions._beforeAction(action, options);
       });
     };
 
@@ -222,43 +222,43 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     }
   }
 }]).directive('wisp', ['$interval', function ($interval) {
-  var marked1$0 = [shifts_generator].map(regeneratorRuntime.mark);
+  var marked1$0 = [shiftsGenerator].map(regeneratorRuntime.mark);
 
-  function shifts_generator($element, $parent) {
-    var shifts_index, random_horizontal_offset, random_vertical_offset, shifts, length;
-    return regeneratorRuntime.wrap(function shifts_generator$(context$2$0) {
+  function shiftsGenerator($element, $parent) {
+    var shifts_index, randomHorizontalOffset, randomVerticalOffset, shifts, length;
+    return regeneratorRuntime.wrap(function shiftsGenerator$(context$2$0) {
       while (1) switch (context$2$0.prev = context$2$0.next) {
         case 0:
           shifts_index = 0;
 
-          random_horizontal_offset = function random_horizontal_offset() {
+          randomHorizontalOffset = function randomHorizontalOffset() {
             var width = $parent.width();
-            return random_integer({ min: 0.25 * width, max: width });
+            return randomInteger({ min: 0.25 * width, max: width });
           };
 
-          random_vertical_offset = function random_vertical_offset() {
+          randomVerticalOffset = function randomVerticalOffset() {
             var height = $parent.height();
-            return random_integer({ min: 0.25 * height, max: height });
+            return randomInteger({ min: 0.25 * height, max: height });
           };
 
           shifts = [function () {
-            var max_horizontal_offset = $parent.offset().left + $parent.width() - ($element.offset().left + $element.width());
+            var maxHorizontalOffset = $parent.offset().left + $parent.width() - ($element.offset().left + $element.width());
             return {
-              left: '+=' + Math.min(random_horizontal_offset(), max_horizontal_offset)
+              left: '+=' + Math.min(randomHorizontalOffset(), maxHorizontalOffset)
             };
           }, function () {
-            var max_vertical_offset = $parent.offset().top + $parent.height() - ($element.offset().top + $element.height());
+            var maxVerticalOffset = $parent.offset().top + $parent.height() - ($element.offset().top + $element.height());
             return {
-              top: '+=' + Math.min(random_vertical_offset(), max_vertical_offset)
+              top: '+=' + Math.min(randomVerticalOffset(), maxVerticalOffset)
             };
           }, function () {
-            var max_horizontal_offset = $element.offset().left - $parent.offset().left;
+            var maxHorizontalOffset = $element.offset().left - $parent.offset().left;
             return {
-              left: '-=' + Math.min(random_horizontal_offset(), max_horizontal_offset) };
+              left: '-=' + Math.min(randomHorizontalOffset(), maxHorizontalOffset) };
           }, function () {
-            var max_vertical_offset = $element.offset().top - $parent.offset().top;
+            var maxVerticalOffset = $element.offset().top - $parent.offset().top;
             return {
-              top: '-=' + Math.min(random_vertical_offset(), max_vertical_offset)
+              top: '-=' + Math.min(randomVerticalOffset(), maxVerticalOffset)
             };
           }];
           length = shifts.length;
@@ -270,7 +270,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
           }
 
           context$2$0.next = 8;
-          return shifts[random_integer({ min: 0, max: length })]();
+          return shifts[randomInteger({ min: 0, max: length })]();
 
         case 8:
           context$2$0.next = 5;
@@ -284,18 +284,18 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
   }
   return {
     replace: true,
-    link: function link(__, element) {
+    link: function link(scope, element) {
       var $element = (0, _jquery2['default'])(element);
       var $parent = $element.parent();
-      var shifts = shifts_generator($element, $parent);
+      var shifts = shiftsGenerator($element, $parent);
       var animate = function animate() {
         var transparent = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
         var css = shifts.next().value;
         if (transparent) {
-          _lodash2['default'].extend(css, { opacity: 0.5 });
+          _underscore2['default'].extend(css, { opacity: 0.5 });
         } else {
-          _lodash2['default'].extend(css, { opacity: 1 });
+          _underscore2['default'].extend(css, { opacity: 1 });
         }
         $element.animate(css, 400, animate.bind(null, !transparent));
       };
@@ -309,7 +309,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     transclude: true,
     replace: true,
     scope: {},
-    link: function link(__, element, attrs) {
+    link: function link(scope, element, attrs) {
       var min_width = parseInt(attrs.minWidth);
       var min_height = parseInt(attrs.minHeight);
       var $element = (0, _jquery2['default'])(element);
@@ -331,20 +331,20 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       chunk: '=',
       delay: '='
     },
-    link: function link(__, element) {
+    link: function link(scope, element) {
       (0, _jquery2['default'])(element).find('.action-code').css({
         width: '100%',
         height: '100%'
       });
     },
-    template: '<div class="action-code">\n          <pre>\n// <strong>chunkified</strong> actions keep the animation active.\n// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.\n\nconst RANGE = _.range(0.5 * Math.pow(10, 5));\n<strong>let chunk = {{chunk}};</strong>\n<strong>let delay = {{delay}};</strong>\nlet simulate_work = (index) => {\n  let i = 0;\n  while (i < random_integer()) {\n    i++\n  }\n  return index\n};\n          </pre>\n          <pre>\n            {{state | code}}\n          </pre>\n        </div>'
+    template: '<div class="action-code">\n          <pre>\n// <strong>chunkified</strong> actions keep the animation active.\n// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.\n\nconst RANGE = _.range(0.5 * Math.pow(10, 5));\n<strong>let chunk = {{chunk}};</strong>\n<strong>let delay = {{delay}};</strong>\nlet simulateWork = (index) => {\n  let i = 0;\n  while (i < randomInteger()) {\n    i++\n  }\n  return index\n};\n          </pre>\n          <pre>\n            {{state | code}}\n          </pre>\n        </div>'
   };
 }).filter('code', function () {
   var code_by_action = {
     map: function map() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\nlet mapper = (item, index) => {\n  return simulate_work(index) + 1\n};';
+      var setup = '\nlet mapper = (item, index) => {\n  return simulateWork(index) + 1\n};';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.map(RANGE, mapper, {chunk, delay})';
       } else {
@@ -354,7 +354,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     reduce: function reduce() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\nlet reducer = (memo, item, index) => {\n  return memo + simulate_work(index);\n};\nlet memo = 0;';
+      var setup = '\nlet reducer = (memo, item, index) => {\n  return memo + simulateWork(index);\n};\nlet memo = 0;';
       if (chunkified) {
         return '\n' + setup + '\nreturn chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
       } else {
@@ -364,21 +364,21 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     each: function each() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\nlet each_fn = (index) => {\n  simulate_work(index)\n};';
+      var setup = '\nlet eachFn = (index) => {\n  simulateWork(index)\n};';
       if (chunkified) {
-        return '\n' + setup + '\nreturn chunkify.each(RANGE, each_fn, {chunk, delay})';
+        return '\n' + setup + '\nreturn chunkify.each(RANGE, eachFn, {chunk, delay})';
       } else {
-        return '\n' + setup + '\nreturn RANGE.forEach(each_fn)';
+        return '\n' + setup + '\nreturn RANGE.forEach(eachFn)';
       }
     },
     range: function range() {
       var chunkified = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-      var setup = '\nlet loop_fn = (index) => {\n  simulate_work(index)\n};';
+      var setup = '\nlet loopFn = (index) => {\n  simulateWork(index)\n};';
       if (chunkified) {
-        return '\n' + setup + '\nreturn chunkify.range(loop_fn, RANGE.length, {chunk, delay})';
+        return '\n' + setup + '\nreturn chunkify.range(loopFn, RANGE.length, {chunk, delay})';
       } else {
-        return '\n' + setup + '\nfor (let index = 0; index < RANGE.length; index++) {\n  loop_fn(index)\n}';
+        return '\n' + setup + '\nfor (let index = 0; index < RANGE.length; index++) {\n  loopFn(index)\n}';
       }
     }
   };
@@ -415,13 +415,13 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
         label: 'delay time'
       };
       scope.inputs = {
-        initial_chunk: scope.state.chunk,
-        initial_delay: scope.state.delay,
+        initialChunk: scope.state.chunk,
+        initialDelay: scope.state.delay,
         disabled: false,
         reset: function reset() {
           if (!scope.state.progress) {
-            scope.state.chunk = this.initial_chunk;
-            scope.state.delay = this.initial_delay;
+            scope.state.chunk = this.initialChunk;
+            scope.state.delay = this.initialDelay;
           }
         }
       };
