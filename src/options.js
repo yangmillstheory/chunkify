@@ -2,7 +2,7 @@ import {
   isFunction,
   isBoolean,
   isNumber,
-  isObject,
+  isPlainObject,
   defaults,
   extend
 } from './utility'
@@ -79,6 +79,7 @@ class ChunkifyOptions {
   
   constructor(options) {
     extend(this, parseOptions(options));
+    Object.freeze(this);
   }
 
   static of(options) {
@@ -88,7 +89,7 @@ class ChunkifyOptions {
     let throwTypeError = () => {
       throw new TypeError(`Expected options object, got ${typeof options}`)
     };
-    if (!isObject(options)) {
+    if (!isPlainObject(options)) {
       throwTypeError()
     } else if (Array.isArray(options)) {
       throwTypeError()
@@ -99,8 +100,6 @@ class ChunkifyOptions {
   }
 
 };
-
-Object.freeze(ChunkifyOptions.prototype);
 
 export default {
   of() {
