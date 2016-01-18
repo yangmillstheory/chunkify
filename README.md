@@ -90,7 +90,7 @@ Like [chunkify.interval](#interval), with `options.start` forced to `0`.
 
 ## Contributing
 
-**Development is in `snake_case` ES6.**
+**Development is in ES6.**
 
 Get the source.
 
