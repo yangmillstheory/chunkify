@@ -1,6 +1,12 @@
 import {covenance} from 'covenance'
 import frosty from 'frosty'
-import _ from 'underscore'
+import {
+  isFunction,
+  isBoolean,
+  isNumber,
+  isObject,
+  defaults
+} from './utility'
 
 const DEFAULTS = {
   chunk: 1,
@@ -27,14 +33,14 @@ let ChunkifyOptions = covenance.covenant(class {
       {
         attribute: 'chunk',
         validator: (chunk) => {
-          return _.isNumber(chunk) && chunk > 0;
+          return isNumber(chunk) && chunk > 0;
         },
         excstring: "'chunk' should be a positive number"
       },
       {
         attribute: 'delay',
         validator: (delay) => {
-          return _.isNumber(delay) && delay >= 0;
+          return isNumber(delay) && delay >= 0;
         },
         excstring: "'delay' should be a non-negative number"
       },
@@ -43,9 +49,9 @@ let ChunkifyOptions = covenance.covenant(class {
         validator: (scope) => {
           if (scope === undefined) {
             return false
-          } else if (_.isBoolean(scope)) {
+          } else if (isBoolean(scope)) {
             return false
-          } else if (_.isNumber(scope)) {
+          } else if (isNumber(scope)) {
             return false
           }
           return true
@@ -56,14 +62,14 @@ let ChunkifyOptions = covenance.covenant(class {
   }
 
   constructor(options) {
-    _.extend(this, this.constructor._parse_options(options));
+    _.extend(this, this.constructor._parseOptions(options));
     this.check_covenants();
     return this;
   }
 
-  static _parse_options(options) {
-    let parsed = {};
-    let setkey = (key, alias) => {
+  static _parseOptions(options) {
+    let parsed = defaults({}, DEFAULTS);
+    let setKey = (key, alias) => {
       if (options[alias] === undefined) {
         return false;
       }
@@ -71,30 +77,30 @@ let ChunkifyOptions = covenance.covenant(class {
       return true
     };
     for (let key of SCHEMA) {
-      if (!setkey(key, key)) {
+      if (!setKey(key, key)) {
         for (let alias of ALIASES[key]) {
-          if (setkey(key, alias)) {
+          if (setKey(key, alias)) {
             break
           }
         }
       }
     }
-    return _.defaults(parsed, DEFAULTS)
+    return parsed;
   }
 
   static of(options) {
     if (options instanceof this) {
       return options;
     }
-    let throw_not_an_object = () => {
+    let throwTypeError = () => {
       throw new TypeError(`Expected options object, got ${typeof options}`)
     };
-    if (!_.isObject(options)) {
-      throw_not_an_object()
+    if (!isObject(options)) {
+      throwTypeError()
     } else if (Array.isArray(options)) {
-      throw_not_an_object()
-    } else if (_.isFunction(options)) {
-      throw_not_an_object()
+      throwTypeError()
+    } else if (isFunction(options)) {
+      throwTypeError()
     }
     return new this(options)
   }
