@@ -1,10 +1,12 @@
-import _ from 'underscore'
+import {
+  isFunction
+} from '../utility'
 
 export default {
-  ok_usage(array, fn, usage) {
+  checkUsage(array, fn, usage) {
     if (!Array.isArray(array)) {
       throw new TypeError(`${usage} - bad array; not an array`)
-    } else if (!_.isFunction(fn)) {
+    } else if (!isFunction(fn)) {
       throw new TypeError(`${usage} - bad fn; not a function`)
     }
   }

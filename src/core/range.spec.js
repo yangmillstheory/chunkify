@@ -1,7 +1,5 @@
 import test from 'tape'
 import sinon from 'sinon'
-import _ from 'underscore'
-
 import chunkify from '../index'
 import {ChunkifyOptionsSpy, tick} from '../testutils'
 import ChunkifyOptions from '../options'
@@ -97,12 +95,12 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
   tick({
     delay: 9,
 
-    before_tick() {
+    beforeTick() {
       chunkify.range(fn, 4, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
-    after_tick() {
+    afterTick() {
       t.equals(fn.callCount, 3);
       t.end();
     }
@@ -115,12 +113,12 @@ test('should start again after `delay` milliseconds from last yielding', t => {
   tick({
     delay: 11,
 
-    before_tick() {
+    beforeTick() {
       chunkify.range(fn, 4, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
-    after_tick() {
+    afterTick() {
       t.equals(fn.callCount, 4);
       t.end();
     }
@@ -133,13 +131,13 @@ test('should resolve with undefined', t => {
   tick({
     delay: 11,
 
-    before_tick() {
+    beforeTick() {
       let promise = chunkify.range(fn, 4, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
       return promise
     },
 
-    after_tick(promise) {
+    afterTick(promise) {
       t.equals(fn.callCount, 4);
       promise.then((result) => {
         t.equals(result, undefined);
@@ -170,12 +168,12 @@ test('should not yield after `chunk` iterations if processing is complete', t =>
   tick({
     delay: 20,
 
-    before_tick() {
+    beforeTick() {
       chunkify.range(fn, 3, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 3)
     },
 
-    after_tick() {
+    afterTick() {
       t.equals(fn.callCount, 3);
       t.end()
     }

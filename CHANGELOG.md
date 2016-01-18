@@ -2,7 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0] - [3.0.4] 2015-10-03
+## [3.0.6] 2016-1-17
+### CHANGES
+Removed all dependencies except for babel.
+
+## [3.0.0] - [3.0.5] 2015-10-03
 ### BREAKING CHANGES
 * `chunkify.range` renamed to `chunkify.interval`
 * `chunkify.loop` renamed to `chunkify.range`

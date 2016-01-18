@@ -105,17 +105,23 @@ test('should be immutable', t => {
 
   t.throws(() => {
     options.delay = 0
-  }, /delay is immutable/);
+  }, /Cannot assign to read only property 'delay'/);
   t.throws(() => {
     options.chunk = 1
-  }, /chunk is immutable/);
+  }, /Cannot assign to read only property 'chunk'/);
   t.throws(() => {
     options.scope = this
-  }, /scope is immutable/);
-
-  delete options.delay;
-  delete options.chunk;
-  delete options.scope;
+  }, /Cannot assign to read only property 'scope'/);
+  
+  t.throws(() => {
+    delete options.delay;
+  }, /Cannot delete property 'delay'/);
+  t.throws(() => {
+    delete options.chunk;
+  }, /Cannot delete property 'chunk'/);
+  t.throws(() => {
+    delete options.scope; 
+  }, /Cannot delete property 'scope'/);
 
   t.ok(options.delay);
   t.ok(options.chunk);

@@ -1,6 +1,11 @@
-import {covenance, CovenantBroken} from 'covenance'
-import frosty from 'frosty'
-import _ from 'underscore'
+import {
+  isFunction,
+  isBoolean,
+  isNumber,
+  isPlainObject,
+  defaults,
+  extend
+} from './utility'
 
 const DEFAULTS = {
   chunk: 1,
@@ -18,90 +23,83 @@ const ALIASES = {
   scope: []
 };
 
-const SCHEMA = Object.getOwnPropertyNames(DEFAULTS);
-
-let ChunkifyOptions = covenance.covenant(class {
-
-  get covenance() {
-    return covenance.of(
-      {
-        attribute: 'chunk',
-        validator: (chunk) => {
-          return _.isNumber(chunk) && chunk > 0;
-        },
-        excstring: "'chunk' should be a positive number"
-      },
-      {
-        attribute: 'delay',
-        validator: (delay) => {
-          return _.isNumber(delay) && delay >= 0;
-        },
-        excstring: "'delay' should be a non-negative number"
-      },
-      {
-        attribute: 'scope',
-        validator: (scope) => {
-          if (scope === undefined) {
-            return false
-          } else if (_.isBoolean(scope)) {
-            return false
-          } else if (_.isNumber(scope)) {
-            return false
-          }
-          return true
-        },
-        excstring: "'scope' should be a defined non-boolean and non-number, or null"
-      }
-    )
+const SCHEMA = {
+  
+  values: Object.getOwnPropertyNames(DEFAULTS),
+  
+  _chunkCheck(chunk) {
+    if (!isNumber(chunk) || chunk <= 0) {
+      throw new Error("'chunk' should be a positive number");
+    }
+  },
+  
+  _delayCheck(delay) {
+    if (!isNumber(delay) || delay < 0) {
+      throw new Error("'delay' should be a non-negative number");
+    }
+  },
+  
+  _scopeCheck(scope) {
+    if (scope === undefined || isBoolean(scope) || isNumber(scope)) {
+      throw new Error(
+        "'scope' should be a defined non-boolean and non-number, or null")
+    }
+  },
+  
+  checkOption(key, value) {
+    this[`_${key}Check`](value);
   }
+  
+};
 
-  constructor(options) {
-    _.extend(this, this.constructor._parse_options(options));
-    this.check_covenants();
-    return this;
-  }
-
-  static _parse_options(options) {
-    let parsed = {};
-    let setkey = (key, alias) => {
+let parseOptions = options => {
+  let parsed = defaults({}, DEFAULTS);
+    let setKey = (key, alias) => {
       if (options[alias] === undefined) {
         return false;
       }
       parsed[key] = options[alias];
       return true
     };
-    for (let key of SCHEMA) {
-      if (!setkey(key, key)) {
+    for (let key of SCHEMA.values) {
+      if (!setKey(key, key)) {
         for (let alias of ALIASES[key]) {
-          if (setkey(key, alias)) {
+          if (setKey(key, alias)) {
             break
           }
         }
       }
+      SCHEMA.checkOption(key, parsed[key]);
     }
-    return _.defaults(parsed, DEFAULTS)
+    return parsed;
+};
+  
+
+class ChunkifyOptions {
+  
+  constructor(options) {
+    extend(this, parseOptions(options));
+    Object.freeze(this);
   }
 
   static of(options) {
     if (options instanceof this) {
       return options;
     }
-    let throw_not_an_object = () => {
+    let throwTypeError = () => {
       throw new TypeError(`Expected options object, got ${typeof options}`)
     };
-    if (!_.isObject(options)) {
-      throw_not_an_object()
+    if (!isPlainObject(options)) {
+      throwTypeError()
     } else if (Array.isArray(options)) {
-      throw_not_an_object()
-    } else if (_.isFunction(options)) {
-      throw_not_an_object()
+      throwTypeError()
+    } else if (isFunction(options)) {
+      throwTypeError()
     }
     return new this(options)
   }
 
-});
-
-frosty.freeze(ChunkifyOptions.prototype, ...SCHEMA);
+};
 
 export default {
   of() {
