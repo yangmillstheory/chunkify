@@ -10,9 +10,9 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _underscore = require('underscore');
+var _lodash = require('lodash');
 
-var _underscore2 = _interopRequireDefault(_underscore);
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _jquery = require('jquery');
 
@@ -25,7 +25,7 @@ require('jquery-ui/tooltip');
 var random_integer = function random_integer() {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  var _$defaults = _underscore2['default'].defaults(options, {
+  var _$defaults = _lodash2['default'].defaults(options, {
     max: Math.pow(10, 2),
     min: Math.pow(10, 2) * .75
   });
@@ -37,11 +37,11 @@ var random_integer = function random_integer() {
 };
 
 _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
-  var RANGE = _underscore2['default'].range(0.5 * Math.pow(10, 5));
+  var RANGE = _lodash2['default'].range(0.5 * Math.pow(10, 5));
   var DEFAULT_CHUNK = 100;
   var DEFAULT_DELAY = 50;
 
-  $scope.experiment = _underscore2['default'].defaults({}, {
+  $scope.experiment = _lodash2['default'].defaults({}, {
     progress: 0,
     range: RANGE.length,
     chunk: DEFAULT_CHUNK,
@@ -81,7 +81,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     },
 
     progress: function progress(value) {
-      if (_underscore2['default'].isNumber(value)) {
+      if (_lodash2['default'].isNumber(value)) {
         $scope.experiment.progress = value;
       } else {
         $scope.experiment.progress += 1;
@@ -133,7 +133,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
       };
       var memo = 0;
       if (this.state.chunkified) {
-        return _dist2['default'].reduce(RANGE, reducer, _underscore2['default'].extend({ memo: memo }, $scope.experiment.options()));
+        return _dist2['default'].reduce(RANGE, reducer, _lodash2['default'].extend({ memo: memo }, $scope.experiment.options()));
       } else {
         return Promise.resolve(RANGE.reduce(reducer, memo));
       }
@@ -195,7 +195,7 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
     var _loop = function () {
       var action = _step.value;
 
-      $scope.actions[action] = _underscore2['default'].compose(function (promise) {
+      $scope.actions[action] = _lodash2['default'].compose(function (promise) {
         $scope.actions._after_action(promise);
       }, function (options) {
         return $scope.actions['_' + action](options);
@@ -293,9 +293,9 @@ _angular2['default'].module('chunkify-demo', []).controller('ChunkifyCtrl', ['$s
 
         var css = shifts.next().value;
         if (transparent) {
-          _underscore2['default'].extend(css, { opacity: 0.5 });
+          _lodash2['default'].extend(css, { opacity: 0.5 });
         } else {
-          _underscore2['default'].extend(css, { opacity: 1 });
+          _lodash2['default'].extend(css, { opacity: 1 });
         }
         $element.animate(css, 400, animate.bind(null, !transparent));
       };

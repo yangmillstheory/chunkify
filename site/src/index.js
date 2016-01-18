@@ -1,6 +1,6 @@
 import chunkify from '../../dist'
 import angular from 'angular'
-import _ from 'underscore'
+import _ from 'lodash'
 import $ from 'jquery'
 import 'jquery-ui/progressbar'
 import 'jquery-ui/tooltip'
