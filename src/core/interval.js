@@ -1,19 +1,22 @@
 import chunkify from '../index'
 import ChunkifyOptions from '../options'
-import _ from 'underscore'
+import {
+  isFunction,
+  isNumber
+} from '../utility'
 
 
 const USAGE = 'Usage: chunkify.interval(Function fn, Number final, [Object options])';
 
-let ok_usage = (fn, final, options) => {
-  if (!_.isFunction(fn)) {
+let checkUsage = (fn, final, options) => {
+  if (!isFunction(fn)) {
     throw new Error(`${USAGE} - bad fn; not a function`);
-  } else  if (!_.isNumber(final)) {
+  } else  if (!isNumber(final)) {
     throw new Error(`${USAGE} - bad final; not a number`);
   }
   let {start} = options;
   if (start != null) {
-    if (!_.isNumber(start)) {
+    if (!isNumber(start)) {
       throw new Error(`${USAGE} - bad start; not a number`);
     } else if (start > final) {
       throw new Error(`${USAGE} - bad start; it's greater than final`);
@@ -22,15 +25,15 @@ let ok_usage = (fn, final, options) => {
 };
 
 let interval = (fn, final, options = {}) => {
-  ok_usage(fn, final, options);
+  checkUsage(fn, final, options);
   let start = options.start || 0;
-  let okoptions = ChunkifyOptions.of(options);
-  let generator = chunkify.generator(start, final, okoptions);
-  var process_chunk_sync = (resolve, reject) => {
+  let chOptions = ChunkifyOptions.of(options);
+  let generator = chunkify.generator(start, final, chOptions);
+  var processChunkSync = (resolve, reject) => {
     let next = generator.next();
     while (!(next.value instanceof Promise) && !next.done) {
       try {
-        fn.call(okoptions.scope, next.value)
+        fn.call(chOptions.scope, next.value)
       } catch (error) {
         return reject({error, index: next.value});
       }
@@ -40,10 +43,10 @@ let interval = (fn, final, options = {}) => {
       return resolve();
     }
     return next.value.then(() => {
-      return process_chunk_sync(resolve, reject)
+      return processChunkSync(resolve, reject)
     });
   };
-  return new Promise(process_chunk_sync);
+  return new Promise(processChunkSync);
 };
 
 export default interval
