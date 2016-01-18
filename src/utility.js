@@ -25,6 +25,12 @@ exports.defaults = (defaultsObj, overridesObj) => {
   });
 }
 
+exports.extend = (targetObj, sourceObj) => {
+  forOwn(sourceObj, (value, key) => {
+    targetObj[key] = sourceObj[key];
+  });
+}
+
 exports.compose = (f, g, context) => {
   return function() {
     return f.call(context, g.apply(context, [].slice.call(arguments)));
