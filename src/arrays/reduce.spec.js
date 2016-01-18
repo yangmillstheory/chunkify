@@ -1,7 +1,5 @@
 import test from 'tape'
 import sinon from 'sinon'
-import _ from 'underscore'
-
 import chunkify from '../index'
 import {ChunkifyOptionsSpy, tick} from '../testutils'
 import ChunkifyOptions from '../options'
@@ -107,12 +105,12 @@ test('should yield for at least `delay` ms after `chunk` iterations', t => {
   tick({
     delay: 9,
 
-    before_tick() {
+    beforeTick() {
       chunkify.reduce(['A', 'B', 'C', 'D'], fn, {memo: '', chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
-    after_tick() {
+    afterTick() {
       t.equals(fn.callCount, 3);
       t.end();
     }
@@ -128,12 +126,12 @@ test('should start again after `delay` milliseconds from last yielding', t => {
   tick({
     delay: 11,
 
-    before_tick() {
+    beforeTick() {
       chunkify.reduce(array, fn, {memo: '', chunk: 3, delay: 10});
       t.equals(fn.callCount, 3);
     },
 
-    after_tick() {
+    afterTick() {
       t.equals(fn.callCount, 4);
       t.deepEqual(fn.getCall(3).args, ['', 'D', 3, array]);
       t.end();
@@ -149,13 +147,13 @@ test('should resolve with the reduced result from a default memo', t => {
   tick({
     delay: 11,
 
-    before_tick() {
+    beforeTick() {
       let promise = chunkify.reduce(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
       t.equals(fn.callCount, 2);
       return promise
     },
 
-    after_tick(promise) {
+    afterTick(promise) {
       t.equals(fn.callCount, 3);
       promise.then((result) => {
         t.deepEquals(result, 'a+b+c+d');
@@ -173,14 +171,14 @@ test('should resolve with the reduced result from a given memo', t => {
   tick({
     delay: 11,
 
-    before_tick() {
+    beforeTick() {
       let promise = chunkify.reduce(
         ['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10, memo: 'MEMO'});
       t.equals(fn.callCount, 3);
       return promise
     },
 
-    after_tick(promise) {
+    afterTick(promise) {
       t.equals(fn.callCount, 4);
       promise.then((result) => {
         t.deepEquals(result, 'memo+a+b+c+d');
@@ -211,12 +209,12 @@ test('should not yield after `chunk` iterations if processing is complete', t =>
   tick({
     delay: 20,
 
-    before_tick() {
+    beforeTick() {
       chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, delay: 10, memo: ''});
       t.equals(fn.callCount, 3)
     },
 
-    after_tick() {
+    afterTick() {
       t.equals(fn.callCount, 3);
       t.end()
     }

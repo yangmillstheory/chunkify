@@ -23,12 +23,14 @@ exports.defaults = (defaultsObj, overridesObj) => {
       defaultsObj[key] = overridesObj[key];
     }
   });
+  return defaultsObj
 }
 
 exports.extend = (targetObj, sourceObj) => {
   forOwn(sourceObj, (value, key) => {
     targetObj[key] = sourceObj[key];
   });
+  return targetObj
 }
 
 exports.compose = (f, g, context) => {
