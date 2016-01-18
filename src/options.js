@@ -1,4 +1,4 @@
-import {covenance, CovenantBroken} from 'covenance'
+import {covenance} from 'covenance'
 import frosty from 'frosty'
 import _ from 'underscore'
 
