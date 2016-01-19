@@ -1,10 +1,4 @@
-let isTypeFn = typeName => {
-  return thing => {
-    return typeof thing === typeName;
-  };
-}
-
-let forOwn = (iteratee, iterator) => {
+export var forOwn = (iteratee, iterator: Function): void => {
   for (let key in iteratee) {
     if (iteratee.hasOwnProperty(key)) {
       iterator(iteratee[key], key);
@@ -12,12 +6,21 @@ let forOwn = (iteratee, iterator) => {
   }
 };
 
-exports.isFunction = isTypeFn('function');
-exports.isBoolean = isTypeFn('boolean');
-exports.isNumber = isTypeFn('number');
-exports.isPlainObject = thing => {
+export var isFunction = (thing: any): boolean => {
+  return typeof thing === 'function';
+};
+
+export var isBoolean = (thing: any): boolean => {
+  return typeof thing === 'boolean';
+};
+
+export var isNumber = (thing: any): boolean => {
+  return typeof thing === 'number';
+};
+
+export var isPlainObject = (thing: any): boolean => {
   // slightly modified from:
-  // 
+  //
   //    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
   let isObjectLike = () => {
     return !!thing && typeof thing === 'object';
@@ -38,26 +41,29 @@ exports.isPlainObject = thing => {
   return (exports.isFunction(ctor) &&
     ctor instanceof ctor &&
     functToString.call(ctor) === functToString.call(Object));
-}
+};
 
-exports.defaults = (defaultsObj, overridesObj) => {
-  forOwn(overridesObj, (value, key) => {
+export var defaults = (defaultsObj: Object, overrideObj: Object): Object => {
+  forOwn(overrideObj, (value, key: string) => {
     if (!defaultsObj.hasOwnProperty(key)) {
-      defaultsObj[key] = overridesObj[key];
+      defaultsObj[key] = overrideObj[key];
     }
   });
-  return defaultsObj
-}
+  return defaultsObj;
+};
 
-exports.extend = (targetObj, sourceObj) => {
+export var extend = (targetObj: Object, sourceObj: Object): Object => {
   forOwn(sourceObj, (value, key) => {
     targetObj[key] = sourceObj[key];
   });
-  return targetObj
-}
+  return targetObj;
+};
 
-exports.compose = (f, g, context) => {
+
+let slice = [].slice;
+
+export var compose = (f: Function, g: Function, context: Object): void => {
   return function() {
-    return f.call(context, g.apply(context, [].slice.call(arguments)));
+    return f.call(context, g.apply(context, slice.call(arguments)));
   };
 };

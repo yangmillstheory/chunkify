@@ -1,3 +1,4 @@
+'use strict';
 let gulp = require('gulp');
 let karma = require('karma');
 let tslint = require('gulp-tslint');
@@ -13,11 +14,10 @@ const TS_PROJECT = ts.createProject('tsconfig.json', {
 
 const TS = [
   'src/**/*.ts',
-  'src/**/test-utility.ts',
-  '!**/*.spec.ts'
+  '!src**/*.spec.ts'
 ];
 
-const SPEC = ['**/*.spec.ts']; 
+const SPEC = ['src/**/*.spec.ts']; 
 
 
 //////////
