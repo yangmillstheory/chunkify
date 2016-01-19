@@ -76,6 +76,13 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 let startKarmaServer = (options, done) => {
   options = Object.assign(options || {}, {
     configFile: 'karma.conf.unit.js',
+    files: [
+      'node_modules/mocha/index.js',
+      'node_modules/chai/index.js',
+      'node_modules/sinon/lib/sinon.js',
+      'dist/**/*.js',
+      'dist/**/*.spec.js',
+    ]
   });
   new karma.Server(options, exitCode => {
     done();
