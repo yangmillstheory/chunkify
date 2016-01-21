@@ -3,10 +3,10 @@ import {
   isNumber
 } from './utility'
 
-// Return values from the range `start` to `final` synchronously
-// when between intervals of size `chunk`.
+// Return values from the range start to final synchronously
+// when between intervals of size chunk.
 //
-// On the chunk boundary, return a promise that resolves in `delay` milliseconds.
+// On the chunk boundary, return a promise that resolves in delay milliseconds.
 //
 // An error will be thrown in case an iterator is advanced before a pending
 // promise has resolved.

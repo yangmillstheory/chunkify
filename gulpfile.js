@@ -41,7 +41,6 @@ gulp.task('compile:spec', () => {
 gulp.task('compile', gulp.parallel('compile:ts', 'compile:spec'))
 
 
-
 ///////
 // lint
 
