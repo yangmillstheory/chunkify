@@ -43,14 +43,16 @@ let checkOption = (optionKey: string, value): void => {
   }
 };
 
-const checkOptions = (options: Object): void => {
+const checkType = (options: Object): void => {
   if (!isPlainObject(options) || Array.isArray(options) || isFunction(options)) {
     throw new TypeError(`Expected plain javascript object, got ${typeof options}`);
   }
 };
 
 export var parse = (options: Object): IChunkifyOptions => {
-  checkOptions(options);
+  checkType(options);
+  let parsed: IChunkifyOptions = extend({}, DEFAULT_OPTIONS);
   // write me!
-  return Object.freeze({});
+  
+  return Object.freeze(parsed);
 };
