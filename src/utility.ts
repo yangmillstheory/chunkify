@@ -36,11 +36,11 @@ export var isPlainObject = (thing: any): boolean => {
   if (!proto) {
     return true;
   }
-  let functToString = Function.prototype.toString;
+  let fnToString = Function.prototype.toString;
   let ctor = proto.constructor;
   return (exports.isFunction(ctor) &&
     ctor instanceof ctor &&
-    functToString.call(ctor) === functToString.call(Object));
+    fnToString.call(ctor) === fnToString.call(Object));
 };
 
 export var defaults = (defaultsObj: Object, overrideObj: Object): Object => {
