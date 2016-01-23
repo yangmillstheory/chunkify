@@ -62,7 +62,7 @@ export var extend = (targetObj: Object, sourceObj: Object): Object => {
 
 let slice = [].slice;
 
-export var compose = (f: Function, g: Function, context: Object): void => {
+export var compose = (f: Function, g: Function, context: Object): Function => {
   return function() {
     return f.call(context, g.apply(context, slice.call(arguments)));
   };
