@@ -20,7 +20,7 @@ var __chunkify__: IChunkifyGenerator = function*(
   let stillPaused = index => {
     return new Error(`paused at index ${index}; wait ${delay} milliseconds before further invocations of .next()`);
   };
-  function *pause() {
+  let pause = function*() {
     yield new Promise<void>(resolve => {
       paused = true;
       setTimeout(() => { resolve(); paused = false; }, delay);
