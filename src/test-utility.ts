@@ -1,22 +1,19 @@
-import sinon from 'sinon'
-import ChunkifyOptions from './options'
+import {useFakeTimers} from 'sinon';
 
 
-let ChunkifyOptionsSpy = (callback) => {
-  callback(sinon.spy(ChunkifyOptions, 'of'));
-  ChunkifyOptions.of.restore()
-};
+var CLOCK;
 
+let tick = (beforeTick: Function, afterTick: Function, delay: number) => {
+  CLOCK = useFakeTimers();
 
-// Invokes `beforeTick`, then advances the clock by `delay` milliseconds, then
-// invokes `afterTick` as soon as all previously queued events have been processed.
-let tick = ({beforeTick, afterTick, delay}) => {
-  let clock = sinon.useFakeTimers();
   let beforeTickResult = beforeTick();
-  clock.tick(delay);
-  clock.restore();
-  // call `afterTick` after this stack and all its queued events have unwound
+
+  CLOCK.tick(delay);
+  CLOCK.restore();
+
+  // call afterTick after everything in the
+  // stack and all its queued events have run
   setTimeout(afterTick, 0, beforeTickResult);
 };
 
-export default {ChunkifyOptionsSpy, tick}
+export default {tick};

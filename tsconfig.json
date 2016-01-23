@@ -2,6 +2,8 @@
   "compilerOptions": {
     "target": "es6",
     "module": "es6",
-    "noImplicitAny": false   
-  }
+    "noImplicitAny": false,
+    "listFiles": true
+  },
+  "exclude": ["node_modules"]
 }

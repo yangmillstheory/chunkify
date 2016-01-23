@@ -53,5 +53,10 @@
     "tslint": "^3.2.2",
     "typescript": "^1.7.5"
   },
-  "typings": "chunkify.d.ts"
+  "typings": "chunkify.d.ts",
+  "scripts": {
+    "dev": "gulp dev",
+    "test": "gulp test",
+    "compile": "gulp compile"
+  }
 }

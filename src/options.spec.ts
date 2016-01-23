@@ -1,5 +1,5 @@
-// import test from 'tape'
-// import ChunkifyOptions from './options'
+import {parse} from './options';
+import {expect} from 'chai';
 
 
 describe('sanity', () => {

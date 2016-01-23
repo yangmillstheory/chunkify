@@ -1,5 +1,6 @@
-import interval from './interval'
-import range from './range'
+import 'babel-polyfill';
+// import interval from './interval'
+// import range from './range'
 
 
-export default {interval, range}
+// export default {interval, range}

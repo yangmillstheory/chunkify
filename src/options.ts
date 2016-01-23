@@ -3,16 +3,15 @@ import {
   isBoolean,
   isNumber,
   isPlainObject,
-  defaults,
   extend,
-  forOwn
-} from './utility'
+  forOwn,
+} from './utility';
 
 
 const DEFAULT_OPTIONS: IChunkifyOptions = {
   chunk: 1,
   delay: 0,
-  scope: null
+  scope: null,
 };
 
 // interface representing a possible
@@ -24,12 +23,12 @@ interface IOptionKey {
 
 const CHUNK: IOptionKey = {primary: 'chunk', aliases: ['chunksize']};
 const SCOPE: IOptionKey = {primary: 'scope', aliases: []};
-const DELAY: IOptionKey = {primary: 'delay', aliases: 
+const DELAY: IOptionKey = {primary: 'delay', aliases:
   [
     'yield',
     'yieldtime',
-    'delaytime'
-  ]
+    'delaytime',
+  ],
 };
 
 let checkOption = (optionKey: IOptionKey, value): void => {
@@ -52,17 +51,16 @@ let checkOption = (optionKey: IOptionKey, value): void => {
       break;
     default:
       throw new Error(`Unknown option key ${optionKey}`);
-      break;
   }
 };
 
 let mapsToOption = (optionKey: IOptionKey, key: string) => {
-  return optionKey.primary === key || optionKey.aliases.indexOf(key) > -1; 
-}
+  return optionKey.primary === key || optionKey.aliases.indexOf(key) > -1;
+};
 
 let setOption = (object: Object, optionKey: IOptionKey, value) => {
   checkOption(optionKey, value);
-  object[optionKey.primary] = value; 
+  object[optionKey.primary] = value;
 };
 
 export var parse = (options: Object): IChunkifyOptions => {

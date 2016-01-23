@@ -1,16 +1,18 @@
 'use strict';
 let gulp = require('gulp');
-let karma = require('karma');
 let tslint = require('gulp-tslint');
+let mocha = require('gulp-mocha');
 let ts = require('gulp-typescript');
+let babel = require('gulp-babel');
 
 
 /////////
 // config
 
-const TS_PROJECT = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
-});
+const TYPINGS = [
+  'typings/tsd.d.ts',
+  'chunkify.d.ts'
+]
 
 const TS = [
   'src/**/*.ts',
@@ -19,14 +21,18 @@ const TS = [
 
 const SPEC = ['src/**/*.spec.ts']; 
 
+const TS_PROJECT = ts.createProject('tsconfig.json', {
+  typescript: require('typescript')
+});
 
 //////////
 // compile
 
 let compileStream = (globs) => {
   return gulp
-    .src(globs)
+    .src(globs.concat(TYPINGS))
     .pipe(ts(TS_PROJECT))
+    .pipe(babel())
     .pipe(gulp.dest('dist'));
 };
 
@@ -38,7 +44,7 @@ gulp.task('compile:spec', () => {
   return compileStream(SPEC);
 });
 
-gulp.task('compile', gulp.parallel('compile:ts', 'compile:spec'))
+gulp.task('compile', gulp.parallel('compile:ts', 'compile:spec'));
 
 
 ///////
@@ -72,48 +78,19 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 ///////
 // test
 
-let startKarmaServer = (options, done) => {
-  options = Object.assign(options || {}, {
-    configFile: 'karma.conf.unit.js',
-    files: [
-      'node_modules/mocha/index.js',
-      'node_modules/chai/index.js',
-      'node_modules/sinon/lib/sinon.js',
-      'dist/**/*.js',
-      'dist/**/*.spec.js',
-    ]
-  });
-  new karma.Server(options, exitCode => {
-    done();
-    process.exit(exitCode);
-  }).start();
-};
-
 gulp.task('test', done => {
-  startKarmaServer({
-    singleRun: true,
-    autoWatch: false,
-  }, done);
-});
-
-gulp.task('tdd', done => {
-  startKarmaServer({
-    singleRun: false,
-    autoWatch: true,
-  }, done);
+  return gulp
+    .src([
+      'dist/**/*.js'
+    ])
+    .pipe(mocha());
 });
 
 
 /////////////////////////
 // continuous development
 
-gulp.task('watch', done => {
-  gulp.watch(TS, gulp.series(
-    'compile:ts', 
-    'lint:ts'));
-  gulp.watch(SPEC, gulp.series(
-    'compile:spec', 
-    'lint:spec'));
+gulp.task('dev', done => {
+  gulp.watch(TS, gulp.series('compile:ts', 'lint:ts', 'test'));
+  gulp.watch(SPEC, gulp.series('compile:spec', 'lint:spec', 'test'));
 });
-
-gulp.task('dev', gulp.parallel('tdd', 'watch'));
