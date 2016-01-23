@@ -1,4 +1,7 @@
-import {useFakeTimers} from 'sinon';
+import {
+  useFakeTimers
+} from 'sinon';
+import {parseOptions} from './options';
 
 
 var CLOCK;

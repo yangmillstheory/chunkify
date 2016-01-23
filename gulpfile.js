@@ -1,5 +1,4 @@
 'use strict';
-require('babel-polyfill');
 let gulp = require('gulp');
 let tslint = require('gulp-tslint');
 let mocha = require('gulp-mocha');

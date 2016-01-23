@@ -1,5 +1,7 @@
 import {chunkify} from './chunkify';
+import {parseOptions} from './options';
 import {expect} from 'chai';
+import {spy} from 'sinon';
 
 
 describe('chunkify', () => {
@@ -8,50 +10,45 @@ describe('chunkify', () => {
   const DELAY = 10;
   const TOLERANCE = 5;
 
-  it('should throw when not given a number start index', () => {
+  it('should throw when not given a number "start" index', () => {
     for (let start of [undefined, null, 'string', {}, []]) {
       expect(() => { chunkify(start); })
         .throws(/start index "start" of generator range must be a number/);
     }
   });
 
-  it('should throw when not given a number final index', () => {
+  it('should throw when not given a number "final" index', () => {
     for (let final of [undefined, null, 'string', {}, []]) {
       expect(() => { chunkify(0, final); })
         .throws(/final index "final" of generator range must be a number/);
     }
   });
 
-  // test('should pass `chunk` and `delay` to options helper class', () => {
-  //   let chunk = 1;
-  //   let delay = 0;
-  //   ChunkifyOptionsSpy((spy) => {
-  //     chunkify(0, 1, {chunk, delay});
-  //     t.ok(spy.calledWith({chunk, delay}));
-  //     t.end()
-  //   });
-  // });
+  it('should yield Promise<void> after "chunk" iterations resolving in "delay" milliseconds', done => {
+    let iter = chunkify(0, 3, {chunk: 2, delay: DELAY});
 
-  // test('should yield a "timeout promise" delay after `chunk` iterations', () => {
-  //   let it = chunkify(0, 3, {chunk: 2, delay: DELAY});
+    expect(iter.next()).to.deep.equal({done: false, value: 0});
+    expect(iter.next()).to.deep.equal({done: false, value: 1});
+    
+    let now = (): number => {
+      return new Number(new Date).valueOf();
+    }
 
-  //   t.deepEquals(it.next(), {done: false, value: 0});
-  //   t.deepEquals(it.next(), {done: false, value: 1});
+    let timeout = iter.next().value;
+    let started: number = now();
+    let elapsed: number;
 
-  //   let timeout = it.next().value;
-  //   let started = new Date();
-  //   let elapsed;
+    expect(timeout instanceof Promise).to.be.ok;
 
-  //   t.ok(timeout instanceof Promise);
-
-  //   timeout.then(() => {
-  //     elapsed = new Date() - started;
-  //     t.ok(elapsed >= DELAY);
-  //     t.ok(elapsed <= DELAY + TOLERANCE);
-  //     t.deepEquals(it.next(), {done: false, value: 2});
-  //     t.end()
-  //   });
-  // });
+    timeout
+      .then(() => {
+        elapsed = now() - started;
+        expect(elapsed >= DELAY).to.be.ok;
+        expect(elapsed <= DELAY + TOLERANCE).to.be.ok;
+        expect(iter.next()).to.deep.equal({done: false, value: 2});
+      })
+      .then(done);
+  });
 
   // test('should throw an error if advanced while delay is pending', () => {
   //   let it = chunkify(0, 3, {chunk: 2, delay: 100});
