@@ -10,9 +10,9 @@ import {
 //
 // An error will be thrown in case an iterator is advanced before a pending
 // promise has resolved.
-var __chunkify__: IChunkifyGenerator = function*(
-  start: number, 
-  final: number, 
+let __chunkify__: IChunkifyGenerator = function*(
+  start: number,
+  final: number,
   options: IChunkifyOptions
 ) {
   let {chunk, delay} = options;
@@ -25,7 +25,7 @@ var __chunkify__: IChunkifyGenerator = function*(
       paused = true;
       setTimeout(() => { resolve(); paused = false; }, delay);
     });
-  }
+  };
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
       yield *pause();
@@ -35,7 +35,7 @@ var __chunkify__: IChunkifyGenerator = function*(
     }
     yield index;
   }
-}
+};
 
 export var chunkify: IChunkifyGenerator = (start: number, final: number, options: IChunkifyOptions = {}) => {
   if (!isNumber(start)) {
@@ -43,5 +43,5 @@ export var chunkify: IChunkifyGenerator = (start: number, final: number, options
   } else if (!isNumber(final)) {
     throw new Error('final index "final" of generator range must be a number');
   }
-  return __chunkify__(start, final, parseOptions(options)); 
-}
+  return __chunkify__(start, final, parseOptions(options));
+};

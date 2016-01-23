@@ -1,13 +1,8 @@
-import {
-  useFakeTimers
-} from 'sinon';
-import {parseOptions} from './options';
+import {useFakeTimers} from 'sinon';
 
-
-var CLOCK;
 
 export var tick = (beforeTick: Function, afterTick: Function, delay: number) => {
-  CLOCK = useFakeTimers();
+  let CLOCK = useFakeTimers();
 
   let beforeTickResult = beforeTick();
 
@@ -20,5 +15,5 @@ export var tick = (beforeTick: Function, afterTick: Function, delay: number) => 
 };
 
 export var now = (): number => {
-  return new Number(new Date).valueOf();
+  return Number(new Date).valueOf();
 };
