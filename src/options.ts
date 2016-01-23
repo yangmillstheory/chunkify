@@ -50,7 +50,7 @@ let checkOption = (optionKey: IOptionKey, value): void => {
       }
       break;
     default:
-      throw new Error(`Unknown option key ${optionKey}`);
+      throw new TypeError(`Unknown option key ${optionKey}`);
   }
 };
 
