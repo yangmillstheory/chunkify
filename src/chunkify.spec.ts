@@ -47,7 +47,8 @@ describe('chunkify', () => {
         expect(elapsed <= DELAY + TOLERANCE).to.be.ok;
         expect(iter.next()).to.deep.equal({done: false, value: 2});
       })
-      .then(done);
+      .then(done)
+      .catch(done);
   });
 
   // test('should throw an error if advanced while delay is pending', () => {
