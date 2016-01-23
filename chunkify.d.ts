@@ -21,7 +21,7 @@ declare interface IMapper<T> extends Function {
 /////////////
 // generator
 declare interface IChunkifyGenerator {
-  (start: number, final: number, options?: IChunkifyOptions): Iterable<number | Promise<void>>;
+  (start: number, final: number, options?: IChunkifyOptions): IterableIterator<number | Promise<void>>;
 }
 
 declare module 'chunkify' {
