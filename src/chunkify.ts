@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import {parseOptions} from './options';
 import {
   isNumber

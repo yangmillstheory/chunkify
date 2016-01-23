@@ -18,3 +18,7 @@ export var tick = (beforeTick: Function, afterTick: Function, delay: number) => 
   // stack and all its queued events have run
   setTimeout(afterTick, 0, beforeTickResult);
 };
+
+export var now = (): number => {
+  return new Number(new Date).valueOf();
+};

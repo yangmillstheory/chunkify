@@ -2,7 +2,7 @@ import {chunkify} from './chunkify';
 import {parseOptions} from './options';
 import {expect} from 'chai';
 import {spy} from 'sinon';
-
+import {now} from './test-utility';
 
 describe('chunkify', () => {
 
@@ -30,17 +30,13 @@ describe('chunkify', () => {
     expect(iter.next()).to.deep.equal({done: false, value: 0});
     expect(iter.next()).to.deep.equal({done: false, value: 1});
     
-    let now = (): number => {
-      return new Number(new Date).valueOf();
-    }
-
-    let timeout: number | Promise<void> = iter.next().value;
+    let promise: number | Promise<void> = iter.next().value;
     let started: number = now();
     let elapsed: number;
 
-    expect(timeout instanceof Promise).to.be.ok;
+    expect(promise instanceof Promise).to.be.ok;
 
-    timeout
+    promise
       .then(() => {
         elapsed = now() - started;
         expect(elapsed >= DELAY).to.be.ok;
@@ -51,51 +47,48 @@ describe('chunkify', () => {
       .catch(done);
   });
 
-  // test('should throw an error if advanced while delay is pending', () => {
-  //   let it = chunkify(0, 3, {chunk: 2, delay: 100});
+  it('should throw an error if advanced while delay is pending', () => {
+    let iter = chunkify(0, 3, {chunk: 2, delay: 100});
 
-  //   it.next();
-  //   it.next();
-  //   it.next();  // enters paused state
+    iter.next();
+    iter.next();
+    iter.next();  // enters paused state
 
-  //   t.throws(() => {
-  //     it.next();
-  //   }, /paused at index 2; wait 100 milliseconds/);
-  //   t.end()
-  // });
+    expect(() => { iter.next(); }).throws(/paused at index 2; wait 100 milliseconds/);
+  });
 
-  // test('should yield a "timeout promise" after `chunk` iterations from a given `start`', () => {
-  //   let it = chunkify(1, 4, {chunk: 2, delay: 10});
+  it('should yield Promise<void> after "chunk" iterations from a given "start" resolving in delay milliseconds', done => {
+    let iter = chunkify(1, 4, {chunk: 2, delay: 10});
 
-  //   t.deepEquals(it.next(), {done: false, value: 1});
-  //   t.deepEquals(it.next(), {done: false, value: 2});
+    expect(iter.next()).to.deep.equal({done: false, value: 1});
+    expect(iter.next()).to.deep.equal({done: false, value: 2});
 
-  //   let timeout = it.next().value;
-  //   let started = new Date();
-  //   let elapsed;
+    let promise: number | Promise<void> = iter.next().value;
+    let started: number = now();
+    let elapsed: number;
 
-  //   t.ok(timeout instanceof Promise);
+    expect(promise instanceof Promise).to.be.ok;
 
-  //   timeout.then(() => {
-  //     elapsed = new Date() - started;
-  //     t.ok(elapsed >= DELAY);
-  //     t.ok(elapsed <= DELAY + TOLERANCE);
-  //     t.deepEquals(it.next(), {done: false, value: 3});
-  //     t.deepEquals(it.next(), {done: true, value: undefined});
-  //     t.end()
-  //   });
-  // });
+    promise
+      .then(() => {
+        elapsed = now() - started;
+        expect(elapsed >= DELAY).to.be.ok;
+        expect(elapsed <= DELAY + TOLERANCE).to.be.ok;
+        expect(iter.next()).to.deep.equal({done: false, value: 3});
+        expect(iter.next()).to.deep.equal({done: true, value: undefined});
+      })
+      .then(done)
+      .catch(done);
+  });
 
-  // test('should throw an error if advanced while delay is pending from a given start', () => {
-  //   let it = chunkify(1, 4, {chunk: 2, delay: 100});
+  it('should throw an error if advanced while delay is pending from a given start', () => {
+    let iter = chunkify(1, 4, {chunk: 2, delay: 100});
 
-  //   it.next();
-  //   it.next();
-  //   it.next();  // enters paused state
+    iter.next();
+    iter.next();
+    iter.next();  // enters paused state
 
-  //   t.throws(() => {
-  //     it.next();
-  //   }, /paused at index 3; wait 100 milliseconds/);
-  //   t.end()
-  // });
+    expect(() => { iter.next(); }).throws(/paused at index 3; wait 100 milliseconds/);
+  });
+  
 });
