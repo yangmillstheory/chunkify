@@ -19,81 +19,92 @@ describe('options', () => {
     }
   });
   
+  it('should have defaults', () => {
+    let options = parseOptions({});
+    
+    expect(options).to.deep.equal({
+      delay: 0,
+      chunk: 1,
+      scope: null
+    });
+  });
+  
+  it('should override all defaults', () => {
+    let chunk = 50;
+    let delay = 100;
+    let scope = {};
+    
+    let passedOptions = {chunk, delay, scope};
+    let parsedOptions = parseOptions(passedOptions);
+
+    expect(parsedOptions).to.deep.equal(passedOptions);
+  });
+  
+  it('should override some defaults', () => {
+  let chunk = 50;
+  let delay = 100;
+  let scope = {};
+  let parsedOptions: IChunkifyOptions;
+
+  parsedOptions = parseOptions({chunk});
+
+  expect(parsedOptions.chunk).to.equal(chunk);
+  expect(parsedOptions.scope).to.not.equal(scope);
+  expect(parsedOptions.delay).to.not.equal(delay);
+
+  parsedOptions = parseOptions({delay, scope});
+
+  expect(parsedOptions.delay).to.equal(delay);
+  expect(parsedOptions.scope).to.equal(scope);
+  expect(parsedOptions.chunk).to.not.equal(chunk);
+
+  parsedOptions = parseOptions({scope});
+
+  expect(parsedOptions.scope).to.equal(scope);
+  expect(parsedOptions.chunk).to.not.equal(chunk);
+  expect(parsedOptions.delay).to.not.equal(delay);
+  });
+  
+  it('should ignore unknown options', () => {
+    let chunk = 50;
+    let delay = 100;
+    let scope = {};
+    let ignoredOption = '';
+    
+    let passedOptions = {chunk, delay, scope, ignoredOption};
+    let parsedOptions = parseOptions(passedOptions);
+
+    expect(parsedOptions).to.deep.equal({
+      chunk,
+      delay,
+      scope
+    });
+  });
+  
+  it('should throw when an option override has the wrong type', () => {
+    let chunk = function() {};
+    let delay = [];
+    let scope = false;
+
+    expect(() => { parseOptions({chunk}) }).throws(TypeError, /'chunk' should be a positive number/);
+    expect(() => { parseOptions({delay}) }).throws(TypeError, /'delay' should be a non-negative number/);
+    expect(() => { parseOptions({scope}) }).throws(TypeError, /'scope' should not be undefined, a boolean, or a number/);
+  });
+
+  
 });
 
-// test('should have defaults', t => {
-//   let options = ChunkifyOptions.of({});
-//   t.equals(options.delay, 0);
-//   t.equals(options.chunk, 1);
-//   t.equals(options.scope, null);
-//   t.end()
-// });
 
-// test('should override all defaults', t => {
-//   let chunk = 50;
-//   let delay = 100;
-//   let scope = {};
-
-//   let options = ChunkifyOptions.of({chunk, delay, scope});
-
-//   t.equals(options.chunk, chunk);
-//   t.equals(options.delay, delay);
-//   t.equals(options.scope, scope);
-//   t.end()
-// });
-
-// test('should override some defaults', t => {
-//   let chunk = 50;
-//   let delay = 100;
-//   let scope = {};
-
-//   let options = ChunkifyOptions.of({chunk});
-
-//   t.equals(options.chunk, chunk);
-//   t.notEquals(options.scope, scope);
-//   t.notEquals(options.delay, delay);
-
-//   options = ChunkifyOptions.of({delay, scope});
-
-//   t.equals(options.delay, delay);
-//   t.equals(options.scope, scope);
-//   t.notEquals(options.chunk, chunk);
-
-//   options = ChunkifyOptions.of({scope});
-
-//   t.equals(options.scope, scope);
-//   t.notEquals(options.chunk, chunk);
-//   t.notEquals(options.delay, delay);
-
-//   t.end()
-// });
-
-// test('should throw when an option override has the wrong type', t => {
-//   let chunk = function() {};
-//   let delay = [];
-//   let scope = false;
-
-//   t.throws(() => {
-//     ChunkifyOptions.of({chunk})
-//   }, /'chunk' should be a positive number/);
-//   t.throws(() => {
-//     ChunkifyOptions.of({delay})
-//   }, /'delay' should be a non-negative number/);
-//   t.throws(() => {
-//     ChunkifyOptions.of({scope})
-//   }, /'scope' should be a defined non-boolean and non-number, or null/);
-//   t.end()
-// });
 
 // test('should throw when an option override has the wrong value', t => {
 //   let chunk = function() {};
 //   let delay = [];
 
 //   t.throws(() => {
-//     ChunkifyOptions.of({chunk})
+//     parseOptions({chunk})
 //   }, /'chunk' should be a positive number/);
 //   t.throws(() => {
-//     ChunkifyOptions.of({delay})
+//     parseOptions({delay})
 //   }, /'delay' should be a non-negative number/);
 //   t.end()
 // });
@@ -103,7 +114,7 @@ describe('options', () => {
 //   let delay = 100;
 //   let scope = {};
 
-//   let options = ChunkifyOptions.of({chunk, delay, scope});
+//   let options = parseOptions({chunk, delay, scope});
 
 //   t.throws(() => {
 //     options.delay = 0

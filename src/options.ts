@@ -35,17 +35,17 @@ let checkOption = (optionKey: IOptionKey, value): void => {
   switch (optionKey) {
     case CHUNK:
       if (!isNumber(value) || value <= 0) {
-        throw new Error(`'${optionKey.primary}' should be a positive number`);
+        throw new TypeError(`'${optionKey.primary}' should be a positive number`);
       }
       break;
     case DELAY:
       if (!isNumber(value) || value < 0) {
-        throw new Error(`'${optionKey.primary}' should be a non-negative number`);
+        throw new TypeError(`'${optionKey.primary}' should be a non-negative number`);
       }
       break;
     case SCOPE:
       if (value === undefined || isBoolean(value) || isNumber(value)) {
-        throw new Error(
+        throw new TypeError(
           `'${optionKey.primary}' should not be undefined, a boolean, or a number`);
       }
       break;
