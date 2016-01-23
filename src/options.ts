@@ -8,7 +8,7 @@ import {
 } from './utility';
 
 
-const DEFAULT_OPTIONS: IChunkifyOptions = {
+export const DEFAULT_OPTIONS: IChunkifyOptions = {
   chunk: 1,
   delay: 0,
   scope: null,
@@ -63,7 +63,7 @@ let setOption = (object: Object, optionKey: IOptionKey, value) => {
   object[optionKey.primary] = value;
 };
 
-export var parseOptions = (options: Object): IChunkifyOptions => {
+export var parseOptions = (options: IChunkifyOptions): IChunkifyOptions => {
   if (!isPlainObject(options) || Array.isArray(options) || isFunction(options)) {
     throw new TypeError(`Expected plain javascript object, got ${typeof options}`);
   }

@@ -1,4 +1,5 @@
 'use strict';
+require('babel-polyfill');
 let gulp = require('gulp');
 let tslint = require('gulp-tslint');
 let mocha = require('gulp-mocha');
@@ -25,23 +26,27 @@ const TS_PROJECT = ts.createProject('tsconfig.json', {
   typescript: require('typescript')
 });
 
+const DIST = 'dist';
+
 //////////
 // compile
 
-let compileStream = (globs) => {
+gulp.task('compile:ts', () => {
   return gulp
-    .src(globs.concat(TYPINGS))
+    .src(TS.concat(TYPINGS))
     .pipe(ts(TS_PROJECT))
     .pipe(babel())
-    .pipe(gulp.dest('dist'));
-};
-
-gulp.task('compile:ts', () => {
-  return compileStream(TS);
+    .pipe(gulp.dest(DIST));
 });
 
 gulp.task('compile:spec', () => {
-  return compileStream(SPEC);
+  return gulp
+    .src(SPEC.concat(TYPINGS))
+    .pipe(ts(TS_PROJECT))
+    // swallow compiler errors/warnings, since we abuse the API here
+    .pipe(ts(TS_PROJECT, undefined, ts.reporter.nullReporter))
+    .pipe(babel())
+    .pipe(gulp.dest(DIST));
 });
 
 gulp.task('compile', gulp.parallel('compile:ts', 'compile:spec'));
@@ -83,7 +88,7 @@ gulp.task('test', done => {
     .src([
       'dist/**/*.js'
     ])
-    .pipe(mocha());
+    .pipe(mocha({reporter: 'dot'}));
 });
 
 

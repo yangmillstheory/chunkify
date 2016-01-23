@@ -1,5 +1,4 @@
-'use strict';
-import 'babel-polyfill';
+import {parseOptions} from './options';
 import {
   isNumber
 } from './utility';
@@ -11,18 +10,17 @@ import {
 //
 // An error will be thrown in case an iterator is advanced before a pending
 // promise has resolved.
-function *chunkify(start: number, final: number, options: IChunkifyOptions): Iterable<number | Promise<void>> {
-  if (!isNumber(start)) {
-    throw new Error('start index `start` of generator range must be a number');
-  } else if (!isNumber(final)) {
-    throw new Error('final index `final` of generator range must be a number');
-  }
+var __chunkify__: IChunkifyGenerator = function*(
+  start: number, 
+  final: number, 
+  options: IChunkifyOptions
+) {
   let {chunk, delay} = options;
   let paused = false;
   let stillPaused = index => {
     return new Error(`paused at index ${index}; wait ${delay} milliseconds before further invocations of .next()`);
   };
-  function *pause(): IterableIterator<Promise<void>> {
+  function *pause() {
     yield new Promise<void>(resolve => {
       paused = true;
       setTimeout(() => { resolve(); paused = false; }, delay);
@@ -30,7 +28,7 @@ function *chunkify(start: number, final: number, options: IChunkifyOptions): Ite
   }
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
-      yield * pause();
+      yield *pause();
     }
     if (paused) {
       throw stillPaused(index);
@@ -39,4 +37,11 @@ function *chunkify(start: number, final: number, options: IChunkifyOptions): Ite
   }
 }
 
-export var generator = chunkify;
+export var chunkify: IChunkifyGenerator = (start: number, final: number, options: IChunkifyOptions = {}) => {
+  if (!isNumber(start)) {
+    throw new Error('start index "start" of generator range must be a number');
+  } else if (!isNumber(final)) {
+    throw new Error('final index "final" of generator range must be a number');
+  }
+  return __chunkify__(start, final, parseOptions(options)); 
+}

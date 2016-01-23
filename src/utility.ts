@@ -6,19 +6,19 @@ export var forOwn = (iteratee, iterator: Function): void => {
   }
 };
 
-export var isFunction = (thing: any): boolean => {
+export var isFunction = (thing): boolean => {
   return typeof thing === 'function';
 };
 
-export var isBoolean = (thing: any): boolean => {
+export var isBoolean = (thing): boolean => {
   return typeof thing === 'boolean';
 };
 
-export var isNumber = (thing: any): boolean => {
+export var isNumber = (thing): boolean => {
   return typeof thing === 'number';
 };
 
-export var isPlainObject = (thing: any): boolean => {
+export var isPlainObject = (thing): boolean => {
   // slightly modified from:
   //
   //    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
