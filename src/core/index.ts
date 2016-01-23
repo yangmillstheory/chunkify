@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 // import interval from './interval'
 // import range from './range'
 

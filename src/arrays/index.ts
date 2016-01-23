@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 // import each from './each'
 // import map from './map'
 // import reduce from './reduce'

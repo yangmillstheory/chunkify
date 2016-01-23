@@ -1,31 +1,25 @@
-import {parse} from './options';
+import {parseOptions} from './options';
 import {expect} from 'chai';
 
 
-describe('sanity', () => {
+describe('options', () => {
   
-  it('should be sane', () => {
-    expect(true).to.be.ok;
+  it('should throw when receiving non-object literal options', () => {
+    let wrongTypes = [
+      false,
+      true,
+      null,
+      undefined,
+      [],
+      function() {}
+    ];
+    for (let thing of wrongTypes) {
+      expect(() => { parseOptions(thing) })
+        .throws(TypeError, `Expected plain javascript object, got ${typeof thing}`);
+    }
   });
   
 });
-
-// test('should throw when receiving non-object literal options', t => {
-//   let WRONG_TYPES = [
-//     false,
-//     true,
-//     null,
-//     undefined,
-//     [],
-//     function() {}
-//   ];
-//   for (let thing of WRONG_TYPES) {
-//     t.throws(() => {
-//       ChunkifyOptions.of(thing)
-//     }, new RegExp(`Expected options object, got ${typeof thing}`))
-//   }
-//   t.end()
-// });
 
 // test('should have defaults', t => {
 //   let options = ChunkifyOptions.of({});
