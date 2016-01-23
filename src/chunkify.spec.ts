@@ -34,7 +34,7 @@ describe('chunkify', () => {
       return new Number(new Date).valueOf();
     }
 
-    let timeout = iter.next().value;
+    let timeout: number | Promise<void> = iter.next().value;
     let started: number = now();
     let elapsed: number;
 
