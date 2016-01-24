@@ -6,7 +6,7 @@ import {
 } from '../utility';
 
 
-let doChunk = (
+let doChunkSync = (
   chIterator: IterableIterator<number|IChPause>,
   chConsumer: (index: number) => void
 ): IChPause => {
@@ -49,7 +49,7 @@ export var interval = (
   };
   let nextChunk = (resolve, reject) => {
     try {
-      let nextPause = doChunk(chIterator, chConsumer);
+      let nextPause = doChunkSync(chIterator, chConsumer);
       if (nextPause) {
         return nextPause.resume(() => { return nextChunk(resolve, reject); });
       }
