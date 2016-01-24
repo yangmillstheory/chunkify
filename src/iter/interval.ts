@@ -14,7 +14,7 @@ let doChunk = (
   let value: number|IChPause;
   while (!next.done) {
     value = next.value;
-    if (value instanceof Promise) {
+    if (typeof value !== 'number') {
       return <IChPause> value;
     }
     try {
@@ -51,7 +51,7 @@ export var interval = (
     try {
       let pause = doChunk(chIterator, chConsumer);
       if (pause) {
-        return pause.then(() => { return nextChunk(resolve, reject); });
+        return pause.resume(() => { return nextChunk(resolve, reject); });
       }
       resolve();
     } catch (error) {

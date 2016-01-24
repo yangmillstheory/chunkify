@@ -12,8 +12,13 @@ class ChPause implements IChPause {
     });
   }
 
-  then(executor) {
-    return this.pause.then(executor);
+  resume(onResume) {
+    this.pause.then(onResume);
+    return this;
+  }
+
+  catch(handler) {
+    return this.pause.catch(handler);
   }
 }
 
@@ -35,12 +40,12 @@ let __chunkify__: (
 ) {
   let {
     chunk,
-    delay
+    delay,
   } = options;
   let paused = false;
   let pause = function*() {
     paused = true;
-    yield new ChPause(delay).then(() => { paused = false; });
+    yield new ChPause(delay).resume(() => { paused = false; });
   };
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
