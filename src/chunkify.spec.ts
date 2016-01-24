@@ -40,7 +40,7 @@ describe('chunkify', () => {
     expect(iter.next()).to.deep.equal({done: false, value: 0});
     expect(iter.next()).to.deep.equal({done: false, value: 1});
 
-    let chPause: number | IChPause = iter.next().value;
+    let chPause: number|IChPause = iter.next().value;
     let started: number = now();
     let elapsed: number;
 
@@ -73,7 +73,7 @@ describe('chunkify', () => {
     expect(iter.next()).to.deep.equal({done: false, value: 1});
     expect(iter.next()).to.deep.equal({done: false, value: 2});
 
-    let chPause: number | IChPause = iter.next().value;
+    let chPause: number|IChPause = iter.next().value;
     let started: number = now();
     let elapsed: number;
 
