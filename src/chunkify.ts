@@ -3,13 +3,12 @@ import {isNumber} from './utility';
 import {ChPause} from './pause';
 
 
-// return values from the range start to final synchronously
-// when between intervals of size chunk.
+// return values from the range "start" to "final"
+// synchronously when between intervals of size "chunk".
 //
-// on the chunk boundary, return a promise that resolves in delay milliseconds.
+// on the boundary, return a promise that resolves in "delay" milliseconds.
 //
-// an error will be thrown in case an iterator is advanced before a pending
-// promise has resolved.
+// an error will be thrown in case an iterator is advanced before this promise resolves.
 let __chunkify__: (
   start: number,
   final: number,
