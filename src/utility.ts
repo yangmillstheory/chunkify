@@ -66,6 +66,11 @@ export var compose = <T, U, V>(
   f: (u: U, ...fOtherArgs) => V,
   g: (t: T, ...gOtherArgs) => U
 ): (t: T) => V => {
+  if (!isFunction(f)) {
+    throw new Error(`Expected function, got ${typeof f}`);
+  } else if (!isFunction(g)) {
+    throw new Error(`Expected function, got ${typeof g}`);
+  }
   return function() {
     return f.call(this, g.apply(this, slice.call(arguments)));
   };

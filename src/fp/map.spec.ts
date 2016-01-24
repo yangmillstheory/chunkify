@@ -1,176 +1,178 @@
-// import test from 'tape'
-// import sinon from 'sinon'
-// import chunkify from '../index'
-// import {ChunkifyOptionsSpy, tick} from '../testutils'
-// import ChunkifyOptions from '../options'
+import {map} from './map';
+import {spy, stub} from 'sinon';
+import {expect} from 'chai';
+import proxyquire from 'proxyquire';
+import {tick} from '../test-utility';
 
 
-// test('should require an array', t => {
-//   t.throws(() => {
-//     chunkify.map()
-//   }, /Usage: chunkify.map\(Array array, Function fn, \[Object options]\) - bad array; not an array/);
-//   t.end()
-// });
+describe('map', () => {
 
-// test('should require a function', t => {
-//   t.throws(() => {
-//     chunkify.map([])
-//   }, /Usage: chunkify.map\(Array array, Function fn, \[Object options]\) - bad fn; not a function/);
-//   t.end()
-// });
+  it('should require a function', () => {
+    expect(() => { map([1, 2, 3]); }).throws(/Expected function, got/);
+  });
 
-// test('should deserialize options', t => {
-//   ChunkifyOptionsSpy((spy) => {
-//     let options = {};
-//     chunkify.map([], sinon.spy(), options);
-//     t.ok(spy.calledWith(options));
-//     t.end()
-//   });
-// });
+  it('should require an array', () => {
+    expect(() => { map(null, () => {}); }).throws(/Expected array, got/);
+  });
 
-// test('should default options to an empty object', t => {
-//   ChunkifyOptionsSpy((spy) => {
-//     chunkify.map([], sinon.spy());
-//     t.ok(spy.calledWith({}));
-//     t.end()
-//   });
-// });
+  // so for everything that applies to 
+  // tArray & options testing, cf. each.spec.ts
+  it('should delegate tArray and options to each', () => {
+    let each = stub().returns({then: stub()});
+    let {map} = proxyquire('./map', {
+      './each': {each}
+    });
 
-// test('should return a promise', t => {
-//   t.ok(chunkify.map([], sinon.spy()) instanceof Promise);
-//   t.end()
-// });
+    let tArray = [1, 2, 3];
+    let tMapper = stub();
+    let options = {};
+    map(tArray, tMapper, options);
 
-// test('should not invoke fn when given an empty array', t => {
-//   let fn = sinon.spy();
+    expect(each.calledOnce).to.be.ok;
+    expect(each.lastCall.args[0]).to.equal(tArray);
+    expect(each.lastCall.args[1]).to.be.instanceOf(Function);
+    expect(each.lastCall.args[2]).to.equal(options);
+  });
 
-//   chunkify.map([], fn).then(() => {
-//     t.notOk(fn.called);
-//     t.end();
-//   });
-// });
+  it('should return a promise', () => {
+    expect(map([1, 2, 3], spy())).to.be.instanceOf(Promise);
+  });
 
-// test('should invoke fn with the default scope', t => {
-//   let fn = sinon.spy();
+  //////////////////////////////////////
+  // test behavior around tMapper, since 
+  // it's not directly passed to each
 
-//   chunkify.map(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
-//     t.ok(fn.alwaysCalledOn(null));
-//     t.end()
-//   });
-// });
+  it('should invoke tMapper with the default scope', done => {
+    let tMapper = spy();
 
-// test('should invoke fn with the provided scope', t => {
-//   let fn = sinon.spy();
-//   let scope = {};
+    map(['A', 'B', 'C'], tMapper, {chunk: 3})
+      .then(() => {
+        expect(tMapper.calledThrice).to.be.ok;
+        expect(tMapper.alwaysCalledOn(null)).to.be.ok;
+        done();
+      });
+  });
 
-//   chunkify.map(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
-//     t.ok(fn.alwaysCalledOn(scope));
-//     t.end()
-//   });
-// });
+  it('should invoke tMapper with the provided scope', done => {
+    let tMapper = spy();
+    let scope = {};
 
-// test('should invoke fn with the array item and index', t => {
-//   let fn = sinon.spy();
+    map(['A', 'B', 'C'], tMapper, {chunk: 3, scope})
+      .then(() => {
+        expect(tMapper.calledThrice).to.be.ok;
+        expect(tMapper.alwaysCalledOn(scope)).to.be.ok;
+        done();
+      });
+  });
 
-//   chunkify.map(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
-//     t.equals(fn.callCount, 3);
-//     t.deepEqual(fn.getCall(0).args, ['A', 0]);
-//     t.deepEqual(fn.getCall(1).args, ['B', 1]);
-//     t.deepEqual(fn.getCall(2).args, ['C', 2]);
-//     t.end()
-//   })
-// });
+  it('should invoke tMapper with the array item and index', done => {
+    let tMapper = spy();
 
-// test('should yield for at least `delay` ms after `chunk` iterations', t => {
-//   let fn = sinon.spy();
+    map(['A', 'B', 'C'], tMapper, {chunk: 3})
+      .then(() => {
+        expect(tMapper.callCount).to.equals(3);
+        expect(tMapper.getCall(0).args).to.deep.equal(['A', 0]);
+        expect(tMapper.getCall(1).args).to.deep.equal(['B', 1]);
+        expect(tMapper.getCall(2).args).to.deep.equal(['C', 2]);
+        done();
+      });
+  });
 
-//   tick({
-//     delay: 9,
+  it('should yield for at least "delay" ms after "chunk" iterations', done => {
+    let tMapper = spy();
 
-//     beforeTick() {
-//       chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3);
-//     },
+    tick({
+      delay: 9,
 
-//     afterTick() {
-//       t.equals(fn.callCount, 3);
-//       t.end();
-//     }
-//   });
-// });
+      before() {
+        map(['A', 'B', 'C', 'D'], tMapper, {chunk: 3, delay: 10});
+        expect(tMapper.callCount).to.equal(3);
+      },
 
-// test('should start again after `delay` milliseconds from last yielding', t => {
-//   let fn = sinon.spy();
+      after() {
+        expect(tMapper.callCount).to.equal(3);
+        done();
+      },
+    });
+  });
 
-//   tick({
-//     delay: 11,
+  it('should start again after `delay` milliseconds from last yielding', done => {
+    let tMapper = spy();
 
-//     beforeTick() {
-//       chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3);
-//     },
+    tick({
+      delay: 11,
 
-//     afterTick() {
-//       t.equals(fn.callCount, 4);
-//       t.deepEqual(fn.getCall(3).args, ['D', 3]);
-//       t.end();
-//     }
-//   });
-// });
+      before() {
+        map(['A', 'B', 'C', 'D'], tMapper, {chunk: 3, delay: 10});
+        expect(tMapper.callCount).to.equal(3);
+      },
 
-// test('should resolve with the mapped array', t => {
-//   let fn = sinon.spy((letter) => {
-//     return letter.toLowerCase()
-//   });
+      after() {
+        expect(tMapper.callCount).to.equal(4);
+        expect(tMapper.getCall(3).args).to.deep.equal(['D', 3]);
+        done();
+      },
+    });
+  });
 
-//   tick({
-//     delay: 11,
+  it('should resolve with the mapped array', done => {
+    let tMapper = spy(letter => {
+      return letter.toLowerCase();
+    });
 
-//     beforeTick() {
-//       let promise = chunkify.map(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3);
-//       return promise
-//     },
+    tick({
+      delay: 11,
 
-//     afterTick(promise) {
-//       t.equals(fn.callCount, 4);
-//       promise.then((result) => {
-//         t.deepEquals(result, ['a', 'b', 'c', 'd']);
-//         t.end()
-//       })
-//     }
-//   });
-// });
+      before() {
+        let mapPromise = map(['A', 'B', 'C', 'D'], tMapper, {chunk: 3, delay: 10});
+        expect(tMapper.callCount).to.equal(3);
+        return mapPromise;
+      },
 
-// test('should reject the promise with rejection object and stop processing', t => {
-//   let error = {};
-//   let fn = sinon.spy((letter) => {
-//     if (letter === 'B') {
-//       throw error;
-//     }
-//   });
+      after(mapPromise) {
+        expect(tMapper.callCount).to.equal(4);
+        mapPromise
+          .then(mapped => {
+            expect(mapped).to.deep.equal(['a', 'b', 'c', 'd']);
+            done();
+          });
+      },
+    });
+  });
 
-//   chunkify.map(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
-//     t.deepEquals(rejection, {error, item: 'B', index: 1});
-//     t.equals(fn.callCount, 2);
-//     t.end()
-//   })
-// });
+  it('should reject the promise with correct rejection object and stop processing', done => {
+    let error = {};
+    let tMapper = spy(letter => {
+      if (letter === 'B') {
+        throw error;
+      }
+    });
 
-// test('should not yield after `chunk` iterations if processing is complete', t => {
-//   let fn = sinon.spy();
+    map(['A', 'B', 'C'], tMapper, {chunk: 3})
+      .catch(rejection => {
+        expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+        expect(tMapper.callCount).to.equal(2);
+        done();
+      });
+  });
 
-//   tick({
-//     delay: 20,
+  it('should not yield after "chunk" iterations if processing is complete', done => {
+    let tMapper = spy();
 
-//     beforeTick() {
-//       chunkify.map(['A', 'B', 'C'], fn, {chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3)
-//     },
+    tick({
+      delay: 20,
 
-//     afterTick() {
-//       t.equals(fn.callCount, 3);
-//       t.end()
-//     }
-//   });
-// });
+      before() {
+        map(['A', 'B', 'C'], tMapper, {chunk: 3, delay: 10});
+        expect(tMapper.callCount).to.equal(3);
+      },
+
+      after() {
+        expect(tMapper.callCount).to.equal(3);
+        done();
+      },
+    });
+  });
+
+});
+

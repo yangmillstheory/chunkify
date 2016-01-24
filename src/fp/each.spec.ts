@@ -8,7 +8,7 @@ import proxyquire from 'proxyquire';
 describe('each', () => {
 
   it('should require an array', () => {
-    expect(() => { each(); }).throws(/Expected array, got/);
+    expect(each).throws(/Expected array, got/);
   });
 
   it('should require a non-empty array', () => {
@@ -27,14 +27,14 @@ describe('each', () => {
       '../iter/range': {range}
     });
 
-    let array = [1, 2, 3];
+    let tArray = [1, 2, 3];
     let tConsumer = stub();
     let options = {};
-    each(array, tConsumer, options);
+    each(tArray, tConsumer, options);
 
     expect(range.calledOnce).to.be.ok;
     expect(range.lastCall.args[0]).to.be.instanceOf(Function);
-    expect(range.lastCall.args[1]).to.equal(array.length);
+    expect(range.lastCall.args[1]).to.equal(tArray.length);
     expect(range.lastCall.args[2]).to.equal(options);
   });
 
