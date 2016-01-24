@@ -1,26 +1,20 @@
-// import each from './each'
-// import ChunkifyOptions from '../options'
-// import {
-//   compose
-// } from '../utility'
-// import {checkUsage} from './utility'
+import {each} from './each';
+import {parseOptions} from '../options';
+import {
+  compose
+} from '../utility';
 
 
-// const USAGE = 'Usage: chunkify.map(Array array, Function fn, [Object options])';
-
-// let map = (array, fn, options = {}) => {
-//   checkUsage(array, fn, USAGE);
-//   let chOpts = ChunkifyOptions.of(options);
-//   let mapped = [];
-//   let pusher = (result) => {
-//     mapped.push(result);
-//     return result;
-//   };
-//   let mapper = compose(pusher, fn.bind(chOpts.scope));
-//   return each(array, mapper, chOpts).then(() => {
-//     return mapped;
-//   });
-// };
-
-
-// export default map
+export var map = <T>(
+  array: T[],
+  tMapper: (item: T) => T,
+  options: IChOptions = {}
+) => {
+  let mapped: T[] = [];
+  let chOpts = parseOptions(options);
+  let pusher = (mappedT: T): void => {
+    mapped.push(mappedT);
+  };
+  let tConsumer = compose(pusher, tMapper, chOpts.scope);
+  return each(array, tConsumer, chOpts).then(() => { return mapped; });
+};
