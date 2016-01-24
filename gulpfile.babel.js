@@ -87,7 +87,7 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 gulp.task('test', done => {
   return gulp
     .src('dist/**/*.js')
-    .pipe(mocha({reporter: 'nyan'}));
+    .pipe(mocha({reporter: 'min'}));
 });
 
 
@@ -95,6 +95,6 @@ gulp.task('test', done => {
 // continuous development
 
 gulp.task('dev', done => {
-  gulp.watch(TS, gulp.series('compile:ts', 'lint:ts', 'test'));
-  gulp.watch(SPEC, gulp.series('compile:spec', 'lint:spec', 'test'));
+  gulp.watch(TS, gulp.series('compile:ts', 'test', 'lint:ts'));
+  gulp.watch(SPEC, gulp.series('compile:spec', 'test', 'lint:spec'));
 });
