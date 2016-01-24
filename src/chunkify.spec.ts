@@ -1,6 +1,9 @@
 import {chunkify} from './chunkify';
 import {expect} from 'chai';
 import {now} from './test-utility';
+import {stub} from 'sinon';
+import proxyquire from 'proxyquire';
+
 
 describe('chunkify', () => {
 
@@ -34,6 +37,19 @@ describe('chunkify', () => {
     }
   });
 
+  it('should parse options', () => {
+    let rawOptions = {};
+    let parseOptionsStub = stub();
+
+    let {chunkify} = proxyquire('./chunkify', {
+      './options': {parseOptions: parseOptionsStub}
+    });
+
+    chunkify(0, 10, rawOptions);
+
+    expect(parseOptionsStub.calledWithExactly(rawOptions)).to.be.ok;
+  });
+
   it('should yield IChPause after "chunk" iterations resolving in "delay" milliseconds', done => {
     let iter = chunkify(0, 3, {chunk: 2, delay: DELAY});
 
@@ -62,7 +78,7 @@ describe('chunkify', () => {
 
     iter.next();
     iter.next();
-    iter.next();  // enters paused state
+    iter.next(); // enters paused state
 
     expect(() => { iter.next(); }).throws(/paused at index 2; wait 100 milliseconds/);
   });
