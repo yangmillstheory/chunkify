@@ -50,7 +50,8 @@ describe('map', () => {
         expect(tMapper.calledThrice).to.be.ok;
         expect(tMapper.alwaysCalledOn(null)).to.be.ok;
         done();
-      });
+      })
+      .catch(done);
   });
 
   it('should invoke tMapper with the provided scope', done => {
@@ -62,7 +63,8 @@ describe('map', () => {
         expect(tMapper.calledThrice).to.be.ok;
         expect(tMapper.alwaysCalledOn(scope)).to.be.ok;
         done();
-      });
+      })
+      .catch(done);
   });
 
   it('should invoke tMapper with the array item and index', done => {
@@ -75,7 +77,8 @@ describe('map', () => {
         expect(tMapper.getCall(1).args).to.deep.equal(['B', 1]);
         expect(tMapper.getCall(2).args).to.deep.equal(['C', 2]);
         done();
-      });
+      })
+      .catch(done);
   });
 
   it('should yield for at least "delay" ms after "chunk" iterations', done => {
@@ -135,7 +138,8 @@ describe('map', () => {
           .then(mapped => {
             expect(mapped).to.deep.equal(['a', 'b', 'c', 'd']);
             done();
-          });
+          })
+          .catch(done);
       },
     });
   });
