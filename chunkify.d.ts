@@ -18,7 +18,7 @@ declare interface IChMapper<T> extends Function {
   (item: T): T;
 }
 
-declare interface IChPause { resume(resumeFn: () => void); }
+declare interface IChPause { resume(fn: () => void); }
 
 declare module 'chunkify' {
   // write me!

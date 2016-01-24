@@ -1,26 +1,7 @@
 import {parseOptions} from './options';
-import {
-  isNumber
-} from './utility';
+import {isNumber} from './utility';
+import {ChPause} from './pause';
 
-class ChPause implements IChPause {
-  private pause: Promise<void>;
-
-  constructor(delay: number) {
-    this.pause = new Promise<void>(resolve => {
-      setTimeout(resolve, delay);
-    });
-  }
-
-  resume(onResume) {
-    this.pause.then(onResume);
-    return this;
-  }
-
-  catch(handler) {
-    return this.pause.catch(handler);
-  }
-}
 
 // return values from the range start to final synchronously
 // when between intervals of size chunk.
@@ -45,7 +26,7 @@ let __chunkify__: (
   let paused = false;
   let pause = function*() {
     paused = true;
-    yield new ChPause(delay).resume(() => { paused = false; });
+    yield ChPause.for(delay).resume(() => { paused = false; });
   };
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {

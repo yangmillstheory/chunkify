@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import {spy} from 'sinon';
 import {interval} from './interval';
 import {tick} from '../test-utility';
-import {parseOptions} from '../options';
 
 
 describe('interval', () => {
@@ -40,7 +39,7 @@ describe('interval', () => {
       {},
       [],
       null,
-      undefined
+      undefined,
     ]) {
       expect(() => { interval(spy(), 0, final); }).throws(/Expected number; got /);
     }
@@ -196,7 +195,7 @@ describe('interval', () => {
       after() {
         expect(fn.callCount).to.equal(3);
         done();
-      }
+      },
     });
   });
 });

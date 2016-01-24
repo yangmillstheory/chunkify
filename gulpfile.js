@@ -87,7 +87,7 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 gulp.task('test', done => {
   return gulp
     .src('dist/**/*.js')
-    .pipe(mocha());
+    .pipe(mocha({reporter: 'dot'}));
 });
 
 

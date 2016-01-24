@@ -49,9 +49,9 @@ export var interval = (
   };
   let nextChunk = (resolve, reject) => {
     try {
-      let pause = doChunk(chIterator, chConsumer);
-      if (pause) {
-        return pause.resume(() => { return nextChunk(resolve, reject); });
+      let nextPause = doChunk(chIterator, chConsumer);
+      if (nextPause) {
+        return nextPause.resume(() => { return nextChunk(resolve, reject); });
       }
       resolve();
     } catch (error) {
