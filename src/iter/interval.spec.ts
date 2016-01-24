@@ -8,56 +8,55 @@ import {parseOptions} from '../options';
 describe('interval', () => {
 
   it('should require a function', () => {
-    for (let thing of [1, 'string', {}, [], null, undefined]) {
-      expect(() => { interval(); }).throws(/Expected function; got /);
+    for (let fn of [
+      1,
+      'string',
+      {},
+      [],
+      null,
+      undefined,
+    ]) {
+      expect(() => { interval(fn); }).throws(/Expected function; got /);
     }
+  });
+
+  it('should require a number start index', () => {
+    for (let start of [
+      function() {},
+      'string',
+      {},
+      [],
+      null,
+      undefined,
+    ]) {
+      expect(() => { interval(spy(), start); }).throws(/Expected number; got /);
+    }
+  });
+
+  it('should require a number final index', () => {
+    for (let final of [
+      function() {},
+      'string',
+      {},
+      [],
+      null,
+      undefined
+    ]) {
+      expect(() => { interval(spy(), 0, final); }).throws(/Expected number; got /);
+    }
+  });
+
+  it('should require start to be less than final', (done) => {
+    expect(() => { interval(spy(), 1, 0); }).throws(/Expected start 1 to be less than final 0/);
+    done();
+  });
+
+  it('should return a promise', () => {
+    expect(interval(() => {}, 0, 1)).to.be.instanceOf(Promise);
   });
 
 });
 
-
-// test('should require a final index', () => {
-//   t.throws(() => {
-//     chunkify.interval(() => {})
-//   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad final; not a number/);
-//   t.end()
-// });
-
-// test('should require a number start option if given', () => {
-//   t.throws(() => {
-//     chunkify.interval(() => {}, 10, {start: 'string'})
-//   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad start; not a number/);
-//   t.end()
-// });
-
-// test('should require a number start option less than final if given', () => {
-//   t.throws(() => {
-//     chunkify.interval(() => {}, 10, {start: 11})
-//   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad start; it's greater than final/);
-//   t.end()
-// });
-
-// test('should deserialize options', () => {
-//   ChunkifyOptionsSpy((spy) => {
-//     let options = {};
-//     chunkify.interval(sinon.spy(), 10, options);
-//     t.ok(spy.calledWith(options));
-//     t.end()
-//   });
-// });
-
-// test('should default options to an empty object', () => {
-//   ChunkifyOptionsSpy((spy) => {
-//     chunkify.interval(sinon.spy(), 10);
-//     t.ok(spy.calledWith({}));
-//     t.end()
-//   });
-// });
-
-// test('should return a promise', () => {
-//   t.ok(chunkify.interval(sinon.spy(), 10) instanceof Promise);
-//   t.end()
-// });
 
 // test('should not invoke fn when range is 0', () => {
 //   let fn = sinon.spy();
