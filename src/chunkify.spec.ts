@@ -44,7 +44,7 @@ describe('chunkify', () => {
     let started: number = now();
     let elapsed: number;
 
-    expect(promise instanceof Promise).to.be.ok;
+    expect(promise.then).to.exist;
 
     promise
       .then(() => {
@@ -77,7 +77,7 @@ describe('chunkify', () => {
     let started: number = now();
     let elapsed: number;
 
-    expect(promise instanceof Promise).to.be.ok;
+    expect(promise.then).to.exist;
 
     promise
       .then(() => {
