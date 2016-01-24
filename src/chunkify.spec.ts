@@ -9,14 +9,26 @@ describe('chunkify', () => {
   const TOLERANCE = 5;
 
   it('should throw when not given a number "start" index', () => {
-    for (let start of [undefined, null, 'string', {}, []]) {
+    for (let start of [
+      undefined,
+      null,
+      'string',
+      {},
+      [],
+    ]) {
       expect(() => { chunkify(start); })
         .throws(/start index "start" of generator range must be a number/);
     }
   });
 
   it('should throw when not given a number "final" index', () => {
-    for (let final of [undefined, null, 'string', {}, []]) {
+    for (let final of [
+      undefined,
+      null,
+      'string',
+      {},
+      [],
+    ]) {
       expect(() => { chunkify(0, final); })
         .throws(/final index "final" of generator range must be a number/);
     }
