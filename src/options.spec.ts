@@ -11,7 +11,7 @@ describe('options', () => {
       null,
       undefined,
       [],
-      function() {},
+      new Function(),
     ];
     for (let thing of wrongTypes) {
       expect(() => { parseOptions(thing); })
@@ -82,7 +82,7 @@ describe('options', () => {
   });
 
   it('should throw when an option override has the wrong type', () => {
-    let chunk = function() {};
+    let chunk = new Function();
     let delay = [];
     let scope = false;
 

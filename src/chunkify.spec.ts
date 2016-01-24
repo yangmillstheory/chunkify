@@ -1,7 +1,5 @@
 import {chunkify} from './chunkify';
-import {parseOptions} from './options';
 import {expect} from 'chai';
-import {spy} from 'sinon';
 import {now} from './test-utility';
 
 describe('chunkify', () => {
@@ -29,7 +27,7 @@ describe('chunkify', () => {
 
     expect(iter.next()).to.deep.equal({done: false, value: 0});
     expect(iter.next()).to.deep.equal({done: false, value: 1});
-    
+
     let promise: number | Promise<void> = iter.next().value;
     let started: number = now();
     let elapsed: number;
@@ -90,5 +88,5 @@ describe('chunkify', () => {
 
     expect(() => { iter.next(); }).throws(/paused at index 3; wait 100 milliseconds/);
   });
-  
+
 });

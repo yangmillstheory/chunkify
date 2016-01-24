@@ -1,39 +1,43 @@
-// import test from 'tape'
-// import sinon from 'sinon'
-// import chunkify from '../index'
-// import {ChunkifyOptionsSpy, tick} from '../testutils'
-// import ChunkifyOptions from '../options'
+import {expect} from 'chai';
+import {spy} from 'sinon';
+import {interval} from './interval';
+import {tick} from '../test-utility';
+import {parseOptions} from '../options';
 
 
-// test('should require a function', t => {
-//   t.throws(() => {
-//     chunkify.interval()
-//   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad fn; not a function/);
-//   t.end()
-// });
+describe('interval', () => {
 
-// test('should require a final index', t => {
+  it('should require a function', () => {
+    for (let thing of [1, 'string', {}, [], null, undefined]) {
+      expect(() => { interval(); }).throws(/Expected function; got /);
+    }
+  });
+
+});
+
+
+// test('should require a final index', () => {
 //   t.throws(() => {
 //     chunkify.interval(() => {})
 //   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad final; not a number/);
 //   t.end()
 // });
 
-// test('should require a number start option if given', t => {
+// test('should require a number start option if given', () => {
 //   t.throws(() => {
 //     chunkify.interval(() => {}, 10, {start: 'string'})
 //   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad start; not a number/);
 //   t.end()
 // });
 
-// test('should require a number start option less than final if given', t => {
+// test('should require a number start option less than final if given', () => {
 //   t.throws(() => {
 //     chunkify.interval(() => {}, 10, {start: 11})
 //   }, /Usage: chunkify.interval\(Function fn, Number final, \[Object options]\) - bad start; it's greater than final/);
 //   t.end()
 // });
 
-// test('should deserialize options', t => {
+// test('should deserialize options', () => {
 //   ChunkifyOptionsSpy((spy) => {
 //     let options = {};
 //     chunkify.interval(sinon.spy(), 10, options);
@@ -42,7 +46,7 @@
 //   });
 // });
 
-// test('should default options to an empty object', t => {
+// test('should default options to an empty object', () => {
 //   ChunkifyOptionsSpy((spy) => {
 //     chunkify.interval(sinon.spy(), 10);
 //     t.ok(spy.calledWith({}));
@@ -50,12 +54,12 @@
 //   });
 // });
 
-// test('should return a promise', t => {
+// test('should return a promise', () => {
 //   t.ok(chunkify.interval(sinon.spy(), 10) instanceof Promise);
 //   t.end()
 // });
 
-// test('should not invoke fn when range is 0', t => {
+// test('should not invoke fn when range is 0', () => {
 //   let fn = sinon.spy();
 
 //   chunkify.interval(fn, 0).then(() => {
@@ -64,7 +68,7 @@
 //   });
 // });
 
-// test('should invoke fn with the default scope', t => {
+// test('should invoke fn with the default scope', () => {
 //   let fn = sinon.spy();
 
 //   chunkify.interval(fn, 3, {start: 1, chunk: 3}).then(() => {
@@ -73,7 +77,7 @@
 //   });
 // });
 
-// test('should invoke fn with the provided scope', t => {
+// test('should invoke fn with the provided scope', () => {
 //   let fn = sinon.spy();
 //   let scope = {};
 
@@ -83,7 +87,7 @@
 //   });
 // });
 
-// test('should invoke fn with the correct loop index', t => {
+// test('should invoke fn with the correct loop index', () => {
 //   let fn = sinon.spy();
 
 //   chunkify.interval(fn, 4, {start: 1, chunk: 3}).then(() => {
@@ -95,7 +99,7 @@
 //   })
 // });
 
-// test('should yield for at least `delay` ms after `chunk` iterations', t => {
+// test('should yield for at least `delay` ms after `chunk` iterations', () => {
 //   let fn = sinon.spy();
 
 //   tick({
@@ -113,7 +117,7 @@
 //   });
 // });
 
-// test('should start again after `delay` milliseconds from last yielding', t => {
+// test('should start again after `delay` milliseconds from last yielding', () => {
 //   let fn = sinon.spy();
 
 //   tick({
@@ -132,7 +136,7 @@
 //   });
 // });
 
-// test('should resolve with undefined', t => {
+// test('should resolve with undefined', () => {
 //   let fn = sinon.spy();
 
 //   tick({
@@ -154,7 +158,7 @@
 //   });
 // });
 
-// test('should reject the promise with rejection object and stop processing', t => {
+// test('should reject the promise with rejection object and stop processing', () => {
 //   let error = {};
 //   let fn = sinon.spy((index) => {
 //     if (index === 2) {
@@ -169,7 +173,7 @@
 //   })
 // });
 
-// test('should not yield after `chunk` iterations if processing is complete', t => {
+// test('should not yield after `chunk` iterations if processing is complete', () => {
 //   let fn = sinon.spy();
 
 //   tick({
