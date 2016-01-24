@@ -17,7 +17,7 @@ const TYPINGS = [
 
 const TS = [
   'src/**/*.ts',
-  '!src**/*.spec.ts'
+  '!src/**/*.spec.ts'
 ];
 
 const SPEC = ['src/**/*.spec.ts']; 
@@ -42,14 +42,13 @@ gulp.task('compile:ts', () => {
 gulp.task('compile:spec', () => {
   return gulp
     .src(SPEC.concat(TYPINGS))
-    .pipe(ts(TS_PROJECT))
     // swallow compiler errors/warnings, since we abuse the API here
     .pipe(ts(TS_PROJECT, undefined, ts.reporter.nullReporter))
     .pipe(babel())
     .pipe(gulp.dest(DIST));
 });
 
-gulp.task('compile', gulp.parallel('compile:ts', 'compile:spec'));
+gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 
 
 ///////
@@ -74,7 +73,9 @@ gulp.task('lint:ts', () => {
 });
 
 gulp.task('lint:spec', () => {
-  return lintStream(SPEC);
+  return lintStream(SPEC, {
+    'no-empty': false
+  });
 });
 
 gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
@@ -85,10 +86,8 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 
 gulp.task('test', done => {
   return gulp
-    .src([
-      'dist/**/*.js'
-    ])
-    .pipe(mocha({reporter: 'dot'}));
+    .src('dist/**/*.js')
+    .pipe(mocha());
 });
 
 
