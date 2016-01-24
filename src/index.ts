@@ -1,13 +1,9 @@
-// import arrays from './arrays';
-// import core from './core';
-// import generator from './generator';
+import {each} from './fp/each';
+import {map} from './fp/map';
+import {reduce} from './fp/reduce';
+import {range} from './iter/range';
+import {interval} from './iter/interval';
+import {chunkify} from './chunkify';
 
 
-// export default {
-//   each: arrays.each,
-//   map: arrays.map,
-//   reduce: arrays.reduce,
-//   interval: core.interval,
-//   range: core.range,
-//   generator: generator.of,
-// };
+export default {each, map, reduce, interval, range, generator: chunkify};
