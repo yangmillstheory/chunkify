@@ -5,7 +5,7 @@ node_js:
   - "0.10"
   - "iojs"
   - "node"
-install: npm i
+install: npm i && npm i babel-polyfill
 before_script: npm run-script build && tsd install
 branches:
   only:
