@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - "iojs"
   - "node"
 install: npm i && npm i babel-polyfill
 before_script: tsd install && npm run-script build 
