@@ -1,17 +1,20 @@
 import {useFakeTimers} from 'sinon';
 
 
-export var tick = (beforeTick: Function, afterTick: Function, delay: number) => {
-  let CLOCK = useFakeTimers();
+export var tick = (tickParams: {
+  before: Function,
+  after: Function,
+  delay: number,
+}) => {
+  let time = useFakeTimers();
+  let beforeResult = tickParams.before();
 
-  let beforeTickResult = beforeTick();
+  time.tick(tickParams.delay);
+  time.restore();
 
-  CLOCK.tick(delay);
-  CLOCK.restore();
-
-  // call afterTick after everything in the
+  // call "after" after everything in the
   // stack and all its queued events have run
-  setTimeout(afterTick, 0, beforeTickResult);
+  setTimeout(tickParams.after, 0, beforeResult);
 };
 
 export var now = (): number => {
