@@ -1,5 +1,5 @@
-// import interval from './interval'
-// import range from './range'
+import {range} from './range';
+import {interval} from './interval';
 
 
-// export default {interval, range}
+export default {interval, range};
