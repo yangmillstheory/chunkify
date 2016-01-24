@@ -7,20 +7,22 @@ import {
 
 
 let doChunk = <T>(
-  iterator: IterableIterator<number|Promise<T>>,
-  consumer: (index: number) => void
+  chIterator: IterableIterator<number|Promise<T>>,
+  chConsumer: (index: number) => void
 ): Promise<T> => {
-  let next = iterator.next();
+  let next = chIterator.next();
+  let value: number|Promise<T>;
   while (!next.done) {
-    if (next.value instanceof Promise) {
-      return <Promise<T>> next.value;
+    value = next.value;
+    if (value instanceof Promise) {
+      return <Promise<T>> value;
     }
     try {
-      consumer(<number> next.value);
+      chConsumer(<number> value);
     } catch (error) {
-      throw {error, index: next.value};
+      throw {error, index: value};
     }
-    next = iterator.next();
+    next = chIterator.next();
   }
   return null;
 };
@@ -55,6 +57,6 @@ export var interval = (
     } catch (error) {
       return reject(error);
     }
-  }
+  };
   return new Promise<void>(nextChunk);
 };

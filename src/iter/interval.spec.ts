@@ -164,38 +164,40 @@ describe('interval', () => {
       },
     });
   });
+
+  it('should reject the promise with rejection object and stop processing', done => {
+    let error = new Error('example error');
+    let fn = spy(index => {
+      if (index === 2) {
+        throw error;
+      }
+    });
+
+    interval(fn, 1, 5, {chunk: 3})
+      .then(null, rejection => {
+        expect(rejection).to.deep.equal({error, index: 2});
+        expect(fn.callCount).to.equal(2);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should not yield after "chunk" iterations if processing is complete', done => {
+    let fn = spy();
+
+    tick({
+      delay: 20,
+
+      before() {
+        interval(fn, 1, 4, {chunk: 3, delay: 10});
+        expect(fn.callCount).to.equal(3);
+      },
+
+      after() {
+        expect(fn.callCount).to.equal(3);
+        done();
+      }
+    });
+  });
 });
 
-
-// test('should reject the promise with rejection object and stop processing', () => {
-//   let error = {};
-//   let fn = sinon.spy((index) => {
-//     if (index === 2) {
-//       throw error;
-//     }
-//   });
-
-//   chunkify.interval(fn, 5, {start: 1, chunk: 3}).then(null, (rejection) => {
-//     t.deepEquals(rejection, {error, index: 2});
-//     t.equals(fn.callCount, 2);
-//     t.end()
-//   })
-// });
-
-// test('should not yield after "chunk"" iterations if processing is complete', () => {
-//   let fn = sinon.spy();
-
-//   tick({
-//     delay: 20,
-
-//     beforeTick() {
-//       chunkify.interval(fn, 4, {start: 1, chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3)
-//     },
-
-//     afterTick() {
-//       t.equals(fn.callCount, 3);
-//       t.end()
-//     }
-//   });
-// });
