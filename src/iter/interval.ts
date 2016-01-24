@@ -45,6 +45,9 @@ export var interval = (
   let chOptions = parseOptions(options);
   let chunkIterator = chunkify(start, final, chOptions);
   let boundConsumer = (index: number) => {
+    // FIXME - this (and similar upstream invocations) are untyped!
+    // 
+    //   https://github.com/Microsoft/TypeScript/issues/212
     indexConsumer.call(chOptions.scope, index);
   };
   let nextChunk = complete => {
