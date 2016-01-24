@@ -5,7 +5,7 @@ import {
 
 
 export var map = <T>(
-  array: T[],
+  tArray: T[],
   tMapper: (item: T, index: number) => T,
   options: IChOptions = {}
 ) => {
@@ -14,5 +14,5 @@ export var map = <T>(
     mapped.push(mappedT);
   };
   let tConsumer = compose(pusher, tMapper);
-  return each(array, tConsumer, options).then(() => { return mapped; });
+  return each(tArray, tConsumer, options).then(() => { return mapped; });
 };
