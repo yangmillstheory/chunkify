@@ -8,18 +8,18 @@ describe('range', () => {
 
   // so, see interval.spec.ts 
   it('should delegate to interval with a start value of 0', () => {
-    let intervalStub = stub();
+    let interval = stub();
 
     let {range} = proxyquire('./range', {
-      './interval': {interval: intervalStub}
+      './interval': {interval}
     });
 
     let fn = stub();
     let length = 10;
     let options = {};
-
     range(fn, length, options);
-    expect(intervalStub.calledWithExactly(fn, 0, length, options)).to.be.ok;
+
+    expect(interval.calledWithExactly(fn, 0, length, options)).to.be.ok;
   });
 
 });

@@ -37,17 +37,17 @@ describe('chunkify', () => {
     }
   });
 
-  it('should parse options', () => {
-    let rawOptions = {};
-    let parseOptionsStub = stub();
+  it('should delegate options parsing', () => {
+    let options = {};
+    let parseOptions = stub();
 
     let {chunkify} = proxyquire('./chunkify', {
-      './options': {parseOptions: parseOptionsStub}
+      './options': {parseOptions}
     });
 
-    chunkify(0, 10, rawOptions);
+    chunkify(0, 10, options);
 
-    expect(parseOptionsStub.calledWithExactly(rawOptions)).to.be.ok;
+    expect(parseOptions.calledWithExactly(options)).to.be.ok;
   });
 
   it('should yield IChPause after "chunk" iterations resolving in "delay" milliseconds', done => {

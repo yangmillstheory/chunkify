@@ -1,7 +1,8 @@
 import {expect} from 'chai';
-import {spy} from 'sinon';
+import {spy, stub} from 'sinon';
 import {interval} from './interval';
 import {tick} from '../test-utility';
+import proxyquire from 'proxyquire';
 
 
 describe('interval', () => {
@@ -48,6 +49,18 @@ describe('interval', () => {
   it('should require start to be less than final', () => {
     expect(() => { interval(spy(), 1, 0); }).throws(/Expected start 1 to be less than final 0/);
     expect(() => { interval(spy(), 0, 0); }).throws(/Expected start 0 to be less than final 0/);
+  });
+
+  it('should delegate options parsing', () => {
+    let options = {};
+    let parseOptions = stub();
+
+    let {interval} = proxyquire('./interval', {
+      '../options': {parseOptions}
+    });
+    interval(spy(), 0, 1, options);
+
+    expect(parseOptions.calledWithExactly(options)).to.be.ok;
   });
 
   it('should return a promise', () => {
