@@ -62,16 +62,16 @@ export var extend = (targetObj: Object, sourceObj: Object): Object => {
 
 let slice = [].slice;
 
-export var compose = <T, U, V>(
-  f: (u: U, ...fOtherArgs) => V,
-  g: (t: T, ...gOtherArgs) => U
-): (t: T) => V => {
+export var compose = <T, U, V, W, X>(
+  f: (u: U, ...fOtherArgs: X[]) => V,
+  g: (t: T, ...gOtherArgs: W[]) => U
+): (t: T, ...gOtherArgs: W[]) => V => {
   if (!isFunction(f)) {
     throw new Error(`Expected function, got ${typeof f}`);
   } else if (!isFunction(g)) {
     throw new Error(`Expected function, got ${typeof g}`);
   }
   return function() {
-    return f.call(this, g.apply(this, slice.call(arguments)));
+    return f(g.apply(this, slice.call(arguments)));
   };
 };
