@@ -62,9 +62,9 @@ export var extend = (targetObj: Object, sourceObj: Object): Object => {
 
 let slice = [].slice;
 
-export var compose = <T, U, V, W>(
+export var compose = <T, U, V>(
   f: (u: U) => V,
-  g: (t: T, ...ws: W[]) => U,
+  g: (t: T, ...other: any[]) => U,
   scope: Object
 ): (t: T) => V => {
   return function() {
