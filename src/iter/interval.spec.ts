@@ -46,35 +46,42 @@ describe('interval', () => {
     }
   });
 
-  it('should require start to be less than final', (done) => {
+  it('should require start to be less than final', () => {
     expect(() => { interval(spy(), 1, 0); }).throws(/Expected start 1 to be less than final 0/);
-    done();
+    expect(() => { interval(spy(), 0, 0); }).throws(/Expected start 0 to be less than final 0/);
   });
 
   it('should return a promise', () => {
     expect(interval(() => {}, 0, 1)).to.be.instanceOf(Promise);
   });
 
+  it('should invoke fn with a default scope', done => {
+    let fn = spy();
+
+    interval(fn, 0, 3, {chunk: 3})
+      .then(() => {
+        expect(fn.alwaysCalledOn(null)).to.be.ok;
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should invoke fn with a provided scope', done => {
+    let fn = spy();
+    let scope = spy();
+
+    interval(fn, 0, 3, {chunk: 3, scope})
+      .then(() => {
+        expect(fn.alwaysCalledOn(scope)).to.be.ok;
+        done();
+      })
+      .catch(done);
+  });
+
 });
 
 
-// test('should not invoke fn when range is 0', () => {
-//   let fn = sinon.spy();
 
-//   chunkify.interval(fn, 0).then(() => {
-//     t.notOk(fn.called);
-//     t.end();
-//   });
-// });
-
-// test('should invoke fn with the default scope', () => {
-//   let fn = sinon.spy();
-
-//   chunkify.interval(fn, 3, {start: 1, chunk: 3}).then(() => {
-//     t.ok(fn.alwaysCalledOn(null));
-//     t.end()
-//   });
-// });
 
 // test('should invoke fn with the provided scope', () => {
 //   let fn = sinon.spy();
