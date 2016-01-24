@@ -2,7 +2,7 @@ import {chunkify} from '../chunkify';
 import {parseOptions} from '../options';
 import {
   isFunction,
-  isNumber
+  isNumber,
 } from '../utility';
 
 
@@ -10,8 +10,9 @@ let doChunkSync = <T>(
   iterator: IterableIterator<number|Promise<T>>,
   consumer: (index: number) => void
 ): Promise<T> => {
-  let next = iterator.next();
-  while (!next.done) {
+  let next;
+  do {
+    next = iterator.next();
     if (next.value instanceof Promise) {
       return <Promise<T>> next.value;
     }
@@ -20,7 +21,7 @@ let doChunkSync = <T>(
     } catch (error) {
       throw {error, index: next.value};
     }
-  }
+  } while (!next.done);
   return null;
 };
 
@@ -32,10 +33,10 @@ export var interval = (
 ): Promise<void> => {
   if (!isFunction(fn)) {
     throw new Error(`Expected function; got ${typeof fn}`);
-  } else if (!isNumber(final)) {
-    throw new Error(`Expected number; got ${typeof final}`);
   } else if (!isNumber(start)) {
     throw new Error(`Expected number; got ${typeof start}`);
+  } else if (!isNumber(final)) {
+    throw new Error(`Expected number; got ${typeof final}`);
   } else if (start > final) {
     throw new Error(`Expected start ${start} to be less than final ${final}`);
   }
