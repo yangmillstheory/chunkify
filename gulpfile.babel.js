@@ -1,10 +1,10 @@
 'use strict';
-require('babel-polyfill');
-let gulp = require('gulp');
-let tslint = require('gulp-tslint');
-let mocha = require('gulp-mocha');
-let ts = require('gulp-typescript');
-let babel = require('gulp-babel');
+import 'babel-polyfill';
+import gulp from 'gulp';
+import tslint from 'gulp-tslint';
+import mocha from 'gulp-mocha';
+import ts from 'gulp-typescript';
+import babel from 'gulp-babel';
 
 
 /////////
@@ -87,7 +87,7 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 gulp.task('test', done => {
   return gulp
     .src('dist/**/*.js')
-    .pipe(mocha({reporter: 'dot'}));
+    .pipe(mocha({reporter: 'nyan'}));
 });
 
 
