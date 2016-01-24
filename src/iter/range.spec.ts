@@ -6,6 +6,7 @@ import {stub} from 'sinon';
 
 describe('range', () => {
 
+  // so, see interval.spec.ts 
   it('should delegate to interval with a start value of 0', () => {
     let intervalStub = stub();
 
