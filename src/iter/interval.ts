@@ -53,9 +53,9 @@ export var interval = (
       if (pause) {
         return pause.then(() => { return nextChunk(resolve, reject); });
       }
-      return resolve();
+      resolve();
     } catch (error) {
-      return reject(error);
+      reject(error);
     }
   };
   return new Promise<void>(nextChunk);
