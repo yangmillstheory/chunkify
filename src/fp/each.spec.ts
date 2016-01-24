@@ -1,78 +1,70 @@
-// import test from 'tape'
-// import sinon from 'sinon'
-// import chunkify from '../index'
-// import {ChunkifyOptionsSpy, tick} from '../testutils'
-// import ChunkifyOptions from '../options'
+import {spy, stub} from 'sinon';
+import {expect} from 'chai';
+import {each} from './each';
+import {tick} from '../test-utility';
+import proxyquire from 'proxyquire';
 
 
-// test('should require an array', t => {
-//   t.throws(() => {
-//     chunkify.each()
-//   }, /Usage: chunkify.each\(Array array, Function fn, \[Object options]\) - bad array; not an array/);
-//   t.end()
-// });
+describe('each', () => {
 
-// test('should require a function', t => {
-//   t.throws(() => {
-//     chunkify.each([])
-//   }, /Usage: chunkify.each\(Array array, Function fn, \[Object options]\) - bad fn; not a function/);
-//   t.end()
-// });
+  it('should require an array', () => {
+    expect(() => { each(); }).throws(/Expected array, got/);
+  });
 
-// test('should deserialize options', t => {
-//   ChunkifyOptionsSpy((spy) => {
-//     let options = {};
-//     chunkify.each([], sinon.spy(), options);
-//     t.ok(spy.calledWith(options));
-//     t.end()
-//   });
-// });
+  it('should require a function', () => {
+    expect(() => { each([1, 2, 3]); }).throws(/Expected function, got/);
+  });
 
-// test('should default options to an empty object', t => {
-//   ChunkifyOptionsSpy((spy) => {
-//     chunkify.each([], sinon.spy());
-//     t.ok(spy.calledWith({}));
-//     t.end()
-//   });
-// });
+  it('should delegate array length and options to range', () => {
+    let range = stub().returns({
+      catch: stub()
+    });
+    let {each} = proxyquire('./each', {
+      '../iter/range': {range}
+    });
 
-// test('should return a promise', t => {
-//   t.ok(chunkify.each([], sinon.spy()) instanceof Promise);
-//   t.end()
-// });
+    let array = [1, 2, 3];
+    let indexConsumer = stub();
+    let options = {};
+    each(array, indexConsumer, options);
 
-// test('should not invoke fn when given an empty array', t => {
+    expect(range.calledOnce).to.be.ok;
+    expect(range.lastCall.args[1]).to.equal(array.length);
+    expect(range.lastCall.args[2]).to.equal(options);
+  });
+
+// test('should not invoke fn when given an empty array', () => {
 //   let fn = sinon.spy();
 
-//   chunkify.each([], fn).then(() => {
+//   each([], fn).then(() => {
 //     t.notOk(fn.called);
 //     t.end();
 //   });
 // });
 
-// test('should invoke fn with the default scope', t => {
+// test('should invoke fn with the default scope', () => {
 //   let fn = sinon.spy();
 
-//   chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+//   each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
 //     t.ok(fn.alwaysCalledOn(null));
 //     t.end()
 //   });
 // });
 
-// test('should invoke fn with the provided scope', t => {
+// test('should invoke fn with the provided scope', () => {
 //   let fn = sinon.spy();
 //   let scope = {};
 
-//   chunkify.each(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
+//   each(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
 //     t.ok(fn.alwaysCalledOn(scope));
 //     t.end()
 //   });
 // });
 
-// test('should invoke fn with the array item and index', t => {
+// test('should invoke fn with the array item and index', () => {
 //   let fn = sinon.spy();
 
-//   chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
+//   each(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
 //     t.equals(fn.callCount, 3);
 //     t.deepEqual(fn.getCall(0).args, ['A', 0]);
 //     t.deepEqual(fn.getCall(1).args, ['B', 1]);
@@ -81,14 +73,14 @@
 //   })
 // });
 
-// test('should yield for at least `delay` ms after `chunk` iterations', t => {
+// test('should yield for at least `delay` ms after `chunk` iterations', () => {
 //   let fn = sinon.spy();
 
 //   tick({
 //     delay: 9,
 
 //     beforeTick() {
-//       chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
+//       each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
 //       t.equals(fn.callCount, 3);
 //     },
 
@@ -99,14 +91,14 @@
 //   });
 // });
 
-// test('should start again after `delay` milliseconds from last yielding', t => {
+// test('should start again after `delay` milliseconds from last yielding', () => {
 //   let fn = sinon.spy();
 
 //   tick({
 //     delay: 11,
 
 //     beforeTick() {
-//       chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
+//       each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
 //       t.equals(fn.callCount, 3);
 //     },
 
@@ -118,14 +110,14 @@
 //   });
 // });
 
-// test('should resolve with undefined', t => {
+// test('should resolve with undefined', () => {
 //   let fn = sinon.spy();
 
 //   tick({
 //     delay: 11,
 
 //     beforeTick() {
-//       let promise = chunkify.each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
+//       let promise = each(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
 //       t.equals(fn.callCount, 3);
 //       return promise
 //     },
@@ -140,7 +132,7 @@
 //   });
 // });
 
-// test('should reject the promise with rejection object and stop processing', t => {
+// test('should reject the promise with the index, error, and item, and stop processing', () => {
 //   let error = {};
 //   let fn = sinon.spy((letter) => {
 //     if (letter === 'B') {
@@ -148,21 +140,21 @@
 //     }
 //   });
 
-//   chunkify.each(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
+//   each(['A', 'B', 'C'], fn, {chunk: 3}).then(null, (rejection) => {
 //     t.deepEquals(rejection, {error, item: 'B', index: 1});
 //     t.equals(fn.callCount, 2);
 //     t.end()
 //   })
 // });
 
-// test('should not yield after `chunk` iterations if processing is complete', t => {
+// test('should not yield after `chunk` iterations if processing is complete', () => {
 //   let fn = sinon.spy();
 
 //   tick({
 //     delay: 20,
 
 //     beforeTick() {
-//       chunkify.each(['A', 'B', 'C'], fn, {chunk: 3, delay: 10});
+//       each(['A', 'B', 'C'], fn, {chunk: 3, delay: 10});
 //       t.equals(fn.callCount, 3)
 //     },
 
@@ -172,3 +164,5 @@
 //     }
 //   });
 // });
+
+});
