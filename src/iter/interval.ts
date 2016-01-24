@@ -10,9 +10,8 @@ let doChunkSync = <T>(
   iterator: IterableIterator<number|Promise<T>>,
   consumer: (index: number) => void
 ): Promise<T> => {
-  let next;
-  do {
-    next = iterator.next();
+  let next = iterator.next();
+  while (!next.done) {
     if (next.value instanceof Promise) {
       return <Promise<T>> next.value;
     }
@@ -21,7 +20,8 @@ let doChunkSync = <T>(
     } catch (error) {
       throw {error, index: next.value};
     }
-  } while (!next.done);
+    next = iterator.next();
+  }
   return null;
 };
 
@@ -45,17 +45,16 @@ export var interval = (
   let chConsumer = (index: number) => {
     fn.call(chOptions.scope, index);
   };
-  return new Promise<void>((resolve, reject) => {
+  let advanceAsync = (resolve, reject) => {
     try {
-      let pause = doChunkSync(chIterator, chConsumer);
-      if (pause) {
-        return pause.then(() => {
-          return doChunkSync(chIterator, chConsumer);
-        });
+      let nextPause = doChunkSync(chIterator, chConsumer);
+      if (nextPause) {
+        return nextPause.then(() => { return advanceAsync(resolve, reject); });
       }
       return resolve();
     } catch (error) {
       return reject(error);
     }
-  });
+  }
+  return new Promise<void>(advanceAsync);
 };
