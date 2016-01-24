@@ -173,12 +173,11 @@ describe('interval', () => {
     });
 
     interval(fn, 1, 5, {chunk: 3})
-      .then(null, rejection => {
+      .catch(rejection => {
         expect(rejection).to.deep.equal({error, index: 2});
         expect(fn.callCount).to.equal(2);
         done();
-      })
-      .catch(done);
+      });
   });
 
   it('should not yield after "chunk" iterations if processing is complete', done => {

@@ -47,16 +47,12 @@ export var interval = (
   let chConsumer = (index: number) => {
     fn.call(chOptions.scope, index);
   };
-  let nextChunk = (resolve, reject) => {
-    try {
-      let nextPause = doChunkSync(chIterator, chConsumer);
-      if (nextPause) {
-        return nextPause.resume(() => { return nextChunk(resolve, reject); });
-      }
-      resolve();
-    } catch (error) {
-      reject(error);
+  let nextChunk = complete => {
+    let nextPause = doChunkSync(chIterator, chConsumer);
+    if (nextPause) {
+      return nextPause.resume(() => { return nextChunk(complete); });
     }
+    complete();
   };
   return new Promise<void>(nextChunk);
 };
