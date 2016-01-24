@@ -1,12 +1,9 @@
 language: node_js
 node_js:
-  - "0.12"
-  - "0.11"
-  - "0.10"
   - "iojs"
   - "node"
 install: npm i && npm i babel-polyfill
-before_script: npm run-script build && tsd install
+before_script: tsd install && npm run-script build 
 branches:
   only:
     - master
