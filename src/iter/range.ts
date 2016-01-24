@@ -1,24 +1,9 @@
-// import interval from './interval'
-// import {
-//   isFunction,
-//   isNumber
-// } from '../utility'
+import {interval} from './interval';
 
-
-// const USAGE = 'Usage: chunkify.range(Function fn, Number range, [Object options])';
-
-// let checkUsage = (fn, range) => {
-//   if (!isFunction(fn)) {
-//     throw new Error(`${USAGE} - bad fn; not a function`);
-//   } else if (!isNumber(range)) {
-//     throw new Error(`${USAGE} - bad range; not a number`);
-//   }
-// };
-
-// let range = (fn, range, options = {}) => {
-//   checkUsage(fn, range);
-//   delete options.start;
-//   return interval(fn, range, options);
-// };
-
-// export default range
+export var range = (
+  fn: (index: number) => void,
+  length: number,
+  options: IChOptions
+) => {
+  return interval(fn, 0, length, options);
+};
