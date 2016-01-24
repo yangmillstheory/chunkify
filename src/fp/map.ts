@@ -8,7 +8,7 @@ export var map = <T>(
   tArray: T[],
   tMapper: (item: T, index: number) => T,
   options: IChOptions = {}
-) => {
+): Promise<T[]> => {
   let mapped: T[] = [];
   let pusher = (mappedT: T): void => {
     mapped.push(mappedT);
