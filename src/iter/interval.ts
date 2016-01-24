@@ -37,7 +37,7 @@ export var interval = (
     throw new Error(`Expected number; got ${typeof start}`);
   } else if (!isNumber(final)) {
     throw new Error(`Expected number; got ${typeof final}`);
-  } else if (start > final) {
+  } else if (start >= final) {
     throw new Error(`Expected start ${start} to be less than final ${final}`);
   }
   let chOptions = parseOptions(options);
