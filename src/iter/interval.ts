@@ -6,16 +6,16 @@ import {
 } from '../utility';
 
 
-let doChunk = <T>(
-  chIterator: IterableIterator<number|Promise<T>>,
+let doChunk = (
+  chIterator: IterableIterator<number|IChPause>,
   chConsumer: (index: number) => void
-): Promise<T> => {
+): IChPause => {
   let next = chIterator.next();
-  let value: number|Promise<T>;
+  let value: number|IChPause;
   while (!next.done) {
     value = next.value;
     if (value instanceof Promise) {
-      return <Promise<T>> value;
+      return <IChPause> value;
     }
     try {
       chConsumer(<number> value);
@@ -31,7 +31,7 @@ export var interval = (
   fn: (index: number) => void,
   start: number,
   final: number,
-  options: IChunkifyOptions = {}
+  options: IChOptions = {}
 ): Promise<void> => {
   if (!isFunction(fn)) {
     throw new Error(`Expected function; got ${typeof fn}`);
@@ -49,9 +49,9 @@ export var interval = (
   };
   let nextChunk = (resolve, reject) => {
     try {
-      let nextPause = doChunk(chIterator, chConsumer);
-      if (nextPause) {
-        return nextPause.then(() => { return nextChunk(resolve, reject); });
+      let pause = doChunk(chIterator, chConsumer);
+      if (pause) {
+        return pause.then(() => { return nextChunk(resolve, reject); });
       }
       return resolve();
     } catch (error) {
