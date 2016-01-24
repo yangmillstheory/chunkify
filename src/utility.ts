@@ -65,9 +65,9 @@ let slice = [].slice;
 export var compose = <T, U, V>(
   f: (u: U) => V,
   g: (t: T) => U,
-  context: Object
+  scope: Object
 ): (t: T) => V => {
   return function() {
-    return f.call(context, g.apply(context, slice.call(arguments)));
+    return f.call(scope, g.apply(scope, slice.call(arguments)));
   };
 };
