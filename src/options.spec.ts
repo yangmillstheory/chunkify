@@ -82,7 +82,7 @@ describe('options', () => {
   });
 
   it('should throw when an option override has the wrong type', () => {
-    let chunk = new Function();
+    let chunk = function() {};
     let delay = [];
     let scope = false;
 
