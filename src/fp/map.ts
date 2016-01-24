@@ -7,7 +7,7 @@ import {
 
 export var map = <T>(
   array: T[],
-  tMapper: (item: T) => T,
+  tMapper: (item: T, index: number) => T,
   options: IChOptions = {}
 ) => {
   let mapped: T[] = [];
