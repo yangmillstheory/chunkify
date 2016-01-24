@@ -61,9 +61,8 @@
   "typings": "chunkify.d.ts",
   "scripts": {
     "dev": "gulp dev",
-    "test": "gulp test",
-    "compile": "gulp compile",
-    "build": "gulp compile && gulp lint"
+    "test": "gulp build",
+    "compile": "gulp compile"
   },
   "engines": {
     "node": ">=5.0.0"

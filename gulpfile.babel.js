@@ -98,3 +98,5 @@ gulp.task('dev', done => {
   gulp.watch(TS, gulp.series('compile:ts', 'test', 'lint:ts'));
   gulp.watch(SPEC, gulp.series('compile:spec', 'test', 'lint:spec'));
 });
+
+gulp.task('build', gulp.series('compile', 'test', 'lint'));
