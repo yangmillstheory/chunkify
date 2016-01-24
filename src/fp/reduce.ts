@@ -1,31 +1,27 @@
-// import each from './each'
-// import {checkUsage} from './utility'
+import {each} from './each';
+import {isFunction} from '../utility';
 
 
-// const USAGE = 'Usage: chunkify.reduce(Array array, Function fn, [Object options])';
-// const MEMO_KEY = 'memo';
-
-// let reduce = (array, fn, options = {}) => {
-//   checkUsage(array, fn, USAGE);
-//   let initialize = () => {
-//     if (options.hasOwnProperty(MEMO_KEY)) {
-//       return {skipFirst: false, memo: options[MEMO_KEY]}
-//     } else {
-//       return {skipFirst: true, memo: array[0]}
-//     }
-//   };
-//   let {memo, skipFirst} = initialize();
-//   let reducee = function(item, index) {
-//     if (skipFirst && index === 0) {
-//       return
-//     }
-//     // this will be scoped to options.scope
-//     memo = fn.call(this, memo, item, index, array);
-//   };
-//   return each(array, reducee, options).then(() => {
-//     return memo
-//   });
-// };
-
-
-// export default reduce
+export var reduce = <T, U>(
+  tArray,
+  tReducer: (memo: U, item: T, index: number, tArray: T[]) => U,
+  options: IChOptions = {},
+  memo?: U
+): Promise<U> => {
+  if (!Array.isArray(tArray) || !tArray.length) {
+    throw new TypeError(`Expected non-empty array, got ${typeof tArray}`);
+  } else if (!isFunction(tReducer)) {
+    throw new TypeError(`Expected function, got ${typeof tReducer}`);
+  }
+  let skipFirst = (memo === undefined);
+  if (skipFirst) {
+    memo = tArray[0];
+  }
+  let tConsumer = function(item: T, index: number) {
+    if (skipFirst && index === 0) {
+      return;
+    }
+    memo = tReducer.call(this, memo, item, index, tArray);
+  };
+  return each(tArray, tConsumer, options).then(() => { return memo; });
+};

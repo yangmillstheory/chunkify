@@ -1,146 +1,148 @@
-// import test from 'tape'
-// import sinon from 'sinon'
-// import chunkify from '../index'
-// import {ChunkifyOptionsSpy, tick} from '../testutils'
-// import ChunkifyOptions from '../options'
+import {reduce} from './reduce';
+import {spy, stub} from 'sinon';
+import {expect} from 'chai';
+import proxyquire from 'proxyquire';
+import {tick} from '../test-utility';
 
 
-// test('should require an array', t => {
-//   t.throws(() => {
-//     chunkify.reduce()
-//   }, /Usage: chunkify.reduce\(Array array, Function fn, \[Object options]\) - bad array; not an array/);
-//   t.end()
-// });
+describe('reduce', () => {
 
-// test('should require a function', t => {
-//   t.throws(() => {
-//     chunkify.reduce([])
-//   }, /Usage: chunkify.reduce\(Array array, Function fn, \[Object options]\) - bad fn; not a function/);
-//   t.end()
-// });
+  it('should require an array', () => {
+    expect(reduce).throws(/Expected non-empty array, got/);
+  });
 
-// test('should deserialize options', t => {
-//   ChunkifyOptionsSpy((spy) => {
-//     let options = {};
-//     chunkify.reduce([], sinon.spy(), options);
-//     t.ok(spy.calledWith(options));
-//     t.end()
-//   });
-// });
+  it('should require a non-empty array', () => {
+    expect(() => { reduce([]); }).throws(/Expected non-empty array, got/);
+  });
 
-// test('should default options to an empty object', t => {
-//   ChunkifyOptionsSpy((spy) => {
-//     chunkify.reduce([], sinon.spy());
-//     t.ok(spy.calledWith({}));
-//     t.end()
-//   });
-// });
+  it('should require a function', () => {
+    expect(() => { reduce([1, 2, 3]); }).throws(/Expected function, got/);
+  });
 
-// test('should return a promise', t => {
-//   t.ok(chunkify.reduce([], sinon.spy()) instanceof Promise);
-//   t.end()
-// });
+  // so for everything that applies to 
+  // tArray & options testing, cf. each.spec.ts
+  it('should delegate tArray and options to each', () => {
+    let each = stub().returns({then: stub()});
+    let {reduce} = proxyquire('./reduce', {
+      './each': {each}
+    });
 
-// test('should not invoke fn when given an empty array', t => {
-//   let fn = sinon.spy();
+    let tArray = [1, 2, 3];
+    let tReducer = stub();
+    let options = {};
+    reduce(tArray, tReducer, options);
 
-//   chunkify.reduce([], fn).then(() => {
-//     t.notOk(fn.called);
-//     t.end();
-//   });
-// });
+    expect(each.calledOnce).to.be.ok;
+    expect(each.lastCall.args[0]).to.equal(tArray);
+    expect(each.lastCall.args[1]).to.be.instanceOf(Function);
+    expect(each.lastCall.args[2]).to.equal(options);
+  });
 
-// test('should invoke fn with the default scope', t => {
-//   let fn = sinon.spy();
+  it('should return a promise', () => {
+    expect(reduce([1, 2, 3], spy())).to.be.instanceOf(Promise);
+  });
 
-//   chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3}).then(() => {
-//     t.ok(fn.alwaysCalledOn(null));
-//     t.end()
-//   });
-// });
+  ///////////////////////////////////////
+  // test behavior around tReducer, since 
+  // it's not directly passed to each
 
-// test('should invoke fn with the provided scope', t => {
-//   let fn = sinon.spy();
-//   let scope = {};
+  it('should invoke tReducer with the default scope', done => {
+    let tReducer = spy();
 
-//   chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, scope}).then(() => {
-//     t.ok(fn.alwaysCalledOn(scope));
-//     t.end()
-//   });
-// });
+    reduce(['A', 'B', 'C'], tReducer, {chunk: 3})
+      .then(() => {
+        expect(tReducer.alwaysCalledOn(null)).to.be.ok;
+        done();
+      })
+      .catch(done);
+  });
 
-// test('should invoke fn with memo, item, index and array', t => {
-//   let array = ['A', 'B', 'C'];
-//   let identity = sinon.spy((memo) => {
+  it('should invoke tReducer with the provided scope', done => {
+    let tReducer = spy();
+    let scope = {};
+
+    reduce(['A', 'B', 'C'], tReducer, {chunk: 3, scope})
+      .then(() => {
+        expect(tReducer.alwaysCalledOn(scope)).to.be.ok;
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should invoke tReducer with memo, item, index and array', done => {
+    let tArray = ['A', 'B', 'C'];
+    let tReducer = spy(memo => {
+      return memo;
+    });
+
+    reduce(tArray, tReducer, {chunk: 3}, 'MEMO')
+      .then(() => {
+        expect(tReducer.callCount).to.equal(3);
+        expect(tReducer.getCall(0).args).to.deep.equal(['MEMO', 'A', 0, tArray]);
+        expect(tReducer.getCall(1).args).to.deep.equal(['MEMO', 'B', 1, tArray]);
+        expect(tReducer.getCall(2).args).to.deep.equal(['MEMO', 'C', 2, tArray]);
+        done();
+      })
+      .catch(done);
+  });
+
+// it('should invoke tReducer with the memo as the first item when no memo is given', () => {
+//   let tArray = ['A', 'B', 'C'];
+//   let identity = spy(memo => {
 //     return memo;
 //   });
 
-//   chunkify.reduce(array, identity, {chunk: 3, memo: 'MEMO'}).then(() => {
-//     t.equals(identity.callCount, 3);
-//     t.deepEqual(identity.getCall(0).args, ['MEMO', 'A', 0, array]);
-//     t.deepEqual(identity.getCall(1).args, ['MEMO', 'B', 1, array]);
-//     t.deepEqual(identity.getCall(2).args, ['MEMO', 'C', 2, array]);
-//     t.end()
-//   })
-// });
-
-// test('should invoke fn with the memo as the first item when no memo is given', t => {
-//   let array = ['A', 'B', 'C'];
-//   let identity = sinon.spy((memo) => {
-//     return memo;
-//   });
-
-//   chunkify.reduce(array, identity, {chunk: 2}).then(() => {
+//   reduce(array, identity, {chunk: 2}).then(() => {
 //     // Note the reduced call count!
 //     t.equals(identity.callCount, 2);
 //     t.deepEqual(identity.getCall(0).args, ['A', 'B', 1, array]);
 //     t.deepEqual(identity.getCall(1).args, ['A', 'C', 2, array]);
-//     t.end()
+//     done()
 //   })
 // });
 
-// test('should yield for at least `delay` ms after `chunk` iterations', t => {
-//   let fn = sinon.spy();
+// it('should yield for at least `delay` ms after `chunk` iterations', () => {
+//   let tReducer = spy();
 
 //   tick({
 //     delay: 9,
 
 //     beforeTick() {
-//       chunkify.reduce(['A', 'B', 'C', 'D'], fn, {memo: '', chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3);
+//       reduce(['A', 'B', 'C', 'D'], tReducer, {memo: '', chunk: 3, delay: 10});
+//       t.equals(tReducer.callCount, 3);
 //     },
 
 //     afterTick() {
-//       t.equals(fn.callCount, 3);
-//       t.end();
+//       t.equals(tReducer.callCount, 3);
+//       done();
 //     }
 //   });
 // });
 
-// test('should start again after `delay` milliseconds from last yielding', t => {
-//   let fn = sinon.spy((memo) => {
+// it('should start again after `delay` milliseconds from last yielding', () => {
+//   let tReducer = spy(memo => {
 //     return memo
 //   });
-//   let array = ['A', 'B', 'C', 'D'];
+//   let tArray = ['A', 'B', 'C', 'D'];
 
 //   tick({
 //     delay: 11,
 
 //     beforeTick() {
-//       chunkify.reduce(array, fn, {memo: '', chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 3);
+//       reduce(array, tReducer, {memo: '', chunk: 3, delay: 10});
+//       t.equals(tReducer.callCount, 3);
 //     },
 
 //     afterTick() {
-//       t.equals(fn.callCount, 4);
-//       t.deepEqual(fn.getCall(3).args, ['', 'D', 3, array]);
-//       t.end();
+//       t.equals(tReducer.callCount, 4);
+//       t.deepEqual(tReducer.getCall(3).args, ['', 'D', 3, array]);
+//       done();
 //     }
 //   });
 // });
 
-// test('should resolve with the reduced result from a default memo', t => {
-//   let fn = sinon.spy((memo, letter, index, array) => {
+// it('should resolve with the reduced result from a default memo', () => {
+//   let tReducer = spy((memo, letter, index, array) => {
 //     return `${memo.toLowerCase()}+${letter.toLowerCase()}`
 //   });
 
@@ -148,23 +150,23 @@
 //     delay: 11,
 
 //     beforeTick() {
-//       let promise = chunkify.reduce(['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10});
-//       t.equals(fn.callCount, 2);
+//       let promise = reduce(['A', 'B', 'C', 'D'], tReducer, {chunk: 3, delay: 10});
+//       t.equals(tReducer.callCount, 2);
 //       return promise
 //     },
 
 //     afterTick(promise) {
-//       t.equals(fn.callCount, 3);
+//       t.equals(tReducer.callCount, 3);
 //       promise.then((result) => {
 //         t.deepEquals(result, 'a+b+c+d');
-//         t.end()
+//         done()
 //       })
 //     }
 //   });
 // });
 
-// test('should resolve with the reduced result from a given memo', t => {
-//   let fn = sinon.spy((memo, letter, index, array) => {
+// it('should resolve with the reduced result from a given memo', () => {
+//   let tReducer = spy((memo, letter, index, array) => {
 //     return `${memo.toLowerCase()}+${letter.toLowerCase()}`
 //   });
 
@@ -172,51 +174,52 @@
 //     delay: 11,
 
 //     beforeTick() {
-//       let promise = chunkify.reduce(
-//         ['A', 'B', 'C', 'D'], fn, {chunk: 3, delay: 10, memo: 'MEMO'});
-//       t.equals(fn.callCount, 3);
+//       let promise = reduce(
+//         ['A', 'B', 'C', 'D'], tReducer, {chunk: 3, delay: 10, memo: 'MEMO'});
+//       t.equals(tReducer.callCount, 3);
 //       return promise
 //     },
 
 //     afterTick(promise) {
-//       t.equals(fn.callCount, 4);
+//       t.equals(tReducer.callCount, 4);
 //       promise.then((result) => {
 //         t.deepEquals(result, 'memo+a+b+c+d');
-//         t.end()
+//         done()
 //       })
 //     }
 //   });
 // });
 
-// test('should reject the promise with rejection object and stop processing', t => {
+// it('should reject the promise with rejection object and stop processing', () => {
 //   let error = {};
-//   let fn = sinon.spy((memo, letter) => {
+//   let tReducer = spy((memo, letter) => {
 //     if (letter === 'B') {
 //       throw error;
 //     }
 //   });
 
-//   chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, memo: ''}).then(null, (rejection) => {
+//   reduce(['A', 'B', 'C'], tReducer, {chunk: 3, memo: ''}).then(null, (rejection) => {
 //     t.deepEquals(rejection, {error, item: 'B', index: 1});
-//     t.equals(fn.callCount, 2);
-//     t.end()
+//     t.equals(tReducer.callCount, 2);
+//     done()
 //   })
 // });
 
-// test('should not yield after `chunk` iterations if processing is complete', t => {
-//   let fn = sinon.spy();
+// it('should not yield after `chunk` iterations if processing is complete', () => {
+//   let tReducer = spy();
 
 //   tick({
 //     delay: 20,
 
 //     beforeTick() {
-//       chunkify.reduce(['A', 'B', 'C'], fn, {chunk: 3, delay: 10, memo: ''});
-//       t.equals(fn.callCount, 3)
+//       reduce(['A', 'B', 'C'], tReducer, {chunk: 3, delay: 10, memo: ''});
+//       t.equals(tReducer.callCount, 3)
 //     },
 
 //     afterTick() {
-//       t.equals(fn.callCount, 3);
-//       t.end()
+//       t.equals(tReducer.callCount, 3);
+//       done()
 //     }
 //   });
 // });
+});
