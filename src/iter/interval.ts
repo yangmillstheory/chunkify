@@ -7,15 +7,15 @@ import {
 
 
 let doChunkSync = (
-  chunkIterator: IterableIterator<number|IChPause>,
+  chunkIterator: IterableIterator<number|IPause>,
   indexConsumer: (index: number) => void
-): IChPause => {
+): IPause => {
   let next = chunkIterator.next();
-  let value: number|IChPause;
+  let value: number|IPause;
   while (!next.done) {
     value = next.value;
     if (typeof value !== 'number') {
-      return <IChPause> value;
+      return <IPause> value;
     }
     try {
       indexConsumer(<number> value);

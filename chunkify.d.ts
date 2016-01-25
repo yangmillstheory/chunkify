@@ -6,7 +6,7 @@ declare interface IChOptions {
   scope?: Object;
 }
 
-declare interface IChPause { resume(fn: () => void); }
+declare interface IPause { resume(fn: () => void); }
 
 declare module 'chunkify' {
   // write me!

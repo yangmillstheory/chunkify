@@ -50,19 +50,19 @@ describe('chunkify', () => {
     expect(parseOptions.calledWithExactly(options)).to.be.ok;
   });
 
-  it('should yield IChPause after "chunk" iterations resolving in "delay" milliseconds', done => {
+  it('should yield IPause after "chunk" iterations resolving in "delay" milliseconds', done => {
     let iter = chunkify(0, 3, {chunk: 2, delay: DELAY});
 
     expect(iter.next()).to.deep.equal({done: false, value: 0});
     expect(iter.next()).to.deep.equal({done: false, value: 1});
 
-    let chPause: number|IChPause = iter.next().value;
+    let pause: number|IPause = iter.next().value;
     let started: number = now();
     let elapsed: number;
 
-    expect(chPause.resume).to.exist;
+    expect(pause.resume).to.exist;
 
-    chPause
+    pause
       .resume(() => {
         elapsed = now() - started;
         expect(elapsed >= DELAY).to.be.ok;
@@ -83,19 +83,19 @@ describe('chunkify', () => {
     expect(() => { iter.next(); }).throws(/paused at index 2; wait 100 milliseconds/);
   });
 
-  it('should yield IChPause after "chunk" iterations from a given "start" resolving in delay milliseconds', done => {
+  it('should yield IPause after "chunk" iterations from a given "start" resolving in delay milliseconds', done => {
     let iter = chunkify(1, 4, {chunk: 2, delay: 10});
 
     expect(iter.next()).to.deep.equal({done: false, value: 1});
     expect(iter.next()).to.deep.equal({done: false, value: 2});
 
-    let chPause: number|IChPause = iter.next().value;
+    let pause: number|IPause = iter.next().value;
     let started: number = now();
     let elapsed: number;
 
-    expect(chPause.resume).to.exist;
+    expect(pause.resume).to.exist;
 
-    chPause
+    pause
       .resume(() => {
         elapsed = now() - started;
         expect(elapsed >= DELAY).to.be.ok;

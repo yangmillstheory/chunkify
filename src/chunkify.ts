@@ -1,6 +1,6 @@
 import {parseOptions} from './options';
 import {isNumber} from './utility';
-import {ChPause} from './pause';
+import {Pause} from './pause';
 
 
 // return values from the range "start" to "final"
@@ -13,7 +13,7 @@ let __chunkify__: (
   start: number,
   final: number,
   options?: IChOptions
-) => IterableIterator<number|IChPause> = function*(
+) => IterableIterator<number|IPause> = function*(
   start: number,
   final: number,
   options: IChOptions
@@ -25,7 +25,7 @@ let __chunkify__: (
   let paused = false;
   let pause = function*() {
     paused = true;
-    yield ChPause.for(delay).resume(() => { paused = false; });
+    yield Pause.for(delay).resume(() => { paused = false; });
   };
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
