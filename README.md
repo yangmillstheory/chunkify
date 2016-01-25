@@ -12,7 +12,7 @@ The idea is to do work in synchronous chunks, periodically letting go of the thr
  
 ## API
 
-We'll use our [TypeScript declarations](chunkify.d.ts). 
+We'll use our [TypeScript declarations](chunkify.d.ts) for documentation. 
 
 ### Options
 
@@ -24,7 +24,7 @@ declare interface IChunkifyOptions {
   // Default value is 10; must be positive.
   chunk: number;  
   
-  // The number of milliseconds to wait  until calling again.
+  // The number of milliseconds to wait until calling again.
   // Default value is 50; must be non-negative.
   delay: number;
   
@@ -48,7 +48,7 @@ export var generator: (
 ) => IterableIterator<number|IPause>;
 
 declare interface IPause {
-  resume(fn: () => void);
+  resume: (fn: () => void) => void;
 }
 ```
 
@@ -84,7 +84,7 @@ export var map: <T>(
 #### chunkify.reduce
 
 ```javascript
-// Almost identical to the native reduce on Array.prototype. 
+// Virtually identical to the native reduce on Array.prototype. 
 // This Promise resolves with the reduction result.
 export var reduce: <T, U>(
   tArray: T[],
@@ -98,9 +98,13 @@ export var reduce: <T, U>(
 
 To catch any `Error` thrown during processing, attach a `.catch(...)` to the returned `Promise`.
 
-The error object in `.catch(...)` has the shape `{error, item, index}`, where `error` is the original error, `index` is the index where it happened, and `item` is `tArray[index]`. 
+The error object in `.catch(...)` has the shape 
+```javascript
+{error: Error, item: T, index: number}
+```
+where `error` is the original error, `index` is the index where it happened, and `item` is `tArray[index]`. 
 
-Processing halts when an `Error` is thrown.
+Processing stops when this happens.
 
 ### **Iteration**
 
