@@ -69,12 +69,7 @@ let lintStream = (globs, rules) => {
 };
 
 gulp.task('lint:ts', done => {
-  return lintStream(TS)
-    .on('error', error => {
-      console.error(`\n${error.message}; exiting.\n`);
-      done();
-      process.exit(1);
-    });
+  return lintStream(TS);
 });
 
 gulp.task('lint:spec', () => {
@@ -89,10 +84,18 @@ gulp.task('lint', gulp.series('lint:ts', 'lint:spec'));
 ///////
 // test
 
-gulp.task('test', done => {
+let testStream = testOptions => {
   return gulp
     .src('dist/**/*.js')
-    .pipe(mocha({reporter: 'min'}));
+    .pipe(mocha(testOptions));
+}
+
+gulp.task('test', () => {
+  return testStream();
+});
+
+gulp.task('tdd', () => {
+  return testStream({reporter: 'min'});
 });
 
 
@@ -100,8 +103,8 @@ gulp.task('test', done => {
 // continuous development
 
 gulp.task('dev', done => {
-  gulp.watch(TS, gulp.series('compile:ts', 'test', 'lint:ts'));
-  gulp.watch(SPEC, gulp.series('compile:spec', 'test', 'lint:spec'));
+  gulp.watch(TS, gulp.series('compile:ts', 'tdd', 'lint:ts'));
+  gulp.watch(SPEC, gulp.series('compile:spec', 'tdd', 'lint:spec'));
 });
 
 gulp.task('build', gulp.series('compile', 'test', 'lint'));
