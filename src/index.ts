@@ -6,4 +6,11 @@ import {interval} from './iter/interval';
 import {generator} from './generator';
 
 
-export default {each, map, reduce, interval, range, generator};
+export {
+  each,
+  map,
+  reduce,
+  interval,
+  range,
+  generator
+};
