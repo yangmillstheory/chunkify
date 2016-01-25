@@ -67,7 +67,7 @@ export var parseOptions = (options: IChunkifyOptions): IChunkifyOptions => {
   if (!isPlainObject(options) || Array.isArray(options) || isFunction(options)) {
     throw new TypeError(`Expected plain javascript object, got ${typeof options}`);
   }
-  let parsed: IChunkifyOptions = extend({}, DEFAULT_OPTIONS);
+  let parsed = <IChunkifyOptions> extend({}, DEFAULT_OPTIONS);
   forOwn(options, (value, key: string) => {
     if (mapsToOption(CHUNK, key)) {
       setOption(parsed, CHUNK, value);

@@ -52,7 +52,10 @@ export var defaults = (defaultsObj: Object, overrideObj: Object): Object => {
   return defaultsObj;
 };
 
-export var extend = (targetObj: Object, sourceObj: Object): Object => {
+export var extend = <T extends Object, U extends Object>(
+  targetObj: T,
+  sourceObj: U
+): T|U => {
   forOwn(sourceObj, (value, key) => {
     targetObj[key] = sourceObj[key];
   });
