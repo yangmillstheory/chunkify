@@ -64,12 +64,17 @@ let lintStream = (globs, rules) => {
     }))
     .pipe(tslint.report('verbose', {
       summarizeFailureOutput: true,
-      emitError: false
+      emitError: true
     }));
 };
 
-gulp.task('lint:ts', () => {
-  return lintStream(TS);
+gulp.task('lint:ts', done => {
+  return lintStream(TS)
+    .on('error', error => {
+      console.error(`\n${error.message}; exiting.\n`);
+      done();
+      process.exit(1);
+    });
 });
 
 gulp.task('lint:spec', () => {
@@ -78,7 +83,7 @@ gulp.task('lint:spec', () => {
   });
 });
 
-gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
+gulp.task('lint', gulp.series('lint:ts', 'lint:spec'));
 
 
 ///////

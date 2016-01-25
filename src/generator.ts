@@ -30,7 +30,7 @@ let __chunkify__: (
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
       yield *pause();
-    }
+    } 
     if (paused) {
       throw new Error(`paused at index ${index}; wait ${delay} milliseconds before further invocations of .next()`);
     }
