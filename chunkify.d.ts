@@ -22,7 +22,7 @@ declare module 'chunkify' {
 
   export var map: <T>(
     tArray: T[],
-    tMapper: (iItem: T, index: number) => T,
+    tMapper: (tItem: T, index: number) => T,
     options?: IChunkifyOptions
   ) => Promise<T[]>;
 

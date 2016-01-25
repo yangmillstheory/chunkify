@@ -2,112 +2,154 @@
 
 [![Build Status](https://travis-ci.org/yangmillstheory/chunkify.svg?branch=master)](https://travis-ci.org/yangmillstheory/chunkify)
 
-An [ES6-developed](http://babeljs.io/) functional API that prevents long-running scripts from blocking the JavaScript thread.
+## What is it?
+
+An API to prevent long-running scripts from blocking. 
+
+The idea is to do work in synchronous chunks, periodically letting go of the thread. 
+
+[Here it is in the browser](http://yangmillstheory.github.io/chunkify/), integrated with [Angular.js](https://angularjs.org/). 
  
-## Introduction
+## API
 
-This is an API for getting long-running JavaScripts to periodically unblock the thread. The idea is to use timeouts to chunk up work and let the call stack unwind. 
+We'll use our [TypeScript declarations](chunkify.d.ts). 
 
-Here's a [demo](http://yangmillstheory.github.io/chunkify/) of the code being used in the browser, integrated with [Angular.js](https://angularjs.org/). 
+### Options
+
+In [API methods](#api), an options literal can be passed:
+
+```javascript
+declare interface IChunkifyOptions {
+  // the number synchronously calls to make before yielding
+  // default value is 10; must be positive
+  chunk: number;  
+  
+  // the number of milliseconds to wait  until calling again
+  // default value is 50; must be non-negative
+  delay: number;
+  
+  // the context on which to invoke calls on
+  // default value is null; must not be a Number, Boolean, or undefined
+  scope?: Object;  
+}
+```
+
+### Exports
+
+#### **Core**
+
+#### chunkify.generator
+
+```javascript
+export var generator: (
+  start: number,
+  final: number,
+  options?: IChunkifyOptions
+) => IterableIterator<number|IPause>;
+
+declare interface IPause {
+  resume(fn: () => void);
+}
+```
+
+Returns the core [Generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) used to power everything else.
  
-## Install
+It yields integers from `start` and `final`. Values are yielded synchronously within intervals of length `chunk`. At every `chunk`<sup>th</sup> call to `.next()`, the generator yields a promise-like `IPause`, with a single method `.resume`. 
 
-    $ npm install --save chunkify
-    
-## Usage
+An error will be thrown if the generator is advanced before the `IPause` has `.resume`'d.  The pause resumes after `delay` milliseconds, given in `options` or using the default value.  
 
-Import the module:
+### **Arrays**
 
-    import chunkify from 'chunkify'
-    
-## <a name='options'>Options
+#### chunkify.each
+```javascript
+export var each: <T>(
+  tArray: T[],
+  tConsumer: (tItem: T, index: number) => void,
+  options?: IChunkifyOptions
+) => Promise<void>
+```
 
-In [API methods](#api), an optional `options` object may provide any subset of the following data:
-
-* `chunk`: the number times to successively invoke `fn` before yielding control of the main thread. 
-    * default value is `1`
-    * must be positive
-    * aliases: `chunksize`
-* `delay`: the minimal time in milliseconds to wait before continuing to invoke `fn`.
-    * default value is `0`
-    * must be non-negative
-    * aliases: `yield`, `yieldtime`, `delaytime`
-* `scope`: the object on which `fn` is invoked on.  
-    * default value is `null`
-    * must not be a `Number`, `Boolean`, or `undefined`
-
-## <a name='api'>API
-
-### ***Core API***
-
-#### chunkify.generator(Number start, Number final, Object options)</a>
-
-Returns the core [Generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) used internally. Thus, this is somewhat more unstable than other API methods.
+#### chunkify.map
+```javascript
+export var map: <T>(
+  tArray: T[],
+  tMapper: (tItem: T, index: number) => T,
+  options?: IChunkifyOptions
+) => Promise<T[]>;
+```
  
-`options` may specify `delay` and `chunk`, as [above](#options).
+The `Promise` resolves with the mapped array.
+
+#### chunkify.reduce
+
+```javascript
+export var reduce: <T, U>(
+  tArray: T[],
+  tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
+  options?: IChunkifyOptions,
+  memo?: U
+) => Promise<U>;
+```
+
+Almost identical to the [native reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) on `Array.prototype`. Resolves with the reduction result.
+
+#### Catching Errors
+
+To catch any `Error` thrown during processing, attach a `.catch(...)` hook to the returned `Promise`.
+
+The error object has the shape `{error, item, index}`, where `error` is the original error, index is the index where it happened, and item is `tArray[index]`. 
+
+Processing halts when an `Error` is thrown.
+
+### **Iteration**
+
+#### chunkify.interval
+
+```javascript
+export var interval: (
+  indexConsumer: (index: number) => void,
+  start: number,
+  final: number,
+  options?: IChunkifyOptions
+) => Promise<void>;
+```
+
+#### chunkify.range
+
+```javascript
+export var range: (
+  indexConsumer: (index: number) => void,
+  length: number,
+  options?: IChunkifyOptions
+) => Promise<void>;
+```
+
+This is the same as `chunkify.interval` with the `start` parameter set to `0`.
+
+#### Catching Errors 
  
-The generator yields integers from the range `start` and `final`, inclusive. Values are yielded synchronously within intervals of length `chunk`. At every `chunk`<sup>th</sup> call to `.next()`, the generator yields a `Promise` that represents a paused and non-blocking state - this is what unblocks the thread. 
-
-This promise resolves after at least `delay` milliseconds; an error will be thrown in case the generator is advanced again before this `Promise` has resolved. Further calls to `.next()` may be resumed after resolution. This process can continue until all integers between `start` and `final` have been yielded.
-
-### ***Arrays***
-
-#### <a name='each'>chunkify.each(Array array, Function fn, [Object options])</a>
-
-`options` can specify all of the properties mentioned in [options](#options).
-
-`fn` is invoked in synchronous chunks on successive `array` elements and their indices (`fn(item, index)`).  
-   
-Returns a `Promise` that resolves with `undefined` when `fn` has been invoked on all items in `array`.
-
-#### chunkify.map(Array array, Function fn, [Object options])
- 
-Identical to [chunkify.each](#each), except the returned `Promise` resolves with the `array` mapped by `fn`.
-
-#### chunkify.reduce(Array array, Function fn, [Object options])
-
-`options` can specify all of the properties mentioned in [options](#options), plus a `memo` value which will be used as the reduction memo as in the [native reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) on `Array.prototype`.
- 
-The behavior is just like `Array.prototype.reduce`, but the work is chunked up as [above](#each), and the returned `Promise` resolves with the result of the reduction.
-
-**If any invocation of `fn` throws an `Error`, the returned promise is rejected with an object `{error, item, index}`, where `error` is the caught `Error`, `index` is the index in `array` where the invocation threw, and `item` is `array[index]`. No further processing happens after the failure.**
-
-### ***Ranges***
-
-#### <a name='interval'>chunkify.interval(Function fn, Number final, [Object options])</a>
-
-`options` can specify all of the properties mentioned in [options](#options), along with a numerical `start` value that must be less than or equal to `final`. By default, `options.start` is `0`.
-
-Invoke `fn` synchronously in chunks on successive integers in the interval `options.start` to `final`.  
-
-Returns a `Promise` that resolves with `undefined` when the entire interval has been traversed.  
-
-#### chunkify.range(Function fn, Number range, [Object options])
-
-Like [chunkify.interval](#interval), with `options.start` forced to `0`. 
- 
-**If any invocation of `fn` throws an `Error`, the returned promise is rejected with an object `{error, index}`, where `error` is the caught `Error` and `index` is the index in `array` where the invocation threw. No further processing happens after the failure.**
+Just like catching errors in the Arrays API, except an `item` key isn't part of the error object. 
 
 ## Contributing
 
-**Development is in ES6.**
+**Development is in TypeScript/ES6.**
 
-Get the source.
+Get the source:
 
-    $ git clone git@github.com:yangmillstheory/chunkify
+    $ git clone git@github.com:username/chunkify
 
-Install dependencies.
+Install dependencies:
     
-    $ npm install
+    $ npm i && npm i babel-polyfill && node_modules/.bin/tsd install
     
-Compile sources.
+Compile:
 
-    $ node_modules/.bin/gulp
+    $ npm run-script compile
     
-Run tests.
+Develop:
 
-    $ npm test
+    $ npm run-script dev
 
 ## License
 
-MIT © 2015, Victor Alvarez
+MIT © 2016, Victor Alvarez
