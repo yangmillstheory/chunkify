@@ -73,7 +73,7 @@ export var each: <T>(
 
 #### chunkify.map
 ```javascript
-// This "Promise" resolves with the mapped array.
+// This Promise resolves with the mapped array.
 export var map: <T>(
   tArray: T[],
   tMapper: (tItem: T, index: number) => T,
@@ -84,8 +84,8 @@ export var map: <T>(
 #### chunkify.reduce
 
 ```javascript
-// Almost identical to the native reduce on "Array.prototype". 
-// This "Promise" resolves with the reduction result.
+// Almost identical to the native reduce on Array.prototype. 
+// This Promise resolves with the reduction result.
 export var reduce: <T, U>(
   tArray: T[],
   tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
@@ -120,8 +120,8 @@ export var interval: (
 #### chunkify.range
 
 ```javascript
-// This is the same as "chunkify.interval" 
-// with the "start" parameter set to "0".
+// This is the same as chunkify.interval 
+// with the start parameter set to 0.
 export var range: (
   indexConsumer: (index: number) => void,
   length: number,
