@@ -20,7 +20,7 @@ In [API methods](#api), an options literal can be passed:
 
 ```javascript
 declare interface IChunkifyOptions {
-  // the number synchronously calls to make before yielding
+  // the number of synchronous calls to make before yielding
   // default value is 10; must be positive
   chunk: number;  
   
