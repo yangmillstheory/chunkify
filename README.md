@@ -20,16 +20,16 @@ In [API methods](#api), an options literal can be passed:
 
 ```javascript
 declare interface IChunkifyOptions {
-  // the number of synchronous calls to make before yielding
-  // default value is 10; must be positive
+  // the number of synchronous calls to make before yielding.
+  // default value is 10; must be positive.
   chunk: number;  
   
-  // the number of milliseconds to wait  until calling again
-  // default value is 50; must be non-negative
+  // the number of milliseconds to wait  until calling again.
+  // default value is 50; must be non-negative.
   delay: number;
   
-  // the context on which to invoke calls on
-  // default value is null; must not be a Number, Boolean, or undefined
+  // the context on which to invoke calls on.
+  // default value is null; must not be a Number, Boolean, or undefined.
   scope?: Object;  
 }
 ```
