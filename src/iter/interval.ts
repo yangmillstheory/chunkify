@@ -1,4 +1,4 @@
-import {chunkify} from '../chunkify';
+import {generator} from '../generator';
 import {parseOptions} from '../options';
 import {
   isFunction,
@@ -31,7 +31,7 @@ export var interval = (
   indexConsumer: (index: number) => void,
   start: number,
   final: number,
-  options: IChOptions = {}
+  options: IChunkifyOptions = {}
 ): Promise<void> => {
   if (!isFunction(indexConsumer)) {
     throw new Error(`Expected function; got ${typeof indexConsumer}`);
@@ -43,7 +43,7 @@ export var interval = (
     throw new Error(`Expected start ${start} to be less than final ${final}`);
   }
   let chOptions = parseOptions(options);
-  let chunkIterator = chunkify(start, final, chOptions);
+  let chunkIterator = generator(start, final, chOptions);
   let boundConsumer = (index: number) => {
     // FIXME - this (and similar upstream invocations) are untyped!
     // 

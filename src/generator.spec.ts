@@ -1,11 +1,11 @@
-import {chunkify} from './chunkify';
+import {generator} from './generator';
 import {expect} from 'chai';
 import {now} from './test-utility';
 import {stub} from 'sinon';
 import proxyquire from 'proxyquire';
 
 
-describe('chunkify', () => {
+describe('generator', () => {
 
   // FIXME (?): these tests are non-deterministic
   const DELAY = 10;
@@ -19,7 +19,7 @@ describe('chunkify', () => {
       {},
       [],
     ]) {
-      expect(() => { chunkify(start); })
+      expect(() => { generator(start); })
         .throws(/start index "start" of generator range must be a number/);
     }
   });
@@ -32,7 +32,7 @@ describe('chunkify', () => {
       {},
       [],
     ]) {
-      expect(() => { chunkify(0, final); })
+      expect(() => { generator(0, final); })
         .throws(/final index "final" of generator range must be a number/);
     }
   });
@@ -41,17 +41,17 @@ describe('chunkify', () => {
     let options = {};
     let parseOptions = stub();
 
-    let {chunkify} = proxyquire('./chunkify', {
+    let {generator} = proxyquire('./generator', {
       './options': {parseOptions}
     });
 
-    chunkify(0, 10, options);
+    generator(0, 10, options);
 
     expect(parseOptions.calledWithExactly(options)).to.be.ok;
   });
 
   it('should yield IPause after "chunk" iterations resolving in "delay" milliseconds', done => {
-    let iter = chunkify(0, 3, {chunk: 2, delay: DELAY});
+    let iter = generator(0, 3, {chunk: 2, delay: DELAY});
 
     expect(iter.next()).to.deep.equal({done: false, value: 0});
     expect(iter.next()).to.deep.equal({done: false, value: 1});
@@ -74,7 +74,7 @@ describe('chunkify', () => {
   });
 
   it('should throw an error if advanced while delay is pending', () => {
-    let iter = chunkify(0, 3, {chunk: 2, delay: 100});
+    let iter = generator(0, 3, {chunk: 2, delay: 100});
 
     iter.next();
     iter.next();
@@ -84,7 +84,7 @@ describe('chunkify', () => {
   });
 
   it('should yield IPause after "chunk" iterations from a given "start" resolving in delay milliseconds', done => {
-    let iter = chunkify(1, 4, {chunk: 2, delay: 10});
+    let iter = generator(1, 4, {chunk: 2, delay: 10});
 
     expect(iter.next()).to.deep.equal({done: false, value: 1});
     expect(iter.next()).to.deep.equal({done: false, value: 2});
@@ -108,7 +108,7 @@ describe('chunkify', () => {
   });
 
   it('should throw an error if advanced while delay is pending from a given start', () => {
-    let iter = chunkify(1, 4, {chunk: 2, delay: 100});
+    let iter = generator(1, 4, {chunk: 2, delay: 100});
 
     iter.next();
     iter.next();

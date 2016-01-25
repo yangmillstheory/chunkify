@@ -44,7 +44,7 @@ describe('options', () => {
     let chunk = 50;
     let delay = 100;
     let scope = {};
-    let parsedOptions: IChOptions;
+    let parsedOptions: IChunkifyOptions;
 
     parsedOptions = parseOptions({chunk});
 

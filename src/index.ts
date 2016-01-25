@@ -3,7 +3,7 @@ import {map} from './fp/map';
 import {reduce} from './fp/reduce';
 import {range} from './iter/range';
 import {interval} from './iter/interval';
-import {chunkify} from './chunkify';
+import {generator} from './generator';
 
 
-export default {each, map, reduce, interval, range, generator: chunkify};
+export default {each, map, reduce, interval, range, generator};

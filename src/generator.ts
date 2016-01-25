@@ -12,11 +12,11 @@ import {Pause} from './pause';
 let __chunkify__: (
   start: number,
   final: number,
-  options?: IChOptions
+  options: IChunkifyOptions
 ) => IterableIterator<number|IPause> = function*(
   start: number,
   final: number,
-  options: IChOptions
+  options: IChunkifyOptions
 ) {
   let {
     chunk,
@@ -38,7 +38,7 @@ let __chunkify__: (
   }
 };
 
-export var chunkify = (start: number, final: number, options: IChOptions = {}) => {
+export var generator = (start: number, final: number, options: IChunkifyOptions = {}) => {
   if (!isNumber(start)) {
     throw new Error('start index "start" of generator range must be a number');
   } else if (!isNumber(final)) {

@@ -5,7 +5,7 @@ import {isFunction} from '../utility';
 export var reduce = <T, U>(
   tArray,
   tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
-  options: IChOptions = {},
+  options: IChunkifyOptions = {},
   memo?: U
 ): Promise<U> => {
   if (!Array.isArray(tArray) || !tArray.length) {

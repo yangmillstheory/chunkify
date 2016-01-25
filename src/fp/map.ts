@@ -7,7 +7,7 @@ import {
 export var map = <T>(
   tArray: T[],
   tMapper: (iItem: T, index: number) => T,
-  options: IChOptions = {}
+  options: IChunkifyOptions = {}
 ): Promise<T[]> => {
   let tMapped: T[] = [];
   let tPusher = (tMappedItem: T): void => {
