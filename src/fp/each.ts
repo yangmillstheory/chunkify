@@ -7,7 +7,7 @@ import {
 
 export var each = <T>(
   tArray: T[],
-  tConsumer: (item: T, index: number) => void,
+  tConsumer: (tItem: T, index: number) => void,
   options: IChOptions = {}
 ): Promise<void> => {
   if (!Array.isArray(tArray)) {

@@ -4,7 +4,7 @@ import {isFunction} from '../utility';
 
 export var reduce = <T, U>(
   tArray,
-  tReducer: (memo: U, item: T, index: number, tArray: T[]) => U,
+  tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
   options: IChOptions = {},
   memo?: U
 ): Promise<U> => {
@@ -17,11 +17,11 @@ export var reduce = <T, U>(
   if (skipFirst) {
     memo = tArray[0];
   }
-  let tConsumer = function(item: T, index: number) {
+  let tConsumer = function(tItem: T, index: number) {
     if (skipFirst && index === 0) {
       return;
     }
-    memo = tReducer.call(this, memo, item, index, tArray);
+    memo = tReducer.call(this, memo, tItem, index, tArray);
   };
   return each(tArray, tConsumer, options).then(() => { return memo; });
 };

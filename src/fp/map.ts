@@ -6,13 +6,13 @@ import {
 
 export var map = <T>(
   tArray: T[],
-  tMapper: (item: T, index: number) => T,
+  tMapper: (iItem: T, index: number) => T,
   options: IChOptions = {}
 ): Promise<T[]> => {
-  let mapped: T[] = [];
-  let pusher = (mappedT: T): void => {
-    mapped.push(mappedT);
+  let tMapped: T[] = [];
+  let tPusher = (tMappedItem: T): void => {
+    tMapped.push(tMappedItem);
   };
-  let tConsumer = compose(pusher, tMapper);
-  return each(tArray, tConsumer, options).then(() => { return mapped; });
+  let tConsumer = compose(tPusher, tMapper);
+  return each(tArray, tConsumer, options).then(() => { return tMapped; });
 };
