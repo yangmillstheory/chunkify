@@ -56,9 +56,11 @@ Returns the core [Generator](https://developer.mozilla.org/en-US/docs/Web/JavaSc
  
 It yields integers from `start` and `final`. Values are yielded synchronously within intervals of length `chunk`. At every `chunk`<sup>th</sup> call to `.next()`, the generator yields a promise-like `IPause`, with a single method `.resume`. 
 
-An error will be thrown if the generator is advanced before the `IPause` has `.resume`'d.  The pause resumes after `delay` milliseconds, given in `options` or using the default value.  
+An error will be thrown if the generator is advanced before the `IPause` has `.resume`'d.  The pause resumes after `delay` milliseconds, which is given in `options` or using its default value.  
 
 ### **Arrays**
+
+For chunking up functional work on arrays.
 
 #### chunkify.each
 ```javascript
@@ -71,6 +73,7 @@ export var each: <T>(
 
 #### chunkify.map
 ```javascript
+// This "Promise" resolves with the mapped array.
 export var map: <T>(
   tArray: T[],
   tMapper: (tItem: T, index: number) => T,
@@ -78,11 +81,11 @@ export var map: <T>(
 ) => Promise<T[]>;
 ```
  
-The `Promise` resolves with the mapped array.
-
 #### chunkify.reduce
 
 ```javascript
+// Almost identical to the native reduce on "Array.prototype". 
+// This "Promise" resolves with the reduction result.
 export var reduce: <T, U>(
   tArray: T[],
   tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
@@ -91,17 +94,17 @@ export var reduce: <T, U>(
 ) => Promise<U>;
 ```
 
-Almost identical to the [native reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) on `Array.prototype`. Resolves with the reduction result.
-
 #### Catching Errors
 
-To catch any `Error` thrown during processing, attach a `.catch(...)` hook to the returned `Promise`.
+To catch any `Error` thrown during processing, attach a `.catch(...)` to the returned `Promise`.
 
-The error object has the shape `{error, item, index}`, where `error` is the original error, index is the index where it happened, and item is `tArray[index]`. 
+The error object in `.catch(...)` has the shape `{error, item, index}`, where `error` is the original error, `index` is the index where it happened, and `item` is `tArray[index]`. 
 
 Processing halts when an `Error` is thrown.
 
 ### **Iteration**
+
+For chunking up work done in loops.
 
 #### chunkify.interval
 
@@ -117,14 +120,14 @@ export var interval: (
 #### chunkify.range
 
 ```javascript
+// This is the same as "chunkify.interval" 
+// with the "start" parameter set to "0".
 export var range: (
   indexConsumer: (index: number) => void,
   length: number,
   options?: IChunkifyOptions
 ) => Promise<void>;
 ```
-
-This is the same as `chunkify.interval` with the `start` parameter set to `0`.
 
 #### Catching Errors 
  
