@@ -1,4 +1,5 @@
 import {range} from '../iter/range';
+import {DEFAULT_OPTIONS} from '../options';
 import {
   extend,
   isFunction,
@@ -8,7 +9,7 @@ import {
 export var each = <T>(
   tArray: T[],
   tConsumer: (tItem: T, index: number) => void,
-  options: IChunkifyOptions = {}
+  options: IChunkifyOptions = DEFAULT_OPTIONS
 ): Promise<void> => {
   if (!Array.isArray(tArray)) {
     throw new TypeError(`Expected array, got ${typeof tArray}`);

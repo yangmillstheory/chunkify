@@ -1,8 +1,8 @@
 //////////////
 // API options
 declare interface IChunkifyOptions {
-  chunk?: number;
-  delay?: number;
+  chunk: number;
+  delay: number;
   scope?: Object;
 }
 
@@ -27,7 +27,7 @@ declare module 'chunkify' {
   ) => Promise<T[]>;
 
   export var reduce: <T, U>(
-    tArray,
+    tArray: T[],
     tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
     options?: IChunkifyOptions,
     memo?: U

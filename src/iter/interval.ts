@@ -1,5 +1,8 @@
 import {generator} from '../generator';
-import {parseOptions} from '../options';
+import {
+  parseOptions,
+  DEFAULT_OPTIONS,
+} from '../options';
 import {
   isFunction,
   isNumber,
@@ -31,7 +34,7 @@ export var interval = (
   indexConsumer: (index: number) => void,
   start: number,
   final: number,
-  options: IChunkifyOptions = {}
+  options: IChunkifyOptions = DEFAULT_OPTIONS
 ): Promise<void> => {
   if (!isFunction(indexConsumer)) {
     throw new Error(`Expected function; got ${typeof indexConsumer}`);

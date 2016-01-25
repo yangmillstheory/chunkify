@@ -1,4 +1,7 @@
-import {parseOptions} from './options';
+import {
+  parseOptions,
+  DEFAULT_OPTIONS,
+} from './options';
 import {isNumber} from './utility';
 import {Pause} from './pause';
 
@@ -38,7 +41,7 @@ let __chunkify__: (
   }
 };
 
-export var generator = (start: number, final: number, options: IChunkifyOptions = {}) => {
+export var generator = (start: number, final: number, options: IChunkifyOptions = DEFAULT_OPTIONS) => {
   if (!isNumber(start)) {
     throw new Error('start index "start" of generator range must be a number');
   } else if (!isNumber(final)) {

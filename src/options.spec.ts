@@ -1,4 +1,7 @@
-import {parseOptions} from './options';
+import {
+  parseOptions,
+  DEFAULT_OPTIONS,
+} from './options';
 import {expect} from 'chai';
 
 
@@ -22,11 +25,7 @@ describe('options', () => {
   it('should have defaults', () => {
     let parsedOptions = parseOptions({});
 
-    expect(parsedOptions).to.deep.equal({
-      delay: 0,
-      chunk: 1,
-      scope: null,
-    });
+    expect(parsedOptions).to.deep.equal(DEFAULT_OPTIONS);
   });
 
   it('should override all defaults', () => {

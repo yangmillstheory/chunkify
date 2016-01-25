@@ -8,11 +8,11 @@ import {
 } from './utility';
 
 
-export const DEFAULT_OPTIONS: IChunkifyOptions = {
-  chunk: 1,
-  delay: 0,
+export const DEFAULT_OPTIONS: IChunkifyOptions = Object.freeze({
+  chunk: 10,
+  delay: 50,
   scope: null,
-};
+});
 
 // interface representing a possible
 // option key and its various aliases
