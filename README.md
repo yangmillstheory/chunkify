@@ -16,7 +16,7 @@ We'll use our [TypeScript declarations](chunkify.d.ts).
 
 ### Options
 
-In [API methods](#api), an options literal can be passed:
+In API methods, an options literal can be passed:
 
 ```javascript
 declare interface IChunkifyOptions {
