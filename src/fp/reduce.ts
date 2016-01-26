@@ -16,7 +16,7 @@ export var reduce = <T, U>(
   }
   let skipFirst = (memo === undefined);
   if (skipFirst) {
-    memo = tArray[0];
+    memo = <U><any>tArray[0];
   }
   let tConsumer = function(tItem: T, index: number) {
     if (skipFirst && index === 0) {
