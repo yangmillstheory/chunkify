@@ -26,7 +26,7 @@ let __chunkify__: (
     delay,
   } = options;
   let paused = false;
-  let pause = function*() {
+  let pause = function*(): IterableIterator<IPause> {
     paused = true;
     yield Pause.for(delay).resume(() => { paused = false; });
   };

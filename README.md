@@ -48,7 +48,7 @@ export var generator: (
 ) => IterableIterator<number|IPause>;
 
 declare interface IPause {
-  resume: (fn: () => void) => void;
+  resume: (fn: () => void) => IPause;
 }
 ```
 

@@ -7,7 +7,7 @@ declare interface IChunkifyOptions {
 }
 
 declare interface IPause {
-  resume: (fn: () => void) => void;
+  resume: (fn: () => void) => IPause;
 }
 
 declare module 'chunkify' {
