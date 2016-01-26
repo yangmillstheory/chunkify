@@ -1,5 +1,4 @@
 import {
-  isFunction,
   isBoolean,
   isNumber,
   isPlainObject,
@@ -64,7 +63,7 @@ let setOption = (object: Object, optionKey: IOptionKey, value) => {
 };
 
 export var parseOptions = (options: IChunkifyOptions): IChunkifyOptions => {
-  if (!isPlainObject(options) || Array.isArray(options) || isFunction(options)) {
+  if (!isPlainObject(options)) {
     throw new TypeError(`Expected plain javascript object, got ${typeof options}`);
   }
   let parsed = <IChunkifyOptions> extend({}, DEFAULT_OPTIONS);
