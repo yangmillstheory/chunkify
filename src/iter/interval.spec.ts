@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import {interval} from './interval';
+import {DEFAULT_OPTIONS} from '../options';
 import {tick} from '../test-utility';
 import proxyquire from 'proxyquire';
 
@@ -16,7 +17,8 @@ describe('interval', () => {
       null,
       undefined,
     ]) {
-      expect(() => { interval(indexConsumer); }).throws(/Expected function; got /);
+      expect(() => { interval(indexConsumer); })
+        .throws(/Expected function; got /);
     }
   });
 
@@ -29,7 +31,8 @@ describe('interval', () => {
       null,
       undefined,
     ]) {
-      expect(() => { interval(spy(), start); }).throws(/Expected number; got /);
+      expect(() => { interval(spy(), start); })
+        .throws(/Expected number; got /);
     }
   });
 
@@ -42,7 +45,8 @@ describe('interval', () => {
       null,
       undefined,
     ]) {
-      expect(() => { interval(spy(), 0, final); }).throws(/Expected number; got /);
+      expect(() => { interval(spy(), 0, final); })
+        .throws(/Expected number; got /);
     }
   });
 
@@ -83,7 +87,7 @@ describe('interval', () => {
 
     interval(indexConsumer, 1, 4, {chunk: 3})
       .then(() => {
-        expect(indexConsumer.alwaysCalledOn(null)).to.be.ok;
+        expect(indexConsumer.alwaysCalledOn(DEFAULT_OPTIONS.scope)).to.be.ok;
         done();
       })
       .catch(done);
@@ -127,7 +131,7 @@ describe('interval', () => {
       },
 
       after() {
-        // no more invocations
+        // no new invocations, 10ms hasn't passed
         expect(indexConsumer.callCount).to.equal(3);
         done();
       },
@@ -154,19 +158,15 @@ describe('interval', () => {
   });
 
   it('should resolve with undefined', done => {
-    let indexConsumer = spy();
-
     tick({
-      delay: 11,
+      delay: 20,
 
       before() {
-        let promise = interval(indexConsumer, 1, 5, {chunk: 3, delay: 10});
-        expect(indexConsumer.callCount).to.equal(3);
+        let promise = interval(spy(), 1, 5, {chunk: 3, delay: 10});
         return promise;
       },
 
       after(promise) {
-        expect(indexConsumer.callCount).to.equal(4);
         promise
           .then(result => {
             expect(result).not.to.exist;
@@ -185,15 +185,27 @@ describe('interval', () => {
       }
     });
 
-    interval(indexConsumer, 1, 5, {chunk: 3})
-      .catch(rejection => {
-        expect(rejection).to.deep.equal({error, index: 2});
+    tick({
+      delay: 10,
+
+      before() {
+        interval(indexConsumer, 1, 5, {chunk: 3, delay: 5})
+          .catch(rejection => {
+            expect(rejection).to.deep.equal({error, index: 2});
+            expect(indexConsumer.callCount).to.equal(2);
+            done();
+          });
+      },
+
+      after() {
+        // no new calls
         expect(indexConsumer.callCount).to.equal(2);
-        done();
-      });
+      },
+    });
+
   });
 
-  it('should not yield after "chunk" iterations if processing is complete', done => {
+  it('should complete with the correct number of calls', done => {
     let indexConsumer = spy();
 
     tick({
