@@ -12,9 +12,9 @@ export var tick = function(tickParams: {
   time.tick(tickParams.delay);
   time.restore();
 
-  // call "after" after everything in the
-  // stack and all its queued events have run
-  setTimeout(tickParams.after, 0, beforeResult);
+  process.nextTick(function() {
+    tickParams.after(beforeResult);
+  });
 };
 
 export var now = function(): number {
