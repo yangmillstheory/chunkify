@@ -88,7 +88,7 @@ export var map: <T>(
 // This Promise resolves with the reduction result.
 export var reduce: <T, U>(
   tArray: T[],
-  tReducer: (memo: U, tItem: T, index: number, tArray: T[]) => U,
+  tReducer: (current: U, tItem: T, index: number, tArray: T[]) => U,
   options?: IChunkifyOptions,
   memo?: U
 ) => Promise<U>;
