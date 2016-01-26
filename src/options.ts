@@ -30,7 +30,7 @@ const DELAY: IOptionKey = {primary: 'delay', aliases:
   ],
 };
 
-let checkOption = (optionKey: IOptionKey, value): void => {
+let checkOption = function(optionKey: IOptionKey, value): void {
   switch (optionKey) {
     case CHUNK:
       if (!isNumber(value) || value <= 0) {
@@ -53,19 +53,19 @@ let checkOption = (optionKey: IOptionKey, value): void => {
   }
 };
 
-let mapsToOption = (optionKey: IOptionKey, key: string) => {
+let mapsToOption = function(optionKey: IOptionKey, key: string) {
   return optionKey.primary === key || optionKey.aliases.indexOf(key) > -1;
 };
 
-let setOption = (object: Object, optionKey: IOptionKey, value) => {
+let setOption = function(object: Object, optionKey: IOptionKey, value) {
   checkOption(optionKey, value);
   object[optionKey.primary] = value;
 };
 
-export var parseOptions = (options: IChunkifyOptions): IChunkifyOptions => {
+export var parseOptions = function(options: IChunkifyOptions): IChunkifyOptions {
   assertIsPlainObject(options);
   let parsed = <IChunkifyOptions> extend({}, DEFAULT_OPTIONS);
-  forOwn(options, (value, key: string) => {
+  forOwn(options, function(value, key: string) {
     if (mapsToOption(CHUNK, key)) {
       setOption(parsed, CHUNK, value);
     } else if (mapsToOption(DELAY, key)) {

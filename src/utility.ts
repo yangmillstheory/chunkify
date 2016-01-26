@@ -1,4 +1,4 @@
-export var forOwn = (iteratee, iterator: Function): void => {
+export var forOwn = function(iteratee, iterator: Function): void {
   for (let key in iteratee) {
     if (iteratee.hasOwnProperty(key)) {
       iterator(iteratee[key], key);
@@ -6,15 +6,15 @@ export var forOwn = (iteratee, iterator: Function): void => {
   }
 };
 
-export var isBoolean = (thing): boolean => {
+export var isBoolean = function(thing): boolean {
   return typeof thing === 'boolean';
 };
 
-export var isNumber = (thing): boolean => {
+export var isNumber = function(thing): boolean {
   return typeof thing === 'number';
 };
 
-export var defaults = (defaultsObj: Object, overrideObj: Object): Object => {
+export var defaults = function(defaultsObj: Object, overrideObj: Object): Object {
   forOwn(overrideObj, (value, key: string) => {
     if (!defaultsObj.hasOwnProperty(key)) {
       defaultsObj[key] = overrideObj[key];
@@ -23,10 +23,10 @@ export var defaults = (defaultsObj: Object, overrideObj: Object): Object => {
   return defaultsObj;
 };
 
-export var extend = <T extends Object, U extends Object>(
+export var extend = function<T extends Object, U extends Object>(
   targetObj: T,
   sourceObj: U
-): T|U => {
+): T|U {
   forOwn(sourceObj, (value, key) => {
     targetObj[key] = sourceObj[key];
   });
@@ -48,7 +48,7 @@ export var assertIsPlainObject = function(thing): void {
     // slightly modified from:
     //
     //    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
-    let isObjectLike = () => {
+    let isObjectLike = function() {
       return !!thing && typeof thing === 'object';
     };
     let objectProto = Object.prototype;
@@ -88,10 +88,10 @@ export var assertFn = function(thing): void {
 
 let slice = [].slice;
 
-export var compose = <T, U, V, W, X>(
+export var compose = function<T, U, V, W, X>(
   f: (u: U, ...fOtherArgs: X[]) => V,
   g: (t: T, ...gOtherArgs: W[]) => U
-): (t: T, ...gOtherArgs: W[]) => V => {
+): (t: T, ...gOtherArgs: W[]) => V{
   assertFn(f);
   assertFn(g);
   return function() {

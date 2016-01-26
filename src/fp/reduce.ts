@@ -6,12 +6,12 @@ import {
 } from '../utility';
 
 
-export var reduce = <T, U>(
+export var reduce = function<T, U>(
   tArray: T[],
   tReducer: (current: U, tItem: T, index: number, tArray: T[]) => U,
   options: IChunkifyOptions = DEFAULT_OPTIONS,
   memo?: U
-): Promise<U> => {
+): Promise<U> {
   assertNonemptyArray(tArray);
   assertFn(tReducer);
   let skipFirst = (memo === undefined);
@@ -24,5 +24,5 @@ export var reduce = <T, U>(
     }
     memo = tReducer.call(this, memo, tItem, index, tArray);
   };
-  return each(tArray, tConsumer, options).then(() => { return memo; });
+  return each(tArray, tConsumer, options).then(function() { return memo; });
 };

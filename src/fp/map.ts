@@ -5,15 +5,15 @@ import {
 } from '../utility';
 
 
-export var map = <T>(
+export var map = function<T>(
   tArray: T[],
   tMapper: (iItem: T, index: number) => T,
   options: IChunkifyOptions = DEFAULT_OPTIONS
-): Promise<T[]> => {
+): Promise<T[]> {
   let tMapped: T[] = [];
-  let tPusher = (tMappedItem: T): void => {
+  let tPusher = function(tMappedItem: T): void {
     tMapped.push(tMappedItem);
   };
   let tConsumer = compose(tPusher, tMapper);
-  return each(tArray, tConsumer, options).then(() => { return tMapped; });
+  return each(tArray, tConsumer, options).then(function() { return tMapped; });
 };

@@ -9,10 +9,10 @@ import {
 } from '../utility';
 
 
-let doChunkSync = (
+let doChunkSync = function(
   chunkIterator: IterableIterator<number|IPause>,
   indexConsumer: (index: number) => void
-): IPause => {
+): IPause {
   let next = chunkIterator.next();
   let value: number|IPause;
   while (!next.done) {
@@ -30,12 +30,12 @@ let doChunkSync = (
   return null;
 };
 
-export var interval = (
+export var interval = function(
   indexConsumer: (index: number) => void,
   start: number,
   final: number,
   options: IChunkifyOptions = DEFAULT_OPTIONS
-): Promise<void> => {
+): Promise<void> {
   assertFn(indexConsumer);
   assertNumber(start);
   assertNumber(final);
@@ -50,12 +50,12 @@ export var interval = (
     //   https://github.com/Microsoft/TypeScript/issues/212
     indexConsumer.call(chOptions.scope, index);
   };
-  let nextChunk = complete => {
+  let nextChunkExecutor = function(complete: Function) {
     let nextPause = doChunkSync(chunkIterator, boundConsumer);
     if (nextPause) {
-      return nextPause.resume(() => { return nextChunk(complete); });
+      return nextPause.resume(() => { return nextChunkExecutor(complete); });
     }
     complete();
   };
-  return new Promise<void>(nextChunk);
+  return new Promise<void>(nextChunkExecutor);
 };

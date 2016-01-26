@@ -7,18 +7,18 @@ import {
 } from '../utility';
 
 
-export var each = <T>(
+export var each = function<T>(
   tArray: T[],
   tConsumer: (tItem: T, index: number) => void,
   options: IChunkifyOptions = DEFAULT_OPTIONS
-): Promise<void> => {
+): Promise<void> {
   assertNonemptyArray(tArray);
   assertFn(tConsumer);
   let indexConsumer = function(index: number): void {
     tConsumer.call(this, tArray[index], index);
   };
   return range(indexConsumer, tArray.length, options)
-    .catch(error => {
+    .catch(function(error) {
       throw extend(error, {item: tArray[error.index]});
     });
 };

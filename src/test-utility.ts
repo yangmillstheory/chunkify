@@ -1,11 +1,11 @@
 import {useFakeTimers} from 'sinon';
 
 
-export var tick = (tickParams: {
+export var tick = function(tickParams: {
   before: Function,
   after: Function,
   delay: number,
-}) => {
+}) {
   let time = useFakeTimers();
   let beforeResult = tickParams.before();
 
@@ -17,6 +17,6 @@ export var tick = (tickParams: {
   setTimeout(tickParams.after, 0, beforeResult);
 };
 
-export var now = (): number => {
+export var now = function(): number {
   return Number(new Date).valueOf();
 };
