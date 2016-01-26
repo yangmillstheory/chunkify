@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.0.0] 2016-1-25
+### CHANGES
+- re-write in TypeScript; distribute type definitions
+
+### BREAKING CHANGES
+- make babel-runtime a peerDependency.
+- simplify API options; consistently take only `scope`, `chunk`, `delay`; no `memo` for `chunkify.reduce`
+
 ## [3.0.6] 2016-1-17
 ### CHANGES
 Removed all dependencies except for babel.
