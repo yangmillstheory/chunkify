@@ -11,8 +11,8 @@ describe('map', () => {
     expect(() => { map([1, 2, 3]); }).throws(/Expected function, got/);
   });
 
-  it('should require an array', () => {
-    expect(() => { map(null, () => {}); }).throws(/Expected array, got/);
+  it('should require a non-empty array', () => {
+    expect(() => { map(null, () => {}); }).throws(/Expected non-empty array, got/);
   });
 
   // so for everything that applies to 

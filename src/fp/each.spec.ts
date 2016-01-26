@@ -9,11 +9,11 @@ import proxyquire from 'proxyquire';
 describe('each', () => {
 
   it('should require an array', () => {
-    expect(each).throws(/Expected array, got/);
+    expect(each).throws(/Expected non-empty array, got/);
   });
 
   it('should require a non-empty array', () => {
-    expect(() => { each([], stub()); }).throws(/Expected non-empty array/);
+    expect(() => { each([], stub()); }).throws(/Expected non-empty array, got/);
   });
 
   it('should require a function', () => {

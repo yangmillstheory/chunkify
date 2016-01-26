@@ -2,7 +2,7 @@ import {
   parseOptions,
   DEFAULT_OPTIONS,
 } from './options';
-import {isNumber} from './utility';
+import {assertNumber} from './utility';
 import {Pause} from './pause';
 
 
@@ -41,11 +41,8 @@ let __chunkify__: (
   }
 };
 
-export var generator = (start: number, final: number, options: IChunkifyOptions = DEFAULT_OPTIONS) => {
-  if (!isNumber(start)) {
-    throw new Error('start index "start" of generator range must be a number');
-  } else if (!isNumber(final)) {
-    throw new Error('final index "final" of generator range must be a number');
-  }
+export var generator = function(start: number, final: number, options: IChunkifyOptions = DEFAULT_OPTIONS) {
+  assertNumber(start);
+  assertNumber(final);
   return __chunkify__(start, final, parseOptions(options));
 };

@@ -1,6 +1,9 @@
 import {each} from './each';
 import {DEFAULT_OPTIONS} from '../options';
-import {isFunction} from '../utility';
+import {
+  assertFn,
+  assertNonemptyArray,
+} from '../utility';
 
 
 export var reduce = <T, U>(
@@ -9,11 +12,8 @@ export var reduce = <T, U>(
   options: IChunkifyOptions = DEFAULT_OPTIONS,
   memo?: U
 ): Promise<U> => {
-  if (!Array.isArray(tArray) || !tArray.length) {
-    throw new TypeError(`Expected non-empty array, got ${typeof tArray}`);
-  } else if (!isFunction(tReducer)) {
-    throw new TypeError(`Expected function, got ${typeof tReducer}`);
-  }
+  assertNonemptyArray(tArray);
+  assertFn(tReducer);
   let skipFirst = (memo === undefined);
   if (skipFirst) {
     memo = <U><any>tArray[0];

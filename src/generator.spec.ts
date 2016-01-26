@@ -20,7 +20,7 @@ describe('generator', () => {
       [],
     ]) {
       expect(() => { generator(start); })
-        .throws(/start index "start" of generator range must be a number/);
+        .throws(/Expected number, got /);
     }
   });
 
@@ -33,7 +33,7 @@ describe('generator', () => {
       [],
     ]) {
       expect(() => { generator(0, final); })
-        .throws(/final index "final" of generator range must be a number/);
+        .throws(/Expected number, got /);
     }
   });
 

@@ -1,7 +1,7 @@
 import {
   isBoolean,
   isNumber,
-  isPlainObject,
+  assertIsPlainObject,
   extend,
   forOwn,
 } from './utility';
@@ -63,9 +63,7 @@ let setOption = (object: Object, optionKey: IOptionKey, value) => {
 };
 
 export var parseOptions = (options: IChunkifyOptions): IChunkifyOptions => {
-  if (!isPlainObject(options)) {
-    throw new TypeError(`Expected plain javascript object, got ${typeof options}`);
-  }
+  assertIsPlainObject(options);
   let parsed = <IChunkifyOptions> extend({}, DEFAULT_OPTIONS);
   forOwn(options, (value, key: string) => {
     if (mapsToOption(CHUNK, key)) {

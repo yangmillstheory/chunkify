@@ -18,7 +18,7 @@ describe('interval', () => {
       undefined,
     ]) {
       expect(() => { interval(indexConsumer); })
-        .throws(/Expected function; got /);
+        .throws(/Expected function, got /);
     }
   });
 
@@ -32,7 +32,7 @@ describe('interval', () => {
       undefined,
     ]) {
       expect(() => { interval(spy(), start); })
-        .throws(/Expected number; got /);
+        .throws(/Expected number, got /);
     }
   });
 
@@ -46,7 +46,7 @@ describe('interval', () => {
       undefined,
     ]) {
       expect(() => { interval(spy(), 0, final); })
-        .throws(/Expected number; got /);
+        .throws(/Expected number, got /);
     }
   });
 

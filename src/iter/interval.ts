@@ -4,8 +4,8 @@ import {
   DEFAULT_OPTIONS,
 } from '../options';
 import {
-  isFunction,
-  isNumber,
+  assertNumber,
+  assertFn,
 } from '../utility';
 
 
@@ -36,13 +36,10 @@ export var interval = (
   final: number,
   options: IChunkifyOptions = DEFAULT_OPTIONS
 ): Promise<void> => {
-  if (!isFunction(indexConsumer)) {
-    throw new Error(`Expected function; got ${typeof indexConsumer}`);
-  } else if (!isNumber(start)) {
-    throw new Error(`Expected number; got ${typeof start}`);
-  } else if (!isNumber(final)) {
-    throw new Error(`Expected number; got ${typeof final}`);
-  } else if (start >= final) {
+  assertFn(indexConsumer);
+  assertNumber(start);
+  assertNumber(final);
+  if (start >= final) {
     throw new Error(`Expected start ${start} to be less than final ${final}`);
   }
   let chOptions = parseOptions(options);
