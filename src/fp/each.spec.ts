@@ -38,6 +38,7 @@ describe('each', () => {
     expect(range.lastCall.args[2]).to.equal(options);
   });
 
+
   /////////////////////////////////////////
   // test behavior around tConsumer, since 
   // it's not directly passed to iter/range
@@ -154,13 +155,13 @@ describe('each', () => {
           .catch(rejection => {
             expect(rejection).to.deep.equal({error, item: 'B', index: 1});
             expect(tConsumer.callCount).to.equal(2);
-            done();
           });
       },
 
       after() {
         // no new calls
         expect(tConsumer.callCount).to.equal(2);
+        done();
       },
     });
 

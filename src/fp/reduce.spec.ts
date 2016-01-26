@@ -1,6 +1,7 @@
 import {reduce} from './reduce';
 import {spy, stub} from 'sinon';
 import {expect} from 'chai';
+import {DEFAULT_OPTIONS} from '../options';
 import proxyquire from 'proxyquire';
 import {tick} from '../test-utility';
 
@@ -28,9 +29,8 @@ describe('reduce', () => {
     });
 
     let tArray = [1, 2, 3];
-    let tReducer = stub();
     let options = {};
-    reduce(tArray, tReducer, options);
+    reduce(tArray, stub(), options);
 
     expect(each.calledOnce).to.be.ok;
     expect(each.lastCall.args[0]).to.equal(tArray);
@@ -42,6 +42,7 @@ describe('reduce', () => {
     expect(reduce([1, 2, 3], spy())).to.be.instanceOf(Promise);
   });
 
+
   ///////////////////////////////////////
   // test behavior around tReducer, since 
   // it's not directly passed to each
@@ -51,7 +52,7 @@ describe('reduce', () => {
 
     reduce(['A', 'B', 'C'], tReducer, {chunk: 3})
       .then(() => {
-        expect(tReducer.alwaysCalledOn(null)).to.be.ok;
+        expect(tReducer.alwaysCalledOn(DEFAULT_OPTIONS.scope)).to.be.ok;
         done();
       })
       .catch(done);
@@ -71,16 +72,22 @@ describe('reduce', () => {
 
   it('should invoke tReducer with memo, item, index and array', done => {
     let tArray = ['A', 'B', 'C'];
-    let tReducer = spy(memo => {
-      return memo;
+    let tReducer = spy(function(current: number, item: string) {
+      return current + item.charCodeAt(0);
     });
 
-    reduce(tArray, tReducer, {chunk: 3}, 'MEMO')
-      .then(() => {
+    reduce(tArray, tReducer, {chunk: 3}, 100)
+      .then(function() {
         expect(tReducer.callCount).to.equal(3);
-        expect(tReducer.getCall(0).args).to.deep.equal(['MEMO', 'A', 0, tArray]);
-        expect(tReducer.getCall(1).args).to.deep.equal(['MEMO', 'B', 1, tArray]);
-        expect(tReducer.getCall(2).args).to.deep.equal(['MEMO', 'C', 2, tArray]);
+        expect(tReducer.getCall(0).args).to.deep.equal([
+          100,           'A', 0, tArray
+        ]);
+        expect(tReducer.getCall(1).args).to.deep.equal([
+          100 + 65,      'B', 1, tArray
+        ]);
+        expect(tReducer.getCall(2).args).to.deep.equal([
+          100 + 65 + 66, 'C', 2, tArray
+        ]);
         done();
       })
       .catch(done);
@@ -88,15 +95,14 @@ describe('reduce', () => {
 
   it('should use the first element in tArray as the memo when no memo is given', done => {
     let tArray = ['A', 'B', 'C'];
-    let tReducer = spy(memo => {
-      return memo;
+    let tReducer = spy(function(current: string, letter: string) {
+      return current.toLowerCase() + letter.toLowerCase();
     });
 
-    reduce(tArray, tReducer, {chunk: 2}).then(() => {
-      // note the smaller call count; not 3 like above
+    reduce(tArray, tReducer, {chunk: 2}).then(function() {
       expect(tReducer.callCount).to.equal(2);
       expect(tReducer.getCall(0).args).to.deep.equal(['A', 'B', 1, tArray]);
-      expect(tReducer.getCall(1).args).to.deep.equal(['A', 'C', 2, tArray]);
+      expect(tReducer.getCall(1).args).to.deep.equal(['ab', 'C', 2, tArray]);
       done();
     })
     .catch(done);
@@ -114,6 +120,7 @@ describe('reduce', () => {
       },
 
       after() {
+        // no new calls
         expect(tReducer.callCount).to.equal(3);
         done();
       },
@@ -121,8 +128,8 @@ describe('reduce', () => {
   });
 
   it('should start again after "delay" milliseconds from last yielding', done => {
-    let tReducer = spy(memo => {
-      return memo;
+    let tReducer = spy(function(memo, letter) {
+      return memo + letter;
     });
     let tArray = ['A', 'B', 'C', 'D'];
 
@@ -136,13 +143,13 @@ describe('reduce', () => {
 
       after() {
         expect(tReducer.callCount).to.equal(4);
-        expect(tReducer.getCall(3).args).to.deep.equal(['', 'D', 3, tArray]);
+        expect(tReducer.getCall(3).args).to.deep.equal(['ABC', 'D', 3, tArray]);
         done();
       },
     });
   });
 
-  it('should resolve with the reduced result from a default memo', done => {
+  it('should resolve with the reduction from a default memo', done => {
     let tReducer = spy((memo, letter, index, tArray) => {
       return `${memo.toLowerCase()}+${letter.toLowerCase()}`;
     });
@@ -202,15 +209,26 @@ describe('reduce', () => {
       }
     });
 
-    reduce(['A', 'B', 'C'], tReducer, {chunk: 3}, '')
-      .catch(rejection => {
-        expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+    tick({
+      delay: 20,
+
+      before() {
+        reduce(['A', 'B', 'C'], tReducer, {chunk: 3}, '')
+          .catch(rejection => {
+            expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+            expect(tReducer.callCount).to.equal(2);
+          });
+      },
+
+      after() {
         expect(tReducer.callCount).to.equal(2);
         done();
-      });
+      },
+    });
+
   });
 
-  it('should not yield after "chunk" iterations if processing is complete', done => {
+  it('should complete with the correct number of calls', done => {
     let tReducer = spy();
 
     tick({

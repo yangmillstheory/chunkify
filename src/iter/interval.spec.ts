@@ -193,13 +193,13 @@ describe('interval', () => {
           .catch(rejection => {
             expect(rejection).to.deep.equal({error, index: 2});
             expect(indexConsumer.callCount).to.equal(2);
-            done();
           });
       },
 
       after() {
         // no new calls
         expect(indexConsumer.callCount).to.equal(2);
+        done();
       },
     });
 

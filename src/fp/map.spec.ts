@@ -24,9 +24,8 @@ describe('map', () => {
     });
 
     let tArray = [1, 2, 3];
-    let tMapper = stub();
     let options = {};
-    map(tArray, tMapper, options);
+    map(tArray, stub(), options);
 
     expect(each.calledOnce).to.be.ok;
     expect(each.lastCall.args[0]).to.equal(tArray);
@@ -37,6 +36,7 @@ describe('map', () => {
   it('should return a promise', () => {
     expect(map([1, 2, 3], spy())).to.be.instanceOf(Promise);
   });
+
 
   //////////////////////////////////////
   // test behavior around tMapper, since 
@@ -93,6 +93,7 @@ describe('map', () => {
       },
 
       after() {
+        // no new calls
         expect(tMapper.callCount).to.equal(3);
         done();
       },
@@ -152,15 +153,27 @@ describe('map', () => {
       }
     });
 
-    map(['A', 'B', 'C'], tMapper, {chunk: 3})
-      .catch(rejection => {
-        expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+    tick({
+      delay: 20,
+
+      before() {
+        map(['A', 'B', 'C'], tMapper, {chunk: 3})
+          .catch(rejection => {
+            expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+            expect(tMapper.callCount).to.equal(2);
+          });
+      },
+
+      after() {
+        // no new calls
         expect(tMapper.callCount).to.equal(2);
         done();
-      });
+      },
+    });
+
   });
 
-  it('should not yield after "chunk" iterations if processing is complete', done => {
+  it('should complete with the correct number of calls', done => {
     let tMapper = spy();
 
     tick({
