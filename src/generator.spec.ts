@@ -68,6 +68,7 @@ describe('generator', () => {
         expect(elapsed >= DELAY).to.be.ok;
         expect(elapsed <= DELAY + TOLERANCE).to.be.ok;
         expect(iter.next()).to.deep.equal({done: false, value: 2});
+        expect(iter.next()).to.deep.equal({done: true, value: undefined});
         done();
       })
       .catch(done);
@@ -83,7 +84,7 @@ describe('generator', () => {
     expect(() => { iter.next(); }).throws(/paused at index 2; wait 100 milliseconds/);
   });
 
-  it('should yield IPause after "chunk" iterations from a given "start" resolving in delay milliseconds', done => {
+  it('should yield IPause after "chunk" iterations from a given "start" resolving in "delay" milliseconds', done => {
     let iter = generator(1, 4, {chunk: 2, delay: 10});
 
     expect(iter.next()).to.deep.equal({done: false, value: 1});
@@ -107,12 +108,12 @@ describe('generator', () => {
       .catch(done);
   });
 
-  it('should throw an error if advanced while delay is pending from a given start', () => {
+  it('should throw an error if advanced while delay is pending from a given "start"', () => {
     let iter = generator(1, 4, {chunk: 2, delay: 100});
 
     iter.next();
     iter.next();
-    iter.next();  // enters paused state
+    iter.next(); // enters paused state
 
     expect(() => { iter.next(); }).throws(/paused at index 3; wait 100 milliseconds/);
   });
