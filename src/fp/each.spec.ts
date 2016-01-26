@@ -2,6 +2,7 @@ import {spy, stub} from 'sinon';
 import {expect} from 'chai';
 import {each} from './each';
 import {tick} from '../test-utility';
+import {DEFAULT_OPTIONS} from '../options';
 import proxyquire from 'proxyquire';
 
 
@@ -28,9 +29,8 @@ describe('each', () => {
     });
 
     let tArray = [1, 2, 3];
-    let tConsumer = stub();
     let options = {};
-    each(tArray, tConsumer, options);
+    each(tArray, stub(), options);
 
     expect(range.calledOnce).to.be.ok;
     expect(range.lastCall.args[0]).to.be.instanceOf(Function);
@@ -62,7 +62,7 @@ describe('each', () => {
     each(['A', 'B', 'C'], tConsumer, {chunk: 3})
       .then(() => {
         expect(tConsumer.calledThrice).to.be.ok;
-        expect(tConsumer.alwaysCalledOn(null)).to.be.ok;
+        expect(tConsumer.alwaysCalledOn(DEFAULT_OPTIONS.scope)).to.be.ok;
         done();
       })
       .catch(done);
@@ -93,6 +93,7 @@ describe('each', () => {
       },
 
       after() {
+        // no new calls
         expect(tConsumer.callCount).to.equal(3);
       },
     });
@@ -118,24 +119,21 @@ describe('each', () => {
   });
 
   it('should resolve with undefined', done => {
-    let tConsumer = spy();
-
     tick({
       delay: 11,
 
       before() {
-        let eachPromise = each(['A', 'B', 'C', 'D'], tConsumer, {chunk: 3, delay: 10});
-        expect(tConsumer.callCount).to.equal(3);
+        let eachPromise = each(['A', 'B', 'C', 'D'], spy(), {chunk: 3, delay: 10});
         return eachPromise;
       },
 
       after(eachPromise) {
-        expect(tConsumer.callCount).to.equal(4);
         eachPromise
           .then(result => {
             expect(result).to.not.exist;
             done();
-          });
+          })
+          .catch(done);
       },
     });
   });
@@ -148,15 +146,27 @@ describe('each', () => {
       }
     });
 
-    each(['A', 'B', 'C'], tConsumer, {chunk: 3})
-      .catch(rejection => {
-        expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+    tick({
+      delay: 20,
+
+      before() {
+        each(['A', 'B', 'C'], tConsumer, {chunk: 3, delay: 10})
+          .catch(rejection => {
+            expect(rejection).to.deep.equal({error, item: 'B', index: 1});
+            expect(tConsumer.callCount).to.equal(2);
+            done();
+          });
+      },
+
+      after() {
+        // no new calls
         expect(tConsumer.callCount).to.equal(2);
-        done();
-      });
+      },
+    });
+
   });
 
-  it('should not yield after "chunk" iterations if processing is complete', done => {
+  it('should complete with the correct number of calls', done => {
     let tConsumer = spy();
 
     tick({
