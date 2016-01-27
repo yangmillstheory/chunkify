@@ -63,7 +63,7 @@ describe('generator', () => {
     expect(pause.resume).to.exist;
 
     pause
-      .resume(() => {
+      .resume(function() {
         elapsed = now() - started;
         expect(elapsed >= DELAY).to.be.ok;
         expect(elapsed <= DELAY + TOLERANCE).to.be.ok;
@@ -97,7 +97,7 @@ describe('generator', () => {
     expect(pause.resume).to.exist;
 
     pause
-      .resume(() => {
+      .resume(function() {
         elapsed = now() - started;
         expect(elapsed >= DELAY).to.be.ok;
         expect(elapsed <= DELAY + TOLERANCE).to.be.ok;
