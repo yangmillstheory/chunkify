@@ -1,8 +1,19 @@
 language: node_js
 node_js:
+  - "node"
+  - "iojs"
+  - "4.0"
+  - "3.0"
   - "0.12"
   - "0.11"
   - "0.10"
-  - "iojs"
-  - "node"
-install: npm install
+install: npm i && npm i babel-polyfill
+before_script: tsd install 
+branches:
+  only:
+    - master
+notifications:
+  webhooks:
+    on_success: change
+    on_failure: always
+    on_start: never
