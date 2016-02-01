@@ -1,3 +1,5 @@
+'use strict';
+import 'babel-polyfill';
 import gulp from 'gulp';
 import gulpTslint from 'gulp-tslint';
 import gulpMocha from 'gulp-mocha';
@@ -63,11 +65,11 @@ let lintStream = function(globs, rules) {
     }));
 };
 
-gulp.task('lint:ts', done => {
+gulp.task('lint:ts', function(done) {
   return lintStream(tsFiles);
 });
 
-gulp.task('lint:spec', () => {
+gulp.task('lint:spec', function() {
   return lintStream(specFiles, {'no-empty': false});
 });
 
@@ -77,17 +79,17 @@ gulp.task('lint', gulp.series('lint:ts', 'lint:spec'));
 ///////
 // test
 
-let testStream = testOptions => {
+let testStream = function(testOptions) {
   return gulp
     .src('dist/**/*.js')
     .pipe(gulpMocha(testOptions));
 }
 
-gulp.task('test', () => {
+gulp.task('test', function() {
   return testStream();
 });
 
-gulp.task('tdd', () => {
+gulp.task('tdd', function() {
   return testStream({reporter: 'min'});
 });
 
@@ -95,7 +97,7 @@ gulp.task('tdd', () => {
 /////////////////////////
 // continuous development
 
-gulp.task('dev', done => {
+gulp.task('dev', function() {
   gulp.watch(tsFiles, gulp.series(
     'compile:ts',
     'tdd',
