@@ -4,7 +4,9 @@
     "module": "es6",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "listFiles": true
+    "listFiles": true,
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "exclude": ["node_modules"]
 }
