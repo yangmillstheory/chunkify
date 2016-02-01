@@ -1,55 +1,51 @@
-'use strict';
-import 'babel-polyfill';
 import gulp from 'gulp';
-import tslint from 'gulp-tslint';
-import mocha from 'gulp-mocha';
-import ts from 'gulp-typescript';
-import babel from 'gulp-babel';
+import gulpTslint from 'gulp-tslint';
+import gulpMocha from 'gulp-mocha';
+import gulpTs from 'gulp-typescript';
+import gulpBabel from 'gulp-babel';
+import typescript from 'typescript';
+import tslint from 'tslint';
 import {ghPagesTasks} from './gh-pages-tasks.js';
 
 
 ghPagesTasks.init();
 
-
-/////////
-// config
-
-const TYPINGS = [
+const typings = [
   'typings/tsd.d.ts',
   'chunkify.d.ts'
 ]
 
-const TS = [
-  'src/**/*.ts',
-  '!src/**/*.spec.ts'
-];
+const tsProject = gulpTs.createProject('tsconfig.json', {typescript});
 
-const SPEC = ['src/**/*.spec.ts']; 
+const tsFiles = [
+  `${tsProject.config.compilerOptions.rootDir}/**/*.ts`,
+  '!**/*.spec.ts'
+].concat(typings);
 
-const TS_PROJECT = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
-});
+const specFiles = [
+  `${tsProject.config.compilerOptions.rootDir}/**/*.spec.ts`,
+].concat(typings); 
 
-const DIST = 'dist';
+const outDir = tsProject.config.compilerOptions.outDir;
 
 //////////
 // compile
 
 gulp.task('compile:ts', function() {
   return gulp
-    .src(TS.concat(TYPINGS))
-    .pipe(ts(TS_PROJECT))
-    .pipe(babel())
-    .pipe(gulp.dest(DIST));
+    .src(tsFiles)
+    .pipe(gulpTs(tsProject))
+    .pipe(gulpBabel())
+    .pipe(gulp.dest(outDir));
 });
 
 gulp.task('compile:spec', function() {
   return gulp
-    .src(SPEC.concat(TYPINGS))
+    .src(specFiles.concat(typings))
     // swallow compiler errors/warnings, since we abuse the API here
-    .pipe(ts(TS_PROJECT, undefined, ts.reporter.nullReporter))
-    .pipe(babel())
-    .pipe(gulp.dest(DIST));
+    .pipe(gulpTs(tsProject, undefined, gulpTs.reporter.nullReporter))
+    .pipe(gulpBabel())
+    .pipe(gulp.dest(outDir));
 });
 
 gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
@@ -58,28 +54,21 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 ///////
 // lint
 
-let lintStream = (globs, rules) {
+let lintStream = function(globs, rules) {
   return gulp.src(globs)
-    .pipe(tslint({
-      configuration: {
-        tslint: require('tslint'),
-        rules: rules,
-      } 
-    }))
-    .pipe(tslint.report('verbose', {
+    .pipe(gulpTslint({configuration: {tslint, rules}}))
+    .pipe(gulpTslint.report('verbose', {
       summarizeFailureOutput: true,
       emitError: true
     }));
 };
 
-gulp.task('lint:ts', function(done) {
-  return lintStream(TS);
+gulp.task('lint:ts', done => {
+  return lintStream(tsFiles);
 });
 
-gulp.task('lint:spec', function() {
-  return lintStream(SPEC, {
-    'no-empty': false
-  });
+gulp.task('lint:spec', () => {
+  return lintStream(specFiles, {'no-empty': false});
 });
 
 gulp.task('lint', gulp.series('lint:ts', 'lint:spec'));
@@ -88,26 +77,35 @@ gulp.task('lint', gulp.series('lint:ts', 'lint:spec'));
 ///////
 // test
 
-let testStream = function(testOptions) {
+let testStream = testOptions => {
   return gulp
     .src('dist/**/*.js')
-    .pipe(mocha(testOptions));
+    .pipe(gulpMocha(testOptions));
 }
 
-gulp.task('test', function() {
+gulp.task('test', () => {
   return testStream();
 });
 
-gulp.task('tdd', function() {
+gulp.task('tdd', () => {
   return testStream({reporter: 'min'});
 });
+
 
 /////////////////////////
 // continuous development
 
-gulp.task('dev', function(done) {
-  gulp.watch(TS, gulp.series('compile:ts', 'tdd', 'lint:ts'));
-  gulp.watch(SPEC, gulp.series('compile:spec', 'tdd', 'lint:spec'));
+gulp.task('dev', done => {
+  gulp.watch(tsFiles, gulp.series(
+    'compile:ts',
+    'tdd',
+    'lint:ts'
+  ));
+  gulp.watch(specFiles, gulp.series(
+    'compile:spec',
+    'tdd',
+    'lint:spec'
+  ));
 });
 
 gulp.task('build', gulp.series('compile', 'test', 'lint'));
