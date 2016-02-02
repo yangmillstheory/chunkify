@@ -7,10 +7,8 @@ import gulpTs from 'gulp-typescript';
 import gulpBabel from 'gulp-babel';
 import typescript from 'typescript';
 import tslint from 'tslint';
-import {ghPagesTasks} from './gh-pages-tasks.js';
+import ghPages from './gh-pages-tasks.js';
 
-
-ghPagesTasks.init();
 
 const typings = [
   'typings/tsd.d.ts',
@@ -111,3 +109,5 @@ gulp.task('dev', function() {
 });
 
 gulp.task('build', gulp.series('compile', 'test', 'lint'));
+
+ghPages.initTasks();
