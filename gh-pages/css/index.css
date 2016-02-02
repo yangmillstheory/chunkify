@@ -378,8 +378,9 @@ body .ui-tooltip {
 }
 
 .action-code pre {
-  font-family: "monofur", monospace;
+  font-family: "MS Gothic", monospace;
   font-size: 18px;
+  -webkit-font-smoothing: none;
 }
 
 .action-code pre:last-of-type, .action-code pre strong {
