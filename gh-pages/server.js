@@ -15,10 +15,13 @@ export function serve() {
       createReadStream('index.html', {autoClose: true}).pipe(response);
     } else if (url.endsWith('gh-pages/bundle.js')) {
       response.writeHead(200, {'Content-Type': 'application/javascript'});
-      createReadStream(parse(url).path, {autoClose: true}).pipe(response);
+      createReadStream(`./${parse(url).path}`, {autoClose: true}).pipe(response);
     } else if (url.endsWith('gh-pages/css/index.css')) {
       response.writeHead(200, {'Content-Type': 'text/css'});
-      createReadStream(parse(url).path, {autoClose: true}).pipe(response);
+      createReadStream(`./${parse(url).path}`, {autoClose: true}).pipe(response);
+    } else if (url.endsWith('.png')) {
+      response.writeHead(200, {'Content-Type': 'image/png'});
+      createReadStream(`./${parse(url).path}`, {autoClose: true}).pipe(response);
     } else {
       response.writeHead(404);
     }
