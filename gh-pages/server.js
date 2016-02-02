@@ -29,8 +29,7 @@ createServer(function(request, response) {
 
 <p>
   Couldn't find a resource related to ${url}. The only available route is /.
-</p>
-`);
+</p>`);
     response.end();
   }
 })
