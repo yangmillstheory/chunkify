@@ -7,7 +7,6 @@ import gulpBabel from 'gulp-babel';
 import tsify from 'tsify';
 import babelify from 'babelify';
 import typescript from 'typescript';
-import {serve} from './gh-pages/server';
 
 
 const ghPagesBase = 'gh-pages';
@@ -36,8 +35,6 @@ let initTasks = function() {
       .pipe(gulpUglify())
       .pipe(gulp.dest(ghPagesBase));
   });
-
-  gulp.task('serve', serve);
 
   gulp.task('gh-pages', gulp.series('build', 'compile', 'bundle'));
 };
