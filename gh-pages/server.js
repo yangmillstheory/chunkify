@@ -24,8 +24,13 @@ createServer(function(request, response) {
   } else {
     console.error(`Returning 404 Not Found`);
     response.writeHead(404);
-    response.write('<h1>404 Not Found</h1>');
-    response.write(`<p>Couldn't find a resource related to ${url}. The only available route is /.</p>`);
+    response.write(`
+<h1>404 Not Found</h1>
+
+<p>
+  Couldn't find a resource related to ${url}. The only available route is /.
+</p>
+`);
     response.end();
   }
 })
