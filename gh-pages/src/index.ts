@@ -277,7 +277,8 @@ const RANGE = _.range(0.5 * Math.pow(10, 5));
 <strong>let delay = {{delay}};</strong>
 let simulateWork = (index) => {
   let i = 0;
-  while (i < randomInteger()) {
+  let max = largeRandomInteger();
+  while (i < max) {
     i++
   }
   return index
