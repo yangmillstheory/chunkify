@@ -24,7 +24,7 @@ let bundleStream = function() {
     ])
     .plugin(tsify, {
       typescript,
-      rootDir: undefined,
+      rootDir: ghPagesBase,
       exclude: undefined
     })
     .transform(babelify.configure({extensions: ['.ts']}))
