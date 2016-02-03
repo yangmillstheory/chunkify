@@ -7,7 +7,7 @@ import 'jquery-ui/progressbar';
 import 'jquery-ui/tooltip';
 
 
-let largeRandomInteger = function(options: {max: number, min: number} = {}): number {
+let largeRandomInteger = function(options: {max?: number, min?: number} = {}): number {
   let min: number = _.isNumber(options.min) ? options.min : Math.pow(10, 2) * .75;
   let max: number = _.isNumber(options.max) ? options.max : Math.pow(10, 2);
   return Math.floor(Math.random() * (max - min) + min);
