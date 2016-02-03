@@ -1,8 +1,8 @@
 import 'babel-polyfill';
-import chunkify from '../../dist';
-import angular from 'angular';
-import _ from 'lodash';
-import $ from 'jquery';
+import * as chunkify from '../../src';
+import * as angular from 'angular';
+import * as _ from 'lodash';
+import * as $ from 'jquery';
 import 'jquery-ui/progressbar';
 import 'jquery-ui/tooltip';
 
