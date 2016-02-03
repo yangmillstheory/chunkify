@@ -18,11 +18,11 @@ export var reduce = function<T, U>(
   if (skipFirst) {
     memo = <U><any>tArray[0];
   }
-  let tConsumer = function(tItem: T, index: number) {
+  let tConsumer = function(tItem: T, index: number): void {
     if (skipFirst && index === 0) {
       return;
     }
     memo = tReducer.call(this, memo, tItem, index, tArray);
   };
-  return each(tArray, tConsumer, options).then(function() { return memo; });
+  return each(tArray, tConsumer, options).then(function(): U { return memo; });
 };

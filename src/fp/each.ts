@@ -18,7 +18,7 @@ export var each = function<T>(
     tConsumer.call(this, tArray[index], index);
   };
   return range(indexConsumer, tArray.length, options)
-    .catch(function(error) {
+    .catch(function(error: {error: Error, index: number}): void {
       throw extend(error, {item: tArray[error.index]});
     });
 };

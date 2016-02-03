@@ -6,17 +6,17 @@ export class Pause implements IPause {
   }
 
   constructor(delay: number) {
-    this.__pause__ = new Promise<void>(resolve => {
+    this.__pause__ = new Promise<void>((resolve: Function) => {
       setTimeout(resolve, delay);
     });
   }
 
-  resume(onResume): IPause {
+  resume(onResume: () => void): IPause {
     this.__pause__.then(onResume);
     return this;
   }
 
-  catch(handler): void {
+  catch(handler: () => void): void {
     this.__pause__.catch(handler);
   }
 }

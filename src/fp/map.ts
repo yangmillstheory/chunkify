@@ -15,5 +15,5 @@ export var map = function<T>(
     tMapped.push(tMappedItem);
   };
   let tConsumer = compose(tPusher, tMapper);
-  return each(tArray, tConsumer, options).then(function() { return tMapped; });
+  return each(tArray, tConsumer, options).then(function(): T[] { return tMapped; });
 };

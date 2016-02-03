@@ -24,7 +24,7 @@ let __chunkify__ = function*(
   let paused = false;
   let pause = function*(): IterableIterator<IPause> {
     paused = true;
-    yield Pause.for(delay).resume(function() { paused = false; });
+    yield Pause.for(delay).resume(function(): void { paused = false; });
   };
   for (let index = start; index < final; index++) {
     if ((index > start) && (index % (start + chunk) === 0)) {
