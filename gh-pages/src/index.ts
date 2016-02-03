@@ -70,7 +70,8 @@ ng
     simulateWork(index) {
       $timeout(() => { this.progress(); });
       let i = 0;
-      while (i < largeRandomInteger()) {
+      let max: number = largeRandomInteger();
+      while (i < max) {
         i++;
       }
       return index;
