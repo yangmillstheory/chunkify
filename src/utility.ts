@@ -1,21 +1,26 @@
-export var forOwn = function(iteratee, iterator: Function): void {
-  for (let key in iteratee) {
-    if (iteratee.hasOwnProperty(key)) {
-      iterator(iteratee[key], key);
+interface IPojo {
+  [key: string]: any;
+}
+
+
+export var forOwn = function(iterable: IPojo, iterator: Function): void {
+  for (let key in iterable) {
+    if (iterable.hasOwnProperty(key)) {
+      iterator(iterable[key], key);
     }
   }
 };
 
-export var isBoolean = function(thing): boolean {
+export var isBoolean = function(thing: any): boolean {
   return typeof thing === 'boolean';
 };
 
-export var isNumber = function(thing): boolean {
+export var isNumber = function(thing: any): boolean {
   return typeof thing === 'number';
 };
 
-export var defaults = function(defaultsObj: Object, overrideObj: Object): Object {
-  forOwn(overrideObj, (value, key: string) => {
+export var defaults = function(defaultsObj: IPojo, overrideObj: IPojo): Object {
+  forOwn(overrideObj, function(value: any, key: string): void {
     if (!defaultsObj.hasOwnProperty(key)) {
       defaultsObj[key] = overrideObj[key];
     }
@@ -23,32 +28,32 @@ export var defaults = function(defaultsObj: Object, overrideObj: Object): Object
   return defaultsObj;
 };
 
-export var extend = function<T extends Object, U extends Object>(
+export var extend = function<T extends IPojo, U extends IPojo>(
   targetObj: T,
   sourceObj: U
 ): T|U {
-  forOwn(sourceObj, (value, key) => {
+  forOwn(sourceObj, function(value: any, key: string): void {
     targetObj[key] = sourceObj[key];
   });
   return targetObj;
 };
 
-export var assertNonemptyArray = function(thing): void {
+export var assertNonemptyArray = function(thing: any): void {
   if (!Array.isArray(thing) || !thing.length) {
     throw new TypeError(`Expected non-empty array, got ${typeof thing}`);
   }
 };
 
-let isFunction = function(thing): boolean {
+let isFunction = function(thing: any): boolean {
   return typeof thing === 'function';
 };
 
-export var assertIsPlainObject = function(thing): void {
-  let isPlainObject = function() {
+export var assertIsPlainObject = function(thing: any): void {
+  let isPlainObject = function(): boolean {
     // slightly modified from:
     //
     //    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
-    let isObjectLike = function() {
+    let isObjectLike = function(): boolean {
       return !!thing && typeof thing === 'object';
     };
     let objectProto = Object.prototype;
@@ -73,13 +78,13 @@ export var assertIsPlainObject = function(thing): void {
   }
 };
 
-export var assertNumber = function(thing): void {
+export var assertNumber = function(thing: any): void {
   if (!isNumber(thing)) {
     throw new TypeError(`Expected number, got ${typeof thing}`);
   }
 };
 
-export var assertFn = function(thing): void {
+export var assertFn = function(thing: any): void {
   if (!isFunction(thing)) {
     throw new TypeError(`Expected function, got ${typeof thing}`);
   }
@@ -91,10 +96,10 @@ let slice = [].slice;
 export var compose = function<T, U, V, W, X>(
   f: (u: U, ...fOtherArgs: X[]) => V,
   g: (t: T, ...gOtherArgs: W[]) => U
-): (t: T, ...gOtherArgs: W[]) => V{
+): (t: T, ...gOtherArgs: W[]) => V {
   assertFn(f);
   assertFn(g);
-  return function() {
+  return function(): V {
     return f(g.apply(this, slice.call(arguments)));
   };
 };

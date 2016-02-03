@@ -13,7 +13,7 @@ let doChunkSync = function(
   chunkIterator: IterableIterator<number|IPause>,
   indexConsumer: (index: number) => void
 ): IPause {
-  let next = chunkIterator.next();
+  let next: IteratorResult<number|IPause> = chunkIterator.next();
   let value: number|IPause;
   while (!next.done) {
     value = next.value;
@@ -50,7 +50,7 @@ export var interval = function(
     //   https://github.com/Microsoft/TypeScript/issues/212
     indexConsumer.call(chOptions.scope, index);
   };
-  let nextChunkExecutor = function(complete: Function) {
+  let nextChunkExecutor = function(complete: Function): void|IPause {
     let nextPause = doChunkSync(chunkIterator, boundConsumer);
     if (nextPause) {
       return nextPause.resume(() => { return nextChunkExecutor(complete); });
