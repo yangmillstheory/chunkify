@@ -67,7 +67,7 @@ gulp.task('lint:ts', function(done) {
 });
 
 gulp.task('lint:spec', function() {
-  return lintStream(specFiles, {'no-empty': false, 'typedef': false});
+  return lintStream(specFiles, {'no-empty': false, typedef: false});
 });
 
 gulp.task('lint', gulp.series('lint:ts', 'lint:spec'));
