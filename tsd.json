@@ -38,11 +38,11 @@
     "lodash/lodash.d.ts": {
       "commit": "6d3c9f422fe385f4f34d3be4c7920476163c87ec"
     },
-    "jquery/jquery.d.ts": {
-      "commit": "6d3c9f422fe385f4f34d3be4c7920476163c87ec"
-    },
     "browserify/browserify.d.ts": {
       "commit": "717a5fdb079f8dd7c19f1b22f7f656dd990f0ccf"
+    },
+    "jqueryui/jqueryui.d.ts": {
+      "commit": "e69fe60f2d6377ea4fae539493997b098f52cad1"
     }
   }
 }

@@ -1,23 +1,21 @@
 import 'babel-polyfill';
 import * as chunkify from 'chunkify';
-import * as angular from 'angular';
+import * as ng from 'angular';
 import * as _ from 'lodash';
-import * as $ from 'jquery';
+import $ from 'jquery';
 import 'jquery-ui/progressbar';
 import 'jquery-ui/tooltip';
 
 
-let randomInteger = (options = {}) => {
-  let {max, min} = _.defaults(options, {
-    max: Math.pow(10, 2),
-    min: Math.pow(10, 2) * .75
-  });
+let largeRandomInteger = function(options?: {max: number, min: number}): number {
+  let min: number = _.isNumber(options.min) ? options.min : Math.pow(10, 2) * .75;
+  let max: number = _.isNumber(options.max) ? options.max : Math.pow(10, 2);
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-angular
+ng
 .module('chunkify-demo', [])
-.controller('ChunkifyCtrl', ['$scope', '$timeout', ($scope, $timeout) => {
+.controller('ChunkifyCtrl', ['$scope', '$timeout', function($scope, $timeout) {
   const RANGE = _.range(0.5 * Math.pow(10, 5));
   const DEFAULT_CHUNK = 100;
   const DEFAULT_DELAY = 50;
@@ -28,8 +26,8 @@ angular
     chunk: DEFAULT_CHUNK,
     delay: DEFAULT_DELAY,
     options() {
-      return {delay: this.delay, chunk: this.chunk}
-    }
+      return {delay: this.delay, chunk: this.chunk};
+    },
   });
 
   $scope.buttons = {
@@ -41,7 +39,7 @@ angular
 
     enable: function() {
       this.disabled = false;
-    }
+    },
   };
 
   $scope.actions = {
@@ -50,32 +48,32 @@ angular
 
     state: {
       chunkified: true,
-      selected: null
+      selected: null,
     },
 
     selected(action) {
-      return this.state.selected === action
+      return this.state.selected === action;
     },
 
     select(action) {
-      this.state.selected = action
+      this.state.selected = action;
     },
 
     progress(value) {
       if (_.isNumber(value)) {
-        $scope.experiment.progress = value
+        $scope.experiment.progress = value;
       } else {
-        $scope.experiment.progress += 1
+        $scope.experiment.progress += 1;
       }
     },
 
     simulateWork(index) {
       $timeout(() => { this.progress(); });
       let i = 0;
-      while (i < randomInteger()) {
-        i++
+      while (i < largeRandomInteger()) {
+        i++;
       }
-      return index
+      return index;
     },
 
     _cleanOptions(options) {
@@ -91,10 +89,12 @@ angular
 
     _afterAction(promise) {
       promise.then((value) => {
-        $timeout(() => {
-          this.progress(0);
-          $scope.buttons.enable();
-        }, 1000);
+        $timeout(
+          () => {
+            this.progress(0);
+            $scope.buttons.enable();
+          },
+          1000);
       });
     },
 
@@ -104,74 +104,76 @@ angular
       };
       let memo = 0;
       if (this.state.chunkified) {
-        return chunkify.reduce(RANGE, reducer, _.extend({memo}, $scope.experiment.options()))
+        return chunkify.reduce(RANGE, reducer, <IChunkifyOptions>_.extend({memo}, $scope.experiment.options()));
       } else {
-        return Promise.resolve(RANGE.reduce(reducer, memo))
+        return Promise.resolve(RANGE.reduce(reducer, memo));
       }
     },
 
     _map() {
       let mapper = (item, index) => {
-        return this.simulateWork(index) + 1
+        return this.simulateWork(index) + 1;
       };
       if (this.state.chunkified) {
-        return chunkify.map(RANGE, mapper, $scope.experiment.options())
+        return chunkify.map(RANGE, mapper, $scope.experiment.options());
       } else {
-        return Promise.resolve(RANGE.map(mapper))
+        return Promise.resolve(RANGE.map(mapper));
       }
     },
 
     _each() {
       let eachFn = (index) => {
-        this.simulateWork(index)
+        this.simulateWork(index);
       };
       if (this.state.chunkified) {
-        return chunkify.each(RANGE, eachFn, $scope.experiment.options())
+        return chunkify.each(RANGE, eachFn, $scope.experiment.options());
       } else {
-        return Promise.resolve(RANGE.forEach(eachFn))
+        return Promise.resolve(RANGE.forEach(eachFn));
       }
     },
 
     _range() {
       let loopFn = (index) => {
-        this.simulateWork(index)
+        this.simulateWork(index);
       };
       if (this.state.chunkified) {
-        return chunkify.range(loopFn, RANGE.length, $scope.experiment.options())
+        return chunkify.range(loopFn, RANGE.length, $scope.experiment.options());
       } else {
-        return Promise.resolve(this._blockingRange(loopFn))
+        return Promise.resolve(this._blockingRange(loopFn));
       }
     },
 
     _blockingRange(loopFn) {
       for (let index = 0; index < RANGE.length; index++) {
-        loopFn(index)
+        loopFn(index);
       }
-    }
+    },
 
   };
 
   // some metaprogramming to avoid boilerplate
   for (let action of $scope.actions.names) {
-    $scope.actions[action] = _.compose(promise => {
+    $scope.actions[action] = _.flowRight(
+    promise => {
       $scope.actions._afterAction(promise);
-    }, options => {
-      return $scope.actions[`_${action}`](options)
-    }, options => {
+    },
+    options => {
+      return $scope.actions[`_${action}`](options);
+    },
+    options => {
       return $scope.actions._beforeAction(action, options);
     });
   }
 }])
 .directive('wisp', ['$interval', ($interval) => {
   function* shiftsGenerator($element, $parent) {
-    let shifts_index = 0;
     let randomHorizontalOffset = () => {
       let width = $parent.width();
-      return randomInteger({min: 0.25 * width, max: width});
+      return largeRandomInteger({min: 0.25 * width, max: width});
     };
     let randomVerticalOffset = () => {
       let height = $parent.height();
-      return randomInteger({min: 0.25 * height, max: height});
+      return largeRandomInteger({min: 0.25 * height, max: height});
     };
     let shifts = [
       () => {
@@ -179,30 +181,30 @@ angular
           ($element.offset().left + $element.width());
         return {
           left: `+=${Math.min(randomHorizontalOffset(), maxHorizontalOffset)}`
-        }
+        };
       },
       () => {
         let maxVerticalOffset = ($parent.offset().top + $parent.height()) -
           ($element.offset().top + $element.height());
         return {
           top: `+=${Math.min(randomVerticalOffset(), maxVerticalOffset)}`
-        }
+        };
       },
       () => {
         let maxHorizontalOffset = $element.offset().left - $parent.offset().left;
         return {
-          left: `-=${Math.min(randomHorizontalOffset(), maxHorizontalOffset)}`}
+          left: `-=${Math.min(randomHorizontalOffset(), maxHorizontalOffset)}`};
       },
       () => {
         let maxVerticalOffset = $element.offset().top - $parent.offset().top;
         return {
           top: `-=${Math.min(randomVerticalOffset(), maxVerticalOffset)}`
-        }
+        };
       }
     ];
     let length = shifts.length;
     while (true) {
-      yield shifts[randomInteger({min: 0, max: length})]();
+      yield shifts[largeRandomInteger({min: 0, max: length})]();
     }
   }
   return {
@@ -211,19 +213,20 @@ angular
       let $element = $(element);
       let $parent = $element.parent();
       let shifts = shiftsGenerator($element, $parent);
-      var animate = (transparent = false) => {
+      let animate: (transparent?: boolean) => void;
+      animate = (transparent = false) => {
         let css = shifts.next().value;
         if (transparent) {
-          _.extend(css, {opacity: 0.5})
+          _.extend(css, {opacity: 0.5});
         } else {
-          _.extend(css, {opacity: 1})
+          _.extend(css, {opacity: 1});
         }
         $element.animate(css, 400, animate.bind(null, !transparent));
       };
       animate();
     },
     template: '<div id="wisp"></div>'
-  }
+  };
 }])
 
 .directive('wispContainer', ['$window', ($window) => {
@@ -233,19 +236,20 @@ angular
     replace: true,
     scope: {},
     link(scope, element, attrs) {
-      const min_width = parseInt(attrs.minWidth);
-      const min_height = parseInt(attrs.minHeight);
+      const min_width = parseInt(attrs.minWidth, 10);
+      const min_height = parseInt(attrs.minHeight, 10);
       let $element = $(element);
       let resize = () => {
         let width = Math.max($(window).width() - 250, min_width);
         let height = Math.max($(window).height() - 225, min_height);
         $element.css({width, height});
-        return true
+        return true;
       };
-      resize() && ($window.onresize = resize);
+      resize();
+      $window.onresize = resize;
     },
     template: `<div class='wisp-container' ng-transclude></div>`
-  }
+  };
 }])
 .directive('actionCode', () => {
     return {
@@ -282,7 +286,7 @@ let simulateWork = (index) => {
             {{state | code}}
           </pre>
         </div>`
-    }
+    };
 })
 .filter('code', () => {
   const code_by_action = {
@@ -294,11 +298,11 @@ let mapper = (item, index) => {
       if (chunkified) {
         return `
 ${setup}
-return chunkify.map(RANGE, mapper, {chunk, delay})`
+return chunkify.map(RANGE, mapper, {chunk, delay})`;
       } else {
         return `
 ${setup}
-return RANGE.map(mapper))`
+return RANGE.map(mapper))`;
       }
     },
     reduce(chunkified = false) {
@@ -325,11 +329,11 @@ let eachFn = (index) => {
       if (chunkified) {
         return `
 ${setup}
-return chunkify.each(RANGE, eachFn, {chunk, delay})`
+return chunkify.each(RANGE, eachFn, {chunk, delay})`;
       } else {
         return `
 ${setup}
-return RANGE.forEach(eachFn)`
+return RANGE.forEach(eachFn)`;
       }
     },
     range(chunkified = false) {
@@ -340,38 +344,76 @@ let loopFn = (index) => {
       if (chunkified) {
         return `
 ${setup}
-return chunkify.range(loopFn, RANGE.length, {chunk, delay})`
+return chunkify.range(loopFn, RANGE.length, {chunk, delay})`;
       } else {
         return `
 ${setup}
 for (let index = 0; index < RANGE.length; index++) {
   loopFn(index)
-}`
+}`;
       }
     }
   };
   return state => {
     if (state.selected === null) {
       return `
-Hover over an action button on the left sidebar.`
+Hover over an action button on the left sidebar.`;
     } else {
       let {selected, chunkified} = state;
       return `
 // action: ${selected}
 // chunkified: ${chunkified}
 ${code_by_action[selected](chunkified)}
-`
+`;
     }
   };
 })
 .directive('experiment', () => {
+  interface IExperimentState {
+    progress: number;
+    chunk: number;
+    delay: number;
+  }
+
+  interface IExperimentScope extends ng.IScope {
+    state: IExperimentState;
+
+    form: ng.IFormController;
+
+    chunk: {
+      min: number,
+      max: number,
+      label: string
+    };
+
+    iterations: {
+      value: number;
+      label: string;
+    };
+
+    delay: {
+      min: number;
+      max: number;
+      label: string;
+    };
+
+    inputs: {
+      initialChunk: number;
+      initialDelay: number;
+      disabled: boolean;
+      reset: () => void;
+    };
+
+    enable: Function;
+    disable: Function;
+  }
   return {
     scope: {
       state: '=',
       disable: '&',
       enable: '&'
     },
-    link(scope) {
+    link(scope: IExperimentScope) {
       scope.iterations = {
         label: 'Iterations',
         value: scope.state.progress
@@ -398,22 +440,25 @@ ${code_by_action[selected](chunkified)}
         }
       }
       ;
-      scope.$watch('state', (state, prev) => {
-        if (prev.chunk !== state.chunk || prev.delay !== state.delay) {
-          if (scope.form.$valid) {
-            scope.enable()
-          } else {
-            scope.disable()
+      scope.$watch(
+        'state',
+        (state: IExperimentState, prev: IExperimentState) => {
+          if (prev.chunk !== state.chunk || prev.delay !== state.delay) {
+            if (scope.form.$valid) {
+              scope.enable();
+            } else {
+              scope.disable();
+            }
           }
-        }
-        if (state.progress) {
-          scope.iterations.value = state.progress;
-          scope.inputs.disabled = true;
-        } else {
-          scope.iterations.value = 0;
-          scope.inputs.disabled = false;
-        }
-      }, true);
+          if (state.progress) {
+            scope.iterations.value = state.progress;
+            scope.inputs.disabled = true;
+          } else {
+            scope.iterations.value = 0;
+            scope.inputs.disabled = false;
+          }
+        },
+        true);
     },
     template:
       `<div class="blurb">
@@ -437,7 +482,7 @@ ${code_by_action[selected](chunkified)}
           <a ng-click="inputs.reset()">reset</a>
         </form>
       </div>`
-  }
+  };
 })
 .directive('progressbar', () => {
   return {
@@ -446,14 +491,14 @@ ${code_by_action[selected](chunkified)}
       progress: '=progress',
       max: '=max'
     },
-    link(scope, element) {
+    link(scope: {max: number, progress: Function} & ng.IScope, element) {
       let $element = $(element);
       let $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
         value: 0
       });
-      var progress = value => {
-        $bar.progressbar('option', 'value', value)
+      let progress = value => {
+        $bar.progressbar('option', 'value', value);
       };
       scope.$watch('progress', progress);
     },
@@ -461,11 +506,11 @@ ${code_by_action[selected](chunkified)}
       `<div class="progressbar-container">
         <div id="progressbar"></div>
       </div>`
-  }
+  };
 })
 .filter('titlecase', () => {
    return word => {
-     return `${word.charAt(0).toUpperCase()}${word.slice(1)}`
-   }
+     return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+   };
 });
 

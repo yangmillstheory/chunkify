@@ -16,13 +16,18 @@ const ghPagesBase = 'gh-pages';
 
 let bundleStream = function() {
   return browserify()
-    .add(`${ghPagesBase}/src/index.ts`)
-    .require(['typings/tsd.d.ts', 'chunkify.d.ts'])
+    .add([
+      `${ghPagesBase}/src/index.ts`,
+      'chunkify.d.ts',
+      'lib.d.ts',
+      'typings/tsd.d.ts',
+    ])
     .plugin(tsify, {
       typescript,
       rootDir: undefined,
+      exclude: undefined
     })
-    .transform(babelify)
+    .transform(babelify.configure({extensions: ['.ts']}))
     .bundle()
     .pipe(vinylSource('bundle.js'))
     .pipe(vinylBuffer());
