@@ -7,6 +7,8 @@ import gulpBabel from 'gulp-babel';
 import tsify from 'tsify';
 import babelify from 'babelify';
 import typescript from 'typescript';
+import {symlink} from 'fs';
+import tsConfig from './tsconfig.json';
 
 
 const ghPagesBase = 'gh-pages';
@@ -14,9 +16,10 @@ const ghPagesBase = 'gh-pages';
 let bundleStream = function() {
   return browserify()
     .add(`${ghPagesBase}/src/index.ts`)
+    .require(['typings/tsd.d.ts', 'chunkify.d.ts'])
     .plugin(tsify, {
       typescript,
-      rootDir: undefined
+      rootDir: undefined,
     })
     .transform(babelify)
     .bundle()
@@ -25,6 +28,10 @@ let bundleStream = function() {
 };
 
 let initTasks = function() {
+  gulp.task('symlink', function(done) {
+    symlink(`../${tsConfig.compilerOptions.outDir}`, 'node_modules/chunkify', done);
+  });
+
   gulp.task('bundle', function() {
     return bundleStream()
       .pipe(gulp.dest(ghPagesBase));
@@ -36,7 +43,8 @@ let initTasks = function() {
       .pipe(gulp.dest(ghPagesBase));
   });
 
-  gulp.task('gh-pages', gulp.series('build', 'compile', 'bundle'));
+  gulp.task('gh-pages', gulp.series('symlink', 'bundle'));
+  gulp.task('gh-pages:prod', gulp.series('symlink', 'bundle:uglify'));
 };
 
 export default {initTasks};

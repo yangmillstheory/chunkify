@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import * as chunkify from '../../src';
+import * as chunkify from 'chunkify';
 import * as angular from 'angular';
 import * as _ from 'lodash';
 import * as $ from 'jquery';
