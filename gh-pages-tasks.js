@@ -7,6 +7,7 @@ import gulpBabel from 'gulp-babel';
 import tsify from 'tsify';
 import babelify from 'babelify';
 import typescript from 'typescript';
+import gulpUtil from 'gulp-util';
 import {symlink} from 'fs';
 import tsConfig from './tsconfig.json';
 
@@ -27,9 +28,16 @@ let bundleStream = function() {
     .pipe(vinylBuffer());
 };
 
-let initTasks = function() {
+let initTasks = function(lintStream) {
   gulp.task('symlink', function(done) {
-    symlink(`../${tsConfig.compilerOptions.outDir}`, 'node_modules/chunkify', done);
+    let target = 'node_modules/chunkify';
+    let source = `../${tsConfig.compilerOptions.outDir}`;
+    symlink(source, target, function(error) {
+      if (error) {
+        gulpUtil.log(`${target} already linked to ${source}.`);
+      }
+      done();
+    });
   });
 
   gulp.task('bundle', function() {
@@ -43,8 +51,12 @@ let initTasks = function() {
       .pipe(gulp.dest(ghPagesBase));
   });
 
-  gulp.task('gh-pages', gulp.series('symlink', 'bundle'));
-  gulp.task('gh-pages:prod', gulp.series('symlink', 'bundle:uglify'));
+  gulp.task('lint:gh-pages', function() {
+    return lintStream(`${ghPagesBase}/**/*.ts`);
+  });
+
+  gulp.task('gh-pages', gulp.series('symlink', 'lint:gh-pages', 'bundle'));
+  gulp.task('gh-pages:prod', gulp.series('symlink', 'lint:gh-pages', 'bundle:uglify'));
 };
 
 export default {initTasks};

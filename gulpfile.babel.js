@@ -110,4 +110,4 @@ gulp.task('dev', function() {
 
 gulp.task('build', gulp.series('compile', 'test', 'lint'));
 
-ghPages.initTasks();
+ghPages.initTasks(lintStream);
