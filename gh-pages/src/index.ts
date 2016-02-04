@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import * as chunkify from 'chunkify';
-import * as ng from 'angular';
+import * as angular from 'angular';
 import * as _ from 'lodash';
 import $ from 'jquery';
 import 'jquery-ui/progressbar';
@@ -13,9 +13,9 @@ let largeRandomInteger = function(options: {max?: number, min?: number} = {}): n
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-ng
+angular
 .module('chunkify-demo', [])
-.controller('ChunkifyCtrl', ['$scope', '$timeout', function($scope, $timeout) {
+.controller('ChunkifyCtrl', ['$scope', '$timeout', function($scope: angular.IScope, $timeout: angular.ITimeoutService): void {
   const RANGE = _.range(0.5 * Math.pow(10, 5));
   const DEFAULT_CHUNK = 100;
   const DEFAULT_DELAY = 50;
@@ -33,11 +33,11 @@ ng
   $scope.buttons = {
     disabled: false,
 
-    disable: function() {
+    disable: function(): void {
       this.disabled = true;
     },
 
-    enable: function() {
+    enable: function(): void {
       this.disabled = false;
     },
   };
@@ -51,15 +51,15 @@ ng
       selected: null,
     },
 
-    selected(action) {
+    selected(action: string): boolean {
       return this.state.selected === action;
     },
 
-    select(action) {
+    select(action: string): void {
       this.state.selected = action;
     },
 
-    progress(value) {
+    progress(value: number): void {
       if (_.isNumber(value)) {
         $scope.experiment.progress = value;
       } else {
@@ -67,8 +67,8 @@ ng
       }
     },
 
-    simulateWork(index) {
-      $timeout(() => { this.progress(); });
+    simulateWork(index: number): number {
+      $timeout((): void => { this.progress(); });
       let i = 0;
       let max: number = largeRandomInteger();
       while (i < max) {
@@ -77,19 +77,15 @@ ng
       return index;
     },
 
-    _cleanOptions(options) {
-      // currently a no-op
+    // TODO: type options interface
+    _beforeAction(action: string, options: {[key: string]: any} = {}): {[key: string]: any} {
+      this.select(action);
+      $scope.buttons.disable();
       return options;
     },
 
-    _beforeAction(action, options = {}) {
-      this.select(action);
-      $scope.buttons.disable();
-      return this._cleanOptions(options);
-    },
-
-    _afterAction(promise) {
-      promise.then((value) => {
+    _afterAction(promise: ng.IPromise<void>): void {
+      promise.then(function(): void {
         $timeout(
           () => {
             this.progress(0);
@@ -99,8 +95,8 @@ ng
       });
     },
 
-    _reduce() {
-      let reducer = (memo, item, index) => {
+    _reduce(): Promise<number> {
+      let reducer = (memo: number, item: number, index: number) => {
         return memo + this.simulateWork(index);
       };
       let memo = 0;
@@ -111,8 +107,8 @@ ng
       }
     },
 
-    _map() {
-      let mapper = (item, index) => {
+    _map(): Promise<number[]> {
+      let mapper = (item: number, index: number) => {
         return this.simulateWork(index) + 1;
       };
       if (this.state.chunkified) {
@@ -122,8 +118,8 @@ ng
       }
     },
 
-    _each() {
-      let eachFn = (index) => {
+    _each(): Promise<void> {
+      let eachFn = (index: number) => {
         this.simulateWork(index);
       };
       if (this.state.chunkified) {
@@ -133,8 +129,8 @@ ng
       }
     },
 
-    _range() {
-      let loopFn = (index) => {
+    _range(): Promise<void> {
+      let loopFn = function(index: number): void {
         this.simulateWork(index);
       };
       if (this.state.chunkified) {
@@ -144,7 +140,7 @@ ng
       }
     },
 
-    _blockingRange(loopFn) {
+    _blockingRange(loopFn: (index: number) => void): void {
       for (let index = 0; index < RANGE.length; index++) {
         loopFn(index);
       }
@@ -155,17 +151,17 @@ ng
   // some metaprogramming to avoid boilerplate
   for (let action of $scope.actions.names) {
     $scope.actions[action] = _.flowRight(
-    promise => {
+    function(promise: Promise<void|number|number[]>): void {
       $scope.actions._afterAction(promise);
     },
-    options => {
+    function(options: {[key: string]: any}): () => Promise<void|number|number[]> {
       return $scope.actions[`_${action}`](options);
     },
-    options => {
+    function(options: {[key: string]: any}): {[key: string]: any} {
       return $scope.actions._beforeAction(action, options);
     });
   }
-}])
+}, ])
 .directive('wisp', ['$interval', ($interval) => {
   function* shiftsGenerator($element, $parent) {
     let randomHorizontalOffset = () => {
@@ -377,10 +373,10 @@ ${code_by_action[selected](chunkified)}
     delay: number;
   }
 
-  interface IExperimentScope extends ng.IScope {
+  interface IExperimentScope extends angular.IScope {
     state: IExperimentState;
 
-    form: ng.IFormController;
+    form: angular.IFormController;
 
     chunk: {
       min: number,
@@ -493,7 +489,7 @@ ${code_by_action[selected](chunkified)}
       progress: '=progress',
       max: '=max'
     },
-    link(scope: {max: number, progress: Function} & ng.IScope, element) {
+    link(scope: {max: number, progress: Function} & angular.IScope, element) {
       let $element = $(element);
       let $bar = $element.find('#progressbar').eq(0).progressbar({
         max: scope.max,
