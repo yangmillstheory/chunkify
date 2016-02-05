@@ -7,6 +7,11 @@ import 'jquery-ui/progressbar';
 import 'jquery-ui/tooltip';
 
 
+class SidebarCtrl {
+
+};
+
+
 angular
   .module('chunkify-demo', [])
   .controller('ChunkifyCtrl', ['$scope', '$timeout', function($scope: angular.IScope, $timeout: angular.ITimeoutService): void {
