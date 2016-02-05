@@ -17,7 +17,7 @@ const ghPagesBase = 'gh-pages';
 let bundleStream = function() {
   return browserify()
     .add([
-      `${ghPagesBase}/src/index.ts`,
+      `${ghPagesBase}/app/index.ts`,
       'chunkify.d.ts',
       'lib.d.ts',
       'typings/tsd.d.ts',
