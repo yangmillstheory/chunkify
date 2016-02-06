@@ -199,11 +199,12 @@ label {
   cursor: pointer;
 }
 
-.wisp-container {
+.resizing-container {
   display: inline-block;
   margin: 20px;
   margin-left: 35px;
   border-radius: 5px;
+  padding: 250px 255px;
   position: relative;
   border: 1px dashed #4d63bc;
 }
@@ -218,7 +219,7 @@ label {
   height: 100px;
 }
 
-.progressbar-container {
+.progress-bar-container {
   background-color: darkgrey;
   opacity: .9;
   height: 20px;
@@ -228,7 +229,7 @@ label {
   margin-bottom: 10px;
 }
 
-.progressbar-container:hover {
+.progress-bar-container:hover {
   opacity: 1;
 }
 

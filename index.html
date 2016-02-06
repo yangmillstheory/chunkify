@@ -16,8 +16,7 @@
   </div>
   <div class='main-wrapper' ng-controller='ChunkifyCtrl'>
     <div class='main'>
-      <progressbar progress='experiment.progress' max='experiment.range'>
-      </progressbar>
+      <progress-bar progress='experiment.progress' max='experiment.range'></progress-bar>
       <div class='button-container'>
         <div class='buttons' ng-repeat="action in actions.names">
           <button ng-class='{active: actions.selected(action)}' ng-disabled='buttons.disabled' ng-click='actions[action]()' ng-mouseover="actions.select(action)">
@@ -32,10 +31,10 @@
       <experiment state='experiment' disable="buttons.disable()" enable="buttons.enable()">
       </experiment>
     </div>
-    <wisp-container min-width="750" min-height="450">
+    <resizing-container min-width="750" min-height="450">
       <action-code state="actions.state" chunk="experiment.chunk" delay="experiment.delay"></action-code>
       <wisp></wisp>
-    </wisp-container>
+    </resizing-container>
   </div>
 </body>
 </html>

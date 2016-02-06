@@ -1,12 +1,14 @@
-import * as ng from 'angular';
+import * as angular from 'angular';
+import {progressBar} from './progress-bar-directive';
+import {resizingContainer} from './resizing-container-directive';
 
 
 const moduleName = 'chunkify.directives';
 
-export var appModule: IAppModule = {
-  moduleName,
 
-  ngModule: ng.module(moduleName, [])
-};
+angular
+  .module(moduleName, [])
+  .directive('progressBar', progressBar)
+  .directive('resizingContainer', resizingContainer);
 
-export default appModule;
+export default moduleName;
