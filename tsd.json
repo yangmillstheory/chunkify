@@ -42,10 +42,10 @@
       "commit": "717a5fdb079f8dd7c19f1b22f7f656dd990f0ccf"
     },
     "jqueryui/jqueryui.d.ts": {
-      "commit": "e69fe60f2d6377ea4fae539493997b098f52cad1"
+      "commit": "c393f8974d44840a6c9cc6d5b5c0188a8f05143d"
     },
     "jquery/jquery.d.ts": {
-      "commit": "e69fe60f2d6377ea4fae539493997b098f52cad1"
+      "commit": "c393f8974d44840a6c9cc6d5b5c0188a8f05143d"
     }
   }
 }
