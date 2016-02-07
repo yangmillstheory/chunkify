@@ -66,6 +66,13 @@ let rangeAction = function(
   }());
 };
 
+export enum ExperimentAction {
+  EACH,
+  MAP,
+  REDUCE,
+  RANGE
+}
+
 export var applyAction = function(
   action: ExperimentAction,
   consumer: Function,

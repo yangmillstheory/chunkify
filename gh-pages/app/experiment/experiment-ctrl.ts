@@ -1,4 +1,4 @@
-import {applyAction} from './action';
+import {applyAction, ExperimentAction} from './action';
 import {
   RANGE,
   CHUNK,
@@ -49,12 +49,12 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
 
     length: RANGE.length,
 
-    actions: [
-      ExperimentAction.EACH,
-      ExperimentAction.MAP,
-      ExperimentAction.REDUCE,
-      ExperimentAction.RANGE,
-    ],
+    actions: {
+      'each': ExperimentAction.EACH,
+      'map': ExperimentAction.MAP,
+      'reduce': ExperimentAction.REDUCE,
+      'range': ExperimentAction.RANGE,
+    },
 
     isSelected: function(action: ExperimentAction): boolean {
       return action === currentAction;

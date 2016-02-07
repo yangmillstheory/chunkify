@@ -1,23 +1,16 @@
-declare enum ExperimentAction {
-  EACH,
-  MAP,
-  REDUCE,
-  RANGE
-}
-
 declare interface IExperiment {
   chunkified: boolean;
   length: number;
   progress: number;
 
-  actions: ExperimentAction[];
+  actions: {[actionName: string]: number};
   options: IChunkifyOptions;
 
-  isSelected(action: ExperimentAction): boolean;
+  isSelected(action: number): boolean;
   isRunning(): boolean;
 
-  getAction(): ExperimentAction;
-  setAction(action: ExperimentAction): void;
+  getAction(): number;
+  setAction(action: number): void;
 
-  execute(action: ExperimentAction): void;
+  execute(action: number): void;
 }

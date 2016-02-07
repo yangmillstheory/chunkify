@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import 'jquery-ui/progressbar';
 
 
@@ -23,7 +24,7 @@ export var progressBar = function(): ng.IDirective {
       progress: '='
     },
     link(scope: IProgressBarScope, element: ng.IAugmentedJQuery): void {
-      let $progressBar = element
+      let $progressBar = $.fn.constructor(element)
         .find('#progress-bar')
         .eq(0)
         .progressbar({value: 0, max: scope.max});

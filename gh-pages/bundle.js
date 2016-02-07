@@ -476,31 +476,35 @@ var compose = exports.compose = function compose(f, g) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.experimentCode = undefined;
+
+var _experiment = require('../experiment');
+
 var actionConsumers = new Map();
-actionConsumers.set(ExperimentAction.EACH, 'let eachFn = function(index) {\n  simulateWork(index);\n};');
-actionConsumers.set(ExperimentAction.MAP, 'let mapper = function(item, index) {\n  return simulateWork(index) + 1;\n};');
-actionConsumers.set(ExperimentAction.REDUCE, 'let reducer = function(memo, item, index) {\n  return memo + simulateWork(index);\n};\nlet memo = 0;');
-actionConsumers.set(ExperimentAction.RANGE, 'let loopFn = function(index) {\n  simulateWork(index);\n};');
+actionConsumers.set(_experiment.Action.EACH, 'let eachFn = function(index) {\n  simulateWork(index);\n};');
+actionConsumers.set(_experiment.Action.MAP, 'let mapper = function(item, index) {\n  return simulateWork(index) + 1;\n};');
+actionConsumers.set(_experiment.Action.REDUCE, 'let reducer = function(memo, item, index) {\n  return memo + simulateWork(index);\n};\nlet memo = 0;');
+actionConsumers.set(_experiment.Action.RANGE, 'let loopFn = function(index) {\n  simulateWork(index);\n};');
 var actionCall = function actionCall(experiment) {
     var action = experiment.getAction();
     var chunkified = experiment.chunkified;
     switch (action) {
-        case ExperimentAction.EACH:
+        case _experiment.Action.EACH:
             if (chunkified) {
                 return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
             }
             return 'return RANGE.forEach(eachFn)';
-        case ExperimentAction.MAP:
+        case _experiment.Action.MAP:
             if (chunkified) {
                 return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
             }
             return 'return RANGE.forEach(eachFn)';
-        case ExperimentAction.REDUCE:
+        case _experiment.Action.REDUCE:
             if (chunkified) {
                 return 'return chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
             }
             return 'return RANGE.reduce(reducer, memo)';
-        case ExperimentAction.RANGE:
+        case _experiment.Action.RANGE:
             if (chunkified) {
                 return 'return chunkify.range(loopFn, RANGE.length, {chunk, delay})';
             }
@@ -509,15 +513,17 @@ var actionCall = function actionCall(experiment) {
             throw new Error('Unknown experiment action: ' + action);
     }
 };
-var experimentCode = exports.experimentCode = function experimentCode(experiment) {
-    if (!experiment.isRunning()) {
-        return 'Hover over an action button on the left sidebar.';
-    }
-    var action = experiment.getAction();
-    return ['// action: ' + action, '// chunkified: ' + experiment.chunkified, actionConsumers.get(action), actionCall(experiment)].join('\n');
+var experimentCode = exports.experimentCode = function experimentCode() {
+    return function (experiment) {
+        if (!experiment.isRunning()) {
+            return 'Hover over an action button on the left sidebar.';
+        }
+        var action = experiment.getAction();
+        return ['// action: ' + action, '// chunkified: ' + experiment.chunkified, actionConsumers.get(action), actionCall(experiment)].join('\n');
+    };
 };
 
-},{}],14:[function(require,module,exports){
+},{"../experiment":19}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -560,7 +566,7 @@ var experimentView = exports.experimentView = function experimentView() {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.applyAction = undefined;
+exports.applyAction = exports.ExperimentAction = undefined;
 
 var _chunkify = require('chunkify');
 
@@ -615,6 +621,13 @@ var rangeAction = function rangeAction(consumer, chunkified) {
         }
     }());
 };
+var ExperimentAction = exports.ExperimentAction = undefined;
+(function (ExperimentAction) {
+    ExperimentAction[ExperimentAction["EACH"] = 0] = "EACH";
+    ExperimentAction[ExperimentAction["MAP"] = 1] = "MAP";
+    ExperimentAction[ExperimentAction["REDUCE"] = 2] = "REDUCE";
+    ExperimentAction[ExperimentAction["RANGE"] = 3] = "RANGE";
+})(ExperimentAction || (exports.ExperimentAction = ExperimentAction = {}));
 var applyAction = exports.applyAction = function applyAction(action, consumer, chunkified, options) {
     switch (action) {
         case ExperimentAction.EACH:
@@ -692,7 +705,12 @@ var ExperimentCtrl = exports.ExperimentCtrl = function ExperimentCtrl($timeout) 
             delay: _defaults.DELAY
         },
         length: _defaults.RANGE.length,
-        actions: [ExperimentAction.EACH, ExperimentAction.MAP, ExperimentAction.REDUCE, ExperimentAction.RANGE],
+        actions: {
+            'each': _action.ExperimentAction.EACH,
+            'map': _action.ExperimentAction.MAP,
+            'reduce': _action.ExperimentAction.REDUCE,
+            'range': _action.ExperimentAction.RANGE
+        },
         isSelected: function isSelected(action) {
             return action === currentAction;
         },
@@ -719,6 +737,7 @@ var ExperimentCtrl = exports.ExperimentCtrl = function ExperimentCtrl($timeout) 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.Action = undefined;
 
 var _angular = require('angular');
 
@@ -726,13 +745,16 @@ var angular = _interopRequireWildcard(_angular);
 
 var _experimentCtrl = require('./experiment-ctrl');
 
+var _action = require('./action');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var ngModuleName = 'experiment';
 angular.module(ngModuleName, []).controller('ExperimentCtrl', _experimentCtrl.ExperimentCtrl);
+var Action = exports.Action = _action.ExperimentAction;
 exports.default = { ngModuleName: ngModuleName };
 
-},{"./experiment-ctrl":18,"angular":27}],20:[function(require,module,exports){
+},{"./action":16,"./experiment-ctrl":18,"angular":27}],20:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -793,7 +815,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.progressBar = undefined;
 
+var _jquery = require('jquery');
+
+var $ = _interopRequireWildcard(_jquery);
+
 require('jquery-ui/progressbar');
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 /**
  * Create a jQuery progressbar bound to some external progress.
@@ -812,7 +840,7 @@ var progressBar = exports.progressBar = function progressBar() {
             progress: '='
         },
         link: function link(scope, element) {
-            var $progressBar = element.find('#progress-bar').eq(0).progressbar({ value: 0, max: scope.max });
+            var $progressBar = $.fn.constructor(element).find('#progress-bar').eq(0).progressbar({ value: 0, max: scope.max });
             scope.$watch('progress', function (progress) {
                 $progressBar.progressbar('option', 'value', progress);
             });
@@ -822,7 +850,7 @@ var progressBar = exports.progressBar = function progressBar() {
     };
 };
 
-},{"jquery-ui/progressbar":218}],23:[function(require,module,exports){
+},{"jquery":220,"jquery-ui/progressbar":218}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -835,7 +863,7 @@ Object.defineProperty(exports, "__esModule", {
  * @param {number} minWidth:  the minimum width to resize to
  * @param {number} minHeight: the minimum height to resize to
  */
-var resizingContainer = exports.resizingContainer = function resizingContainer($window, $document) {
+var resizingContainer = exports.resizingContainer = function resizingContainer($window) {
     return {
         restrict: 'E',
         transclude: true,
@@ -844,7 +872,7 @@ var resizingContainer = exports.resizingContainer = function resizingContainer($
         link: function link(scope, element, attrs) {
             var minWidth = parseInt(attrs.minWidth, 10);
             var minHeight = parseInt(attrs.minHeight, 10);
-            var documentElement = $document.documentElement;
+            var documentElement = $window.document.documentElement;
             var resize = function resize() {
                 element.css({
                     width: Math.max(documentElement.clientWidth, minWidth),
@@ -868,11 +896,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var titlecase = exports.titlecase = function titlecase(text) {
-    if (typeof text !== 'string') {
-        throw new TypeError('Expected string ,got ' + (typeof text === 'undefined' ? 'undefined' : _typeof(text)));
-    }
-    return '' + text.charAt(0).toUpperCase() + text.slice(1);
+var titlecase = exports.titlecase = function titlecase() {
+    return function (text) {
+        if (typeof text !== 'string') {
+            throw new TypeError('Expected string ,got ' + (typeof text === 'undefined' ? 'undefined' : _typeof(text)));
+        }
+        return '' + text.charAt(0).toUpperCase() + text.slice(1);
+    };
 };
 
 },{}],25:[function(require,module,exports){

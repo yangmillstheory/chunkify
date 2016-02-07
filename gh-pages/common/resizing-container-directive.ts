@@ -10,7 +10,7 @@ interface IResizingContainerAttrs {
  * @param {number} minWidth:  the minimum width to resize to
  * @param {number} minHeight: the minimum height to resize to
  */
-export var resizingContainer = function($window: ng.IWindowService, $document: ng.IDocumentService & Document): ng.IDirective {
+export var resizingContainer = function($window: ng.IWindowService): ng.IDirective {
   return {
     restrict: 'E',
     transclude: true,
@@ -23,7 +23,7 @@ export var resizingContainer = function($window: ng.IWindowService, $document: n
     ): void {
       let minWidth = parseInt(attrs.minWidth, 10);
       let minHeight = parseInt(attrs.minHeight, 10);
-      let documentElement = $document.documentElement;
+      let documentElement = $window.document.documentElement;
 
       let resize = function(): boolean {
         element.css({
