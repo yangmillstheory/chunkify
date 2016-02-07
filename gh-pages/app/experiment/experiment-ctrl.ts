@@ -6,31 +6,24 @@ import {
 } from './defaults';
 
 
-export var ExperimentCtrl = function($timeout: ng.ITimeoutService): IExperiment {
-
-  this.chunkified = true;
-  this.range = RANGE.length;
-  this.chunk = DEFAULT_CHUNK;
-  this.delay = DEFAULT_DELAY;
-  this.actions = [
-    ExperimentAction.EACH,
-    ExperimentAction.MAP,
-    ExperimentAction.REDUCE,
-    ExperimentAction.RANGE,
-  ];
+export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
+  // We attach to an object literal instead of 'this' because typing will not work.
+  //
+  // https://github.com/Microsoft/TypeScript/issues/3694
+  let ctrl: IExperiment;
 
   let currentAction: ExperimentAction;
 
-  let actionConsumer = (): void => {
-    $timeout((): void => { this.updateProgress(); });
+  let updateProgress = function(value?: number): void {
+    if (typeof value === 'number') {
+      ctrl.progress = value;
+    } else {
+      ctrl.progress += 1;
+    }
   };
 
-  let updateProgress = (value?: number): void => {
-    if (_.isNumber(value)) {
-      this.progress = value;
-    } else {
-      this.progress += 1;
-    }
+  let actionConsumer = function(): void {
+    $timeout(function(): void { updateProgress(); });
   };
 
   let reset = function(): void {
@@ -43,31 +36,49 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): IExperiment 
     );
   };
 
-  this.isSelected = function(action: ExperimentAction): boolean {
-    return action === currentAction;
+  ctrl = {
+
+    chunkified: true,
+
+    progress: 0,
+
+    options: {
+      chunk: DEFAULT_CHUNK,
+      delay: DEFAULT_DELAY,
+    },
+
+    length: RANGE.length,
+
+    actions: [
+      ExperimentAction.EACH,
+      ExperimentAction.MAP,
+      ExperimentAction.REDUCE,
+      ExperimentAction.RANGE,
+    ],
+
+    isSelected: function(action: ExperimentAction): boolean {
+      return action === currentAction;
+    },
+
+    isRunning: function(): boolean {
+      return currentAction !== undefined;
+    },
+
+    setAction: function(action: ExperimentAction): void {
+      currentAction = action;
+    },
+
+    getAction: function(): ExperimentAction {
+      return currentAction;
+    },
+
+    execute: function(action: ExperimentAction): void {
+      currentAction = action;
+      applyAction(action, actionConsumer, ctrl.chunkified, this.options)
+      .then(reset);
+    }
   };
 
-  this.isRunning = function(): boolean {
-    return currentAction !== undefined;
-  };
-
-  this.select = function(action: ExperimentAction): void {
-    currentAction = action;
-  };
-
-  this.getAction = function(): ExperimentAction {
-    return currentAction;
-  };
-
-  this.execute = function(action: ExperimentAction): void {
-    currentAction = action;
-    applyAction(action, actionConsumer, this.chunkified, {
-      delay: this.delay,
-      chunk: this.chunk
-    })
-    .then(reset);
-  };
-
-  return this;
+  Object.assign(this, ctrl);
 
 };

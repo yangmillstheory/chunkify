@@ -1,12 +1,13 @@
 import * as angular from 'angular';
-import {} from './experiment-ctrl';
+import {ExperimentCtrl} from './experiment-ctrl';
 import {ExperimentAction} from './action';
 
 const ngModuleName = 'experiment';
 
 
 angular
-  .module(ngModuleName, []);
+  .module(ngModuleName, [])
+  .controller('ExperimentCtrl', ExperimentCtrl);
 
 
 export var Action = ExperimentAction;

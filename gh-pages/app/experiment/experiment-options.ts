@@ -1,116 +1,62 @@
-.directive('experiment', () => {
-  interface IExperimentState {
-    progress: number;
-    chunk: number;
-    delay: number;
-  }
+interface IExperimentOptionsScope {
+  delay: number;
+  chunk: number;
+  initialDelay: number;
+  initialChunk: number;
+  iterations: number;
+  disabled(): boolean;
+}
 
-  interface IExperimentScope extends angular.IScope {
-    state: IExperimentState;
+interface IExperimentOptionsCtrl {
+  reset(): void;
+}
 
-    form: angular.IFormController;
-
-    chunk: {
-      min: number,
-      max: number,
-      label: string
-    };
-
-    iterations: {
-      value: number;
-      label: string;
-    };
-
-    delay: {
-      min: number;
-      max: number;
-      label: string;
-    };
-
-    inputs: {
-      initialChunk: number;
-      initialDelay: number;
-      disabled: boolean;
-      reset: () => void;
-    };
-
-    enable: Function;
-    disable: Function;
-  }
+export var experimentOptions = function(): ng.IDirective {
   return {
     scope: {
-      state: '=',
-      disable: '&',
-      enable: '&'
+      delay: '=',
+      chunk: '=',
+      iterations: '=',
+      disabled: '=',
     },
-    link(scope: IExperimentScope) {
-      scope.iterations = {
-        label: 'Iterations',
-        value: scope.state.progress
+    controller(): void {
+      let self: IExperimentOptionsCtrl;
+
+      self.reset = function(): void {
+        this.chunk = this.initialChunk;
+        this.delay = this.initialDelay;
       };
-      scope.chunk = {
-        min: 50,
-        max: 1000,
-        label: 'chunk size'
-      };
-      scope.delay = {
-        min: 10,
-        max: 100,
-        label: 'delay time'
-      };
-      scope.inputs = {
-        initialChunk: scope.state.chunk,
-        initialDelay: scope.state.delay,
-        disabled: false,
-        reset() {
-          if (!scope.state.progress) {
-            scope.state.chunk = this.initialChunk;
-            scope.state.delay = this.initialDelay;
-          }
-        }
-      }
-      ;
-      scope.$watch(
-        'state',
-        (state: IExperimentState, prev: IExperimentState) => {
-          if (prev.chunk !== state.chunk || prev.delay !== state.delay) {
-            if (scope.form.$valid) {
-              scope.enable();
-            } else {
-              scope.disable();
-            }
-          }
-          if (state.progress) {
-            scope.iterations.value = state.progress;
-            scope.inputs.disabled = true;
-          } else {
-            scope.iterations.value = 0;
-            scope.inputs.disabled = false;
-          }
-        },
-        true);
+
+      Object.assign(this, self);
+    },
+    controllerAs: 'options',
+    link(scope: IExperimentOptionsScope): void {
+      scope.initialChunk = scope.chunk;
+      scope.initialDelay = scope.delay;
     },
     template:
       `<div class="blurb">
         <dl>
           <section>
-            <dt>{{ iterations.label }}</dt>
-            <dd>{{ iterations.value }}</dd>
+            <dt>Iterations</dt>
+            <dd>{{ options.iterations }}</dd>
           </section>
         </dl>
         <form name="form">
           <section>
             <label for="chunk">chunk size</label>
-            <input class="form-control" type="number" required ng-disabled="inputs.disabled"
-                   name="chunk" min="{{ chunk.min }}" max="{{ chunk.max }}" ng-model="state.chunk" />
+            <input class="form-control" type="number" required ng-disabled="form.$invalid || options.disabled()"
+                   name="chunk" min="50" max="1000" 
+                   ng-model="options.chunk" />
           </section>
           <section>
             <label for="delay">delay time</label>
-            <input class="form-control" type="number" required ng-disabled="inputs.disabled"
-                   name="delay" min="{{ delay.min }}" max="{{ delay.max }}" ng-model="state.delay" />
+            <input class="form-control" type="number" required ng-disabled="form.$invalid || options.disabled()"
+                   name="delay" min="10" max="100" 
+                   ng-model="options.delay" />
           </section>
-          <a ng-click="inputs.reset()">reset</a>
+          <a ng-click="options.reset()">reset</a>
         </form>
       </div>`
   };
-});
+};

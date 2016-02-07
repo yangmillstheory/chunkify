@@ -1,4 +1,4 @@
-import {getLargeInt} from './large-int';
+import {getLargeInt} from '../large-int';
 import {each, reduce, map, range} from 'chunkify';
 import {
   RANGE,
