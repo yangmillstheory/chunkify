@@ -63,7 +63,7 @@ export var experimentCode = function(): (experiment: IExperiment) => string {
     }
     let action = experiment.getAction();
     return [
-      `// action: ${action}`,
+      `// action: ${experiment.getActionName(action)}`,
       `// chunkified: ${experiment.chunkified}`,
       actionConsumers.get(action),
       actionCall(experiment),

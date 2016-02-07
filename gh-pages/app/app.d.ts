@@ -9,6 +9,7 @@ declare interface IExperiment {
   isSelected(action: number): boolean;
   isRunning(): boolean;
 
+  getActionName(actionNumber: number): string;
   getAction(): number;
   setAction(action: number): void;
 

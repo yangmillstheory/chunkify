@@ -519,7 +519,7 @@ var experimentCode = exports.experimentCode = function experimentCode() {
             return 'Hover over an action button on the left sidebar.';
         }
         var action = experiment.getAction();
-        return ['// action: ' + action, '// chunkified: ' + experiment.chunkified, actionConsumers.get(action), actionCall(experiment)].join('\n');
+        return ['// action: ' + experiment.getActionName(action), '// chunkified: ' + experiment.chunkified, actionConsumers.get(action), actionCall(experiment)].join('\n');
     };
 };
 
@@ -556,7 +556,7 @@ var experimentView = exports.experimentView = function experimentView() {
     scope: {
       experiment: '='
     },
-    template: '<div class="action-code">\n  <pre>\n// <strong>chunkified</strong> actions keep the animation active.\n// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.\nconst RANGE = _.range(0.5 * Math.pow(10, 5));\n<strong>let chunk = {{ experiment.options.chunk }};</strong>\n<strong>let delay = {{ experiment.options.delay }};</strong>\nlet simulateWork = function(index: number): void {\n  let i = 0;\n  let max = largeRandomInteger();\n  while (i < max) {\n    i++;\n  }\n};\n  </pre>\n  <pre>\n    {{ experiment | experimentCode }}\n  </pre>\n</div>'
+    template: '<div class="action-code">\n  <pre>\n// <strong>chunkified</strong> actions keep the animation active.\n// un-checking <strong>chunkified</strong> will cause actions to momentarily lock your browser.\nconst RANGE = _.range(0.5 * Math.pow(10, 5));\n<strong>let chunk = {{ experiment.options.chunk }};</strong>\n<strong>let delay = {{ experiment.options.delay }};</strong>\nlet simulateWork = function(index: number): void {\n  let i = 0;\n  let max = largeRandomInteger();\n  while (i < max) {\n    i++;\n  }\n};\n  </pre>\n  <pre>\n{{ experiment | experimentCode }}\n  </pre>\n</div>'
   };
 };
 
@@ -722,6 +722,9 @@ var ExperimentCtrl = exports.ExperimentCtrl = function ExperimentCtrl($timeout) 
         },
         getAction: function getAction() {
             return currentAction;
+        },
+        getActionName: function getActionName(actionNumber) {
+            return Object.keys(this.actions)[actionNumber];
         },
         execute: function execute(action) {
             currentAction = action;

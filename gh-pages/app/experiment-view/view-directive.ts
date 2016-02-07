@@ -21,7 +21,7 @@ let simulateWork = function(index: number): void {
 };
   </pre>
   <pre>
-    {{ experiment | experimentCode }}
+{{ experiment | experimentCode }}
   </pre>
 </div>`
   };

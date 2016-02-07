@@ -72,6 +72,10 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
       return currentAction;
     },
 
+    getActionName: function(actionNumber: number): string {
+      return Object.keys(this.actions)[actionNumber];
+    },
+
     execute: function(action: ExperimentAction): void {
       currentAction = action;
       applyAction(action, actionConsumer, experiment.chunkified, this.options)
