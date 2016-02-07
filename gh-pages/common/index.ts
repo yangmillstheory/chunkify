@@ -1,14 +1,11 @@
 import * as angular from 'angular';
+import {titlecase} from './title-case-filter';
 import {progressBar} from './progress-bar-directive';
 import {resizingContainer} from './resizing-container-directive';
 
 
-const moduleName = 'chunkify.directives';
-
-
 angular
-  .module(moduleName, [])
+  .module('common')
+  .filter('titlecase', titlecase)
   .directive('progressBar', progressBar)
   .directive('resizingContainer', resizingContainer);
-
-export default moduleName;

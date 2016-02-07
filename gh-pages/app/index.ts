@@ -1,17 +1,12 @@
-import * as ng from 'angular';
+import 'babel-polyfill';
+import * as angular from 'angular';
 import directives from './directives';
 import filters from './filters';
+import common from '../common';
 
 
-const moduleName = 'chunkify';
-
-export var appModule: IAppModule = {
-  moduleName,
-
-  ngModule: ng.module(moduleName, [
-    directives.moduleName,
-    filters.moduleName
-  ]),
-};
-
-export default appModule;
+angular
+  .module('chunkify', [
+    common,
+    filters
+  ]);

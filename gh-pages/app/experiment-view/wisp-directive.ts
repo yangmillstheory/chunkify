@@ -60,4 +60,4 @@
     },
     template: '<div id="wisp"></div>'
   };
-}])
+}]);

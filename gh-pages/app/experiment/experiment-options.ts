@@ -94,23 +94,23 @@
       `<div class="blurb">
         <dl>
           <section>
-            <dt>{{iterations.label}}</dt>
-            <dd>{{iterations.value}}</dd>
+            <dt>{{ iterations.label }}</dt>
+            <dd>{{ iterations.value }}</dd>
           </section>
         </dl>
         <form name="form">
           <section>
             <label for="chunk">chunk size</label>
             <input class="form-control" type="number" required ng-disabled="inputs.disabled"
-                   name="chunk" min="{{chunk.min}}" max="{{chunk.max}}" ng-model="state.chunk" />
+                   name="chunk" min="{{ chunk.min }}" max="{{ chunk.max }}" ng-model="state.chunk" />
           </section>
           <section>
             <label for="delay">delay time</label>
             <input class="form-control" type="number" required ng-disabled="inputs.disabled"
-                   name="delay" min="{{delay.min}}" max="{{delay.max}}" ng-model="state.delay" />
+                   name="delay" min="{{ delay.min }}" max="{{ delay.max }}" ng-model="state.delay" />
           </section>
           <a ng-click="inputs.reset()">reset</a>
         </form>
       </div>`
   };
-})
+});
