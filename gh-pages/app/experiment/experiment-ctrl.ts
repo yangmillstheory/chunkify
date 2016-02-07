@@ -1,8 +1,8 @@
 import {applyAction} from './action';
 import {
   RANGE,
-  DEFAULT_CHUNK,
-  DEFAULT_DELAY
+  CHUNK,
+  DELAY
 } from './defaults';
 
 
@@ -43,8 +43,8 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     progress: 0,
 
     options: {
-      chunk: DEFAULT_CHUNK,
-      delay: DEFAULT_DELAY,
+      chunk: CHUNK,
+      delay: DELAY,
     },
 
     length: RANGE.length,

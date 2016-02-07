@@ -19,8 +19,8 @@ let bundleStream = function() {
   return browserify()
     .add([
       `${ghPagesBase}/app/index.ts`,
+      `${ghPagesBase}/app/experiment/experiment.d.ts`,
       'chunkify.d.ts',
-      'lib.d.ts',
       'typings/tsd.d.ts',
     ])
     .plugin(tsify, {
