@@ -4,8 +4,12 @@ import {progressBar} from './progress-bar-directive';
 import {resizingContainer} from './resizing-container-directive';
 
 
+const ngModuleName = 'common';
+
 angular
-  .module('common')
+  .module(ngModuleName)
   .filter('titlecase', titlecase)
   .directive('progressBar', progressBar)
   .directive('resizingContainer', resizingContainer);
+
+export default {ngModuleName};

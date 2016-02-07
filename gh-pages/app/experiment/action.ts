@@ -1,4 +1,3 @@
-import {getLargeInt} from '../large-int';
 import {each, reduce, map, range} from 'chunkify';
 import {
   RANGE,
@@ -9,7 +8,7 @@ let block = function(consumer: Function): (j: number) => number {
   return function(j: number): number {
     consumer();
     let i = 0;
-    let max: number = getLargeInt();
+    let max = Math.pow(10, 2);
     while (i < max) {
       i++;
     }
@@ -67,13 +66,6 @@ let rangeAction = function(
   }());
 };
 
-export enum ExperimentAction {
-  EACH,
-  MAP,
-  RANGE,
-  REDUCE,
-};
-
 export var applyAction = function(
   action: ExperimentAction,
   consumer: Function,
@@ -81,13 +73,13 @@ export var applyAction = function(
   options: IChunkifyOptions
 ): Promise<void|number|number[]> {
   switch (action) {
-    case ExperimentAction.EACH:
+    case 'EACH':
       return eachAction(consumer, chunkified, options);
-    case ExperimentAction.MAP:
+    case 'MAP':
       return mapAction(consumer, chunkified, options);
-    case ExperimentAction.REDUCE:
+    case 'REDUCE':
       return reduceAction(consumer, chunkified, options);
-    case ExperimentAction.RANGE:
+    case 'RANGE':
       return rangeAction(consumer, chunkified, options);
     default:
       throw new Error(`Unknown action ${action}`);

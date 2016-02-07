@@ -1,88 +1,67 @@
-import {Action} from '../experiment';
-
-
-const PRELUDES = new Map([
-  [
-    Action.EACH,
+const actionConsumers: Map<ExperimentAction, string> = new Map();
+actionConsumers.set('EACH',
 `let eachFn = function(index) {
-  simulateWork(index)
-};`
-  ],
-  [
-    Action.MAP,
+  simulateWork(index);
+};`);
+
+actionConsumers.set('MAP',
 `let mapper = function(item, index) {
-  return simulateWork(index) + 1
-};`
-  ],
-  [
-    Action.REDUCE,
+  return simulateWork(index) + 1;
+};`);
+
+actionConsumers.set('REDUCE',
 `let reducer = function(memo, item, index) {
   return memo + simulateWork(index);
 };
-let memo = 0;`
-  ],
-  [
-    Action.RANGE,
+let memo = 0;`);
+
+actionConsumers.set('RANGE',
 `let loopFn = function(index) {
-  simulateWork(index)
-};`
-  ]
-]);
+  simulateWork(index);
+};`);
 
 
-let getCode = function(experiment: IExperiment): string {
+let actionCall = function(experiment: IExperiment): string {
   let action = experiment.getAction();
   let chunkified = experiment.chunkified;
-  let prelude = PRELUDES.get(action);
-  if (prelude === undefined) {
-    throw new Error(`Don't understand experiment action: ${action}`);
-  }
-  let code: string;
   switch (action) {
-    case Action.EACH:
+    case 'EACH':
       if (chunkified) {
-        code = 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
-      } else {
-        code = 'return RANGE.forEach(eachFn)';
+        return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
       }
-      break;
-    case Action.MAP:
+      return 'return RANGE.forEach(eachFn)';
+    case 'MAP':
       if (chunkified) {
-        code = 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
-      } else {
-        code = 'return RANGE.forEach(eachFn)';
+        return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
       }
-      break;
-    case Action.REDUCE:
+      return 'return RANGE.forEach(eachFn)';
+    case 'REDUCE':
       if (chunkified) {
-        code = 'return chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
-      } else {
-        code = 'return RANGE.reduce(reducer, memo)';
+        return 'return chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
       }
-      break;
-    case Action.RANGE:
+      return 'return RANGE.reduce(reducer, memo)';
+    case 'RANGE':
       if (chunkified) {
-        code = 'return chunkify.range(loopFn, RANGE.length, {chunk, delay})';
-      } else {
-        code = `
-for (let index = 0; index < RANGE.length; index++) {
+        return 'return chunkify.range(loopFn, RANGE.length, {chunk, delay})';
+      }
+      return '' +
+`for (let index = 0; index < RANGE.length; index++) {
   loopFn(index)
 }`;
-      }
-      break;
     default:
-      break;
+      throw new Error(`Unknown experiment action: ${action}`);
   }
-  return [prelude, code].join('\n');
 };
 
 export var experimentCode = function(experiment: IExperiment): string {
   if (!experiment.isRunning()) {
     return 'Hover over an action button on the left sidebar.';
   }
+  let action = experiment.getAction();
   return [
-    `// action: ${experiment.getAction()}`,
+    `// action: ${action}`,
     `// chunkified: ${experiment.chunkified}`,
-    `// action: ${getCode(experiment)}`,
+    actionConsumers.get(action),
+    actionCall(experiment),
   ].join('\n');
 };

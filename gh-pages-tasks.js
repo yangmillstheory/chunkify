@@ -6,6 +6,7 @@ import gulpUglify from 'gulp-uglify';
 import gulpBabel from 'gulp-babel';
 import tsify from 'tsify';
 import babelify from 'babelify';
+import ngAnnotate from 'gulp-ng-annotate';
 import typescript from 'typescript';
 import gulpUtil from 'gulp-util';
 import {symlink} from 'fs';
@@ -30,7 +31,8 @@ let bundleStream = function() {
     .transform(babelify.configure({extensions: ['.ts']}))
     .bundle()
     .pipe(vinylSource('bundle.js'))
-    .pipe(vinylBuffer());
+    .pipe(vinylBuffer())
+    .pipe(ngAnnotate());
 };
 
 let initTasks = function(lintStream) {
@@ -57,7 +59,9 @@ let initTasks = function(lintStream) {
   });
 
   gulp.task('lint:gh-pages', function() {
-    return lintStream(`${ghPagesBase}/**/*.ts`);
+    return lintStream(`${ghPagesBase}/**/*.ts`, {
+      align: false
+    });
   });
 
   gulp.task('gh-pages', gulp.series('symlink', 'lint:gh-pages', 'bundle'));

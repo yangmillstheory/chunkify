@@ -1,12 +1,23 @@
-.directive('wisp', ['$interval', ($interval) => {
+let randomInt = function(options: {max?: number, min?: number} = {}): number {
+  let isNumber = function(thing: any): boolean {
+    return typeof thing === 'number';
+  };
+  const defaultMax = Math.pow(10, 2);
+  const defaultMin = defaultMax * .75;
+  let min = isNumber(options.min) ? options.min : defaultMin;
+  let max = isNumber(options.max) ? options.max : defaultMax;
+  return Math.floor(Math.random() * (max - min) + min);
+};
+
+export var wispDirective = function($interval: ng.IIntervalService): ng.IDirective {
   function* shiftsGenerator($element, $parent) {
     let randomHorizontalOffset = () => {
       let width = $parent.width();
-      return largeRandomInteger({min: 0.25 * width, max: width});
+      return randomInt({min: 0.25 * width, max: width});
     };
     let randomVerticalOffset = () => {
       let height = $parent.height();
-      return largeRandomInteger({min: 0.25 * height, max: height});
+      return randomInt({min: 0.25 * height, max: height});
     };
     let shifts = [
       () => {
@@ -37,7 +48,7 @@
     ];
     let length = shifts.length;
     while (true) {
-      yield shifts[largeRandomInteger({min: 0, max: length})]();
+      yield shifts[randomInt({min: 0, max: length})]();
     }
   }
   return {
@@ -60,4 +71,4 @@
     },
     template: '<div id="wisp"></div>'
   };
-}]);
+};

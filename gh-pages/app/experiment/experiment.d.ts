@@ -1,13 +1,18 @@
-interface IExperiment {
-  chunkified: boolean;
-  options: IChunkifyOptions;
-  progress: number;
-  length: number;
-  actions: number[];
+declare type ExperimentAction = 'EACH' | 'MAP' | 'REDUCE' | 'RANGE';
 
-  isSelected(action: number): boolean;
+declare interface IExperiment {
+  chunkified: boolean;
+  length: number;
+  progress: number;
+
+  actions: ExperimentAction[];
+  options: IChunkifyOptions;
+
+  isSelected(action: ExperimentAction): boolean;
   isRunning(): boolean;
-  getAction(): number;
-  setAction(action: number): void;
-  execute(action: number): void;
+
+  getAction(): ExperimentAction;
+  setAction(action: ExperimentAction): void;
+
+  execute(action: ExperimentAction): void;
 }
