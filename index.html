@@ -16,13 +16,13 @@
   </div>
   <div class='main-wrapper' ng-controller='ExperimentCtrl as experiment'>
     <div class='main'>
-      <progress-bar progress='experiment.doProgress' max='experiment.range'></progress-bar>
+      <progress-bar experi='experiment.progress' length='experiment.length'></progress-bar>
       <div class='button-container'>
         <div class='buttons' ng-repeat="action in experiment.actions">
           <button ng-class='{active: experiment.isSelected(action)}' 
                   ng-disabled='experiment.isRunning()' 
                   ng-click='experiment.execute(action)' 
-                  ng-mouseover="experiment.select(action)">
+                  ng-mouseover="experiment.setAction(action)">
             {{ action | titlecase }}&nbsp;<span ng-if="experiment.isSelected(action)">✓</span>
           </button>
         </div>

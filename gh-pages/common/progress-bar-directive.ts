@@ -1,4 +1,4 @@
-import 'jquery/progressbar';
+import 'jquery-ui/progressbar';
 
 
 interface IProgressBarScope extends ng.IScope {

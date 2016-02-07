@@ -7,8 +7,8 @@ const ngModuleName = 'experiment-view';
 
 angular
   .module(ngModuleName, [])
-  .filter('experimentCode', experimentCode)
-  .directive('experimentView', experimentView);
+.filter('experimentCode', experimentCode)
+.directive('experimentView', experimentView);
 
 
-export default {ngModuleName};
+export default {ngModuleName, foo: 'foo'};

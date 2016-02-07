@@ -5,13 +5,13 @@ import {resizingContainer} from './resizing-container-directive';
 import {wispDirective} from './wisp-directive';
 
 
-const ngModuleName = 'common';
+export const ngModuleName = 'common';
 
 angular
-  .module(ngModuleName)
-  .filter('titlecase', titlecase)
-  .directive('progressBar', progressBar)
-  .directive('wispDirective', wispDirective)
-  .directive('resizingContainer', resizingContainer);
+  .module(ngModuleName, [])
+.filter('titlecase', titlecase)
+.directive('progressBar', progressBar)
+.directive('wispDirective', wispDirective)
+.directive('resizingContainer', resizingContainer);
 
 export default {ngModuleName};

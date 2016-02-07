@@ -1,4 +1,9 @@
-declare type ExperimentAction = 'EACH' | 'MAP' | 'REDUCE' | 'RANGE';
+declare enum ExperimentAction {
+  EACH,
+  MAP,
+  REDUCE,
+  RANGE
+}
 
 declare interface IExperiment {
   chunkified: boolean;

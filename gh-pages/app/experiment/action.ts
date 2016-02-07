@@ -73,13 +73,13 @@ export var applyAction = function(
   options: IChunkifyOptions
 ): Promise<void|number|number[]> {
   switch (action) {
-    case 'EACH':
+    case ExperimentAction.EACH:
       return eachAction(consumer, chunkified, options);
-    case 'MAP':
+    case ExperimentAction.MAP:
       return mapAction(consumer, chunkified, options);
-    case 'REDUCE':
+    case ExperimentAction.REDUCE:
       return reduceAction(consumer, chunkified, options);
-    case 'RANGE':
+    case ExperimentAction.RANGE:
       return rangeAction(consumer, chunkified, options);
     default:
       throw new Error(`Unknown action ${action}`);

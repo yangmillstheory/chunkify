@@ -1,21 +1,21 @@
 const actionConsumers: Map<ExperimentAction, string> = new Map();
-actionConsumers.set('EACH',
+actionConsumers.set(ExperimentAction.EACH,
 `let eachFn = function(index) {
   simulateWork(index);
 };`);
 
-actionConsumers.set('MAP',
+actionConsumers.set(ExperimentAction.MAP,
 `let mapper = function(item, index) {
   return simulateWork(index) + 1;
 };`);
 
-actionConsumers.set('REDUCE',
+actionConsumers.set(ExperimentAction.REDUCE,
 `let reducer = function(memo, item, index) {
   return memo + simulateWork(index);
 };
 let memo = 0;`);
 
-actionConsumers.set('RANGE',
+actionConsumers.set(ExperimentAction.RANGE,
 `let loopFn = function(index) {
   simulateWork(index);
 };`);
@@ -25,22 +25,22 @@ let actionCall = function(experiment: IExperiment): string {
   let action = experiment.getAction();
   let chunkified = experiment.chunkified;
   switch (action) {
-    case 'EACH':
+    case ExperimentAction.EACH:
       if (chunkified) {
         return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
       }
       return 'return RANGE.forEach(eachFn)';
-    case 'MAP':
+    case ExperimentAction.MAP:
       if (chunkified) {
         return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
       }
       return 'return RANGE.forEach(eachFn)';
-    case 'REDUCE':
+    case ExperimentAction.REDUCE:
       if (chunkified) {
         return 'return chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
       }
       return 'return RANGE.reduce(reducer, memo)';
-    case 'RANGE':
+    case ExperimentAction.RANGE:
       if (chunkified) {
         return 'return chunkify.range(loopFn, RANGE.length, {chunk, delay})';
       }

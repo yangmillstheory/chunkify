@@ -50,10 +50,10 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     length: RANGE.length,
 
     actions: [
-      'EACH',
-      'MAP',
-      'REDUCE',
-      'RANGE',
+      ExperimentAction.EACH,
+      ExperimentAction.MAP,
+      ExperimentAction.REDUCE,
+      ExperimentAction.RANGE,
     ],
 
     isSelected: function(action: ExperimentAction): boolean {

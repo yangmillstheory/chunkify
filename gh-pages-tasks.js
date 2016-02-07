@@ -3,7 +3,6 @@ import browserify from 'browserify';
 import vinylSource from 'vinyl-source-stream';
 import vinylBuffer from 'vinyl-buffer';
 import gulpUglify from 'gulp-uglify';
-import gulpBabel from 'gulp-babel';
 import tsify from 'tsify';
 import babelify from 'babelify';
 import ngAnnotate from 'gulp-ng-annotate';
@@ -19,20 +18,15 @@ let bundleStream = function() {
   return browserify()
     .add([
       `${ghPagesBase}/app/index.ts`,
-      `${ghPagesBase}/app/experiment/experiment.d.ts`,
+      `${ghPagesBase}/app/app.d.ts`,
       'chunkify.d.ts',
       'typings/tsd.d.ts',
     ])
-    .plugin(tsify, {
-      typescript,
-      rootDir: ghPagesBase,
-      exclude: undefined
-    })
+    .plugin(tsify, {typescript, rootDir: undefined})
     .transform(babelify.configure({extensions: ['.ts']}))
     .bundle()
     .pipe(vinylSource('bundle.js'))
-    .pipe(vinylBuffer())
-    .pipe(ngAnnotate());
+    .pipe(vinylBuffer());
 };
 
 let initTasks = function(lintStream) {
@@ -54,6 +48,7 @@ let initTasks = function(lintStream) {
 
   gulp.task('bundle:uglify', function() {
     return bundleStream()
+      .pipe(ngAnnotate())
       .pipe(gulpUglify())
       .pipe(gulp.dest(ghPagesBase));
   });

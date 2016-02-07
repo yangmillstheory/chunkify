@@ -6,7 +6,7 @@ const ngModuleName = 'experiment';
 
 angular
   .module(ngModuleName, [])
-  .controller('ExperimentCtrl', ExperimentCtrl);
+.controller('ExperimentCtrl', ExperimentCtrl);
 
 
 export default {ngModuleName};
