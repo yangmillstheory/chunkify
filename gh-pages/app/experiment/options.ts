@@ -33,7 +33,7 @@ export var experimentOptions = function(): ng.IDirective {
         chunk: scope.chunk,
 
         disabled(): boolean {
-          return scope.disabled() || scope.form.$invalid;
+          return scope.disabled() || options.form.$invalid;
         },
 
         reset(): void {

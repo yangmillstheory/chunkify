@@ -1,3 +1,7 @@
+const ANIMATE_SPEED = 400;
+const TRANSPARENT_OPACITY = 0.5;
+
+
 let randomInt = function(options: {max?: number, min?: number} = {}): number {
   let isNumber = function(thing: any): boolean {
     return typeof thing === 'number';
@@ -9,63 +13,72 @@ let randomInt = function(options: {max?: number, min?: number} = {}): number {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-export var wispDirective = function($interval: ng.IIntervalService): ng.IDirective {
-  function* shiftsGenerator($element, $parent) {
-    let randomHorizontalOffset = () => {
-      let width = $parent.width();
-      return randomInt({min: 0.25 * width, max: width});
-    };
-    let randomVerticalOffset = () => {
-      let height = $parent.height();
-      return randomInt({min: 0.25 * height, max: height});
-    };
-    let shifts = [
-      () => {
-        let maxHorizontalOffset = ($parent.offset().left + $parent.width()) -
-          ($element.offset().left + $element.width());
-        return {
-          left: `+=${Math.min(randomHorizontalOffset(), maxHorizontalOffset)}`
-        };
-      },
-      () => {
-        let maxVerticalOffset = ($parent.offset().top + $parent.height()) -
-          ($element.offset().top + $element.height());
-        return {
-          top: `+=${Math.min(randomVerticalOffset(), maxVerticalOffset)}`
-        };
-      },
-      () => {
-        let maxHorizontalOffset = $element.offset().left - $parent.offset().left;
-        return {
-          left: `-=${Math.min(randomHorizontalOffset(), maxHorizontalOffset)}`};
-      },
-      () => {
-        let maxVerticalOffset = $element.offset().top - $parent.offset().top;
-        return {
-          top: `-=${Math.min(randomVerticalOffset(), maxVerticalOffset)}`
-        };
-      }
-    ];
-    let length = shifts.length;
-    while (true) {
-      yield shifts[randomInt({min: 0, max: length})]();
+interface IMoveCSS {
+  top?: string;
+  left?: string;
+  opacity?: number;
+}
+
+interface IMoveFunction {
+  (): IMoveCSS;
+}
+
+
+function* wispMoves($element: ng.IAugmentedJQuery): IterableIterator<IMoveCSS> {
+  let $parent = $element.parent();
+  let xOffset = function(): number {
+    let width = $parent.width();
+    return randomInt({min: 0.25 * width, max: width});
+  };
+  let yOffset = function(): number {
+    let height = $parent.height();
+    return randomInt({min: 0.25 * height, max: height});
+  };
+  let moveFunctions: IMoveFunction[] = [
+    function(): IMoveCSS {
+      let maxOffset = ($parent.offset().left + $parent.width()) - ($element.offset().left + $element.width());
+      return {left: `+=${Math.min(xOffset(), maxOffset)}`};
+    },
+    function(): IMoveCSS {
+      let maxOffset = ($parent.offset().top + $parent.height()) - ($element.offset().top + $element.height());
+      return {top: `+=${Math.min(yOffset(), maxOffset)}`};
+    },
+    function(): IMoveCSS {
+      let maxOffset = $element.offset().left - $parent.offset().left;
+      return {left: `-=${Math.min(xOffset(), maxOffset)}`};
+    },
+    function(): IMoveCSS {
+      let maxOffset = $element.offset().top - $parent.offset().top;
+      return {top: `-=${Math.min(yOffset(), maxOffset)}`};
     }
+  ];
+  let randomMove = function(): () => IMoveCSS {
+    return moveFunctions[randomInt({min: 0, max: moveFunctions.length})];
+  };
+  while (true) {
+    yield randomMove();
   }
+}
+
+export var wispDirective = function($interval: ng.IIntervalService): ng.IDirective {
   return {
     replace: true,
-    link(scope, element) {
-      let $element = $(element);
-      let $parent = $element.parent();
-      let shifts = shiftsGenerator($element, $parent);
-      let animate: (transparent?: boolean) => void;
-      animate = (transparent = false) => {
-        let css = shifts.next().value;
+    link(scope: ng.IScope, $element: ng.IAugmentedJQuery): void {
+      let moves = wispMoves($element);
+      let animate = function(transparent?: boolean): void {
+        let moveCSS = moves.next().value;
         if (transparent) {
-          _.extend(css, {opacity: 0.5});
+          moveCSS.opacity = TRANSPARENT_OPACITY;
         } else {
-          _.extend(css, {opacity: 1});
+          moveCSS.opacity = 1;
         }
-        $element.animate(css, 400, animate.bind(null, !transparent));
+        $element.animate(
+          moveCSS,
+          ANIMATE_SPEED,
+          function(): void {
+            animate(!transparent);
+          }
+        );
       };
       animate();
     },
