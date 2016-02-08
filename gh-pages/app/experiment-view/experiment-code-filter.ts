@@ -2,10 +2,7 @@ import {Action} from '../experiment';
 
 
 const actionConsumers: Map<number, string> = new Map();
-actionConsumers.set(Action.EACH,
-`let eachFn = function(index: number): void {
-  indexConsumer(index);
-};`);
+actionConsumers.set(Action.EACH, '');
 
 actionConsumers.set(Action.MAP,
 `let mapper = function(item: number, index: number): number {
@@ -18,10 +15,7 @@ actionConsumers.set(Action.REDUCE,
 };
 let memo = 0;`);
 
-actionConsumers.set(Action.RANGE,
-`let loopFn = function(index: number): void {
-  indexConsumer(index);
-};`);
+actionConsumers.set(Action.RANGE, '');
 
 
 let actionCall = function(experiment: IExperiment): string {
@@ -30,26 +24,26 @@ let actionCall = function(experiment: IExperiment): string {
   switch (action) {
     case Action.EACH:
       if (chunkified) {
-        return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
+        return 'return chunkify.each(RANGE, indexConsumer, {chunk, delay})';
       }
-      return 'return RANGE.forEach(eachFn)';
+      return 'return RANGE.forEach(indexConsumer)';
     case Action.MAP:
       if (chunkified) {
-        return 'return chunkify.each(RANGE, eachFn, {chunk, delay})';
+        return 'return chunkify.map(RANGE, mapper, {chunk, delay})';
       }
-      return 'return RANGE.forEach(eachFn)';
+      return 'return RANGE.map(mapper)';
     case Action.REDUCE:
       if (chunkified) {
-        return 'return chunkify.reduce(RANGE, reducer, {memo, chunk, delay})';
+        return 'return chunkify.reduce(RANGE, reducer, memo, {chunk, delay})';
       }
       return 'return RANGE.reduce(reducer, memo)';
     case Action.RANGE:
       if (chunkified) {
-        return 'return chunkify.range(loopFn, RANGE.length, {chunk, delay})';
+        return 'return chunkify.range(indexConsumer, RANGE.length, {chunk, delay})';
       }
       return '' +
 `for (let index = 0; index < RANGE.length; index++) {
-  loopFn(index);
+  indexConsumer(index);
 }`;
     default:
       throw new Error(`Unknown experiment action: ${action}`);
@@ -62,11 +56,15 @@ export var experimentCode = function(): (experiment: IExperiment) => string {
       return 'Hover over an action button on the left sidebar.';
     }
     let action = experiment.getAction();
-    return [
+    let phrase = [
       `// action: ${experiment.getActionName(action)}`,
       `// chunkified: ${experiment.chunkified}`,
-      actionConsumers.get(action),
-      actionCall(experiment),
-    ].join('\n');
+    ];
+    let consumer = actionConsumers.get(action);
+    if (consumer) {
+      phrase.push(consumer);
+    }
+    phrase.push(actionCall(experiment));
+    return phrase.join('\n');
   };
 };
