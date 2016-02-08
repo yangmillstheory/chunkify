@@ -8,9 +8,10 @@ import {
 
 export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutService): void {
   // We attach to an object literal because 'this' is of type any.
+  // The pattern here lets compile-time checking work with the closure pattern.
   //
   // https://github.com/Microsoft/TypeScript/issues/3694
-  let experiment: IExperiment;
+  let api: IExperiment;
 
   let running = false;
 
@@ -18,9 +19,9 @@ export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutSer
 
   let updateProgress = (value?: number): void => {
     if (typeof value === 'number') {
-      experiment.progress = value;
+      api.progress = value;
     } else {
-      experiment.progress += 1;
+      api.progress += 1;
     }
   };
 
@@ -38,7 +39,7 @@ export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutSer
     );
   };
 
-  experiment = {
+  api = {
 
     chunkified: true,
 
@@ -80,14 +81,14 @@ export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutSer
 
     execute: function(action: ExperimentAction): void {
       running = true;
-      experiment.setAction(action);
-      applyAction(currentAction, actionConsumer, experiment.chunkified, experiment.options)
+      api.setAction(action);
+      applyAction(currentAction, actionConsumer, api.chunkified, api.options)
         .then(reset);
     }
   };
 
-  Object.assign(this, experiment);
+  Object.assign(this, api);
 
-  experiment = this;
+  api = this;
 
 };
