@@ -12,6 +12,8 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
   // https://github.com/Microsoft/TypeScript/issues/3694
   let experiment: IExperiment;
 
+  let running = false;
+
   let currentAction: ExperimentAction;
 
   let updateProgress = function(value?: number): void {
@@ -31,6 +33,7 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
       function(): void {
         updateProgress(0);
         currentAction = undefined;
+        running = false;
       },
       1000
     );
@@ -61,7 +64,7 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     },
 
     isRunning: function(): boolean {
-      return currentAction !== undefined;
+      return running;
     },
 
     setAction: function(action: ExperimentAction): void {
@@ -77,8 +80,9 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     },
 
     execute: function(action: ExperimentAction): void {
+      running = true;
       currentAction = action;
-      applyAction(action, actionConsumer, experiment.chunkified, this.options)
+      applyAction(currentAction, actionConsumer, experiment.chunkified, this.options)
       .then(reset);
     }
   };

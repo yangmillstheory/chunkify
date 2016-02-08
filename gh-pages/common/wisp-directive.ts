@@ -1,3 +1,6 @@
+import * as $ from 'jquery';
+
+
 const ANIMATE_SPEED = 400;
 const TRANSPARENT_OPACITY = 0.5;
 
@@ -52,18 +55,20 @@ function* wispMoves($element: ng.IAugmentedJQuery): IterableIterator<IMoveCSS> {
       return {top: `-=${Math.min(yOffset(), maxOffset)}`};
     }
   ];
-  let randomMove = function(): () => IMoveCSS {
-    return moveFunctions[randomInt({min: 0, max: moveFunctions.length})];
+  let randomMove = function(): IMoveCSS {
+    let moveCssMaker = moveFunctions[randomInt({min: 0, max: moveFunctions.length})];
+    return moveCssMaker();
   };
   while (true) {
     yield randomMove();
   }
 }
 
-export var wispDirective = function($interval: ng.IIntervalService): ng.IDirective {
+export var wisp = function($interval: ng.IIntervalService): ng.IDirective {
   return {
     replace: true,
-    link(scope: ng.IScope, $element: ng.IAugmentedJQuery): void {
+    link(scope: ng.IScope, element: ng.IAugmentedJQuery): void {
+      let $element = $.fn.constructor(element);
       let moves = wispMoves($element);
       let animate = function(transparent?: boolean): void {
         let moveCSS = moves.next().value;

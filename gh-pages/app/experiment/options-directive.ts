@@ -19,6 +19,9 @@ export var experimentOptions = function(): ng.IDirective {
       disabled: '=',
     },
     controllerAs: 'options',
+    controller(): void {
+      this.reset = null;
+    },
     link(scope: IExperimentOptionsScope, e: any, a: any, ctrl: Function): void {
       let initialChunk = scope.chunk;
       let initialDelay = scope.delay;
@@ -34,18 +37,18 @@ export var experimentOptions = function(): ng.IDirective {
         chunk: scope.chunk,
 
         disabled(): boolean {
-          return scope.disabled() || options.form.$invalid;
+          return scope.disabled() || this.form.$invalid;
         },
 
         reset(): void {
-          options.chunk = initialChunk;
-          options.delay = initialDelay;
+          this.chunk = initialChunk;
+          this.delay = initialDelay;
         },
       };
 
-      options.reset();
-
       Object.assign(ctrl, options);
+
+      options.reset();
     },
     template:
       `<div class="blurb">
@@ -68,7 +71,7 @@ export var experimentOptions = function(): ng.IDirective {
                    name="delay" min="10" max="100" 
                    ng-model="options.delay" />
           </section>
-          <a ng-click="options.reset()">reset</a>
+          <a ng-click="options.reset()" ng-hide="options.disabled()">reset</a>
         </form>
       </div>`
   };

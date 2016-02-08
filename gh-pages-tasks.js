@@ -22,7 +22,7 @@ let initTasks = function(lintStream) {
   let lint = function() {
     return lintStream(`${ghPagesBase}/**/*.ts`, {
       align: false
-    });
+    }, false);
   };
 
   gulp.task('lint:gh-pages', lint);
@@ -67,10 +67,16 @@ let initTasks = function(lintStream) {
   let bundleDev = function() {
     let bundle = watchify(startBundle());
     bundle
+      .on('error', function(error) {
+        gulpUtil.error(error);
+      })
       .on('log', function(message) {
         gulpUtil.log(message);
       })
-      .on('update', function() {
+      .on('update', function(ids) {
+        ids.forEach(function(id) {
+          gulpUtil.log('File updated: ', gulpUtil.colors.yellow(id));
+        })
         lint();
         finishBundle(bundle.bundle());
       });
