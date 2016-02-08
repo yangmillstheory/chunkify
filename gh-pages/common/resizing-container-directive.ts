@@ -6,11 +6,10 @@ let $ = jQuery.fn.constructor;
 interface IResizingContainerAttrs {
   minWidth: string;
   minHeight: string;
+  xPadding: string;
+  yPadding: string;
 }
 
-
-const X_PADDING = 250;
-const Y_PADDING = 225;
 
 /**
  * A div container that resizes to fill the window viewport.
@@ -18,6 +17,8 @@ const Y_PADDING = 225;
  * @restrict E
  * @param {number} minWidth:  the minimum width to resize to
  * @param {number} minHeight: the minimum height to resize to
+ * @param {number} xPadding: subtracted from the resize width
+ * @param {number} yPadding: subtracted from the resize height
  */
 export var resizingContainer = function($window: ng.IWindowService): ng.IDirective {
   return {
@@ -32,13 +33,14 @@ export var resizingContainer = function($window: ng.IWindowService): ng.IDirecti
     ): void {
       let minWidth = parseInt(attrs.minWidth, 10);
       let minHeight = parseInt(attrs.minHeight, 10);
+      let xPadding = parseInt(attrs.xPadding, 10);
+      let yPadding = parseInt(attrs.yPadding, 10);
       let documentElement = $window.document.documentElement;
       let $element = $(element);
-
       let resize = function(): boolean {
         $element.css({
-          width: Math.max(documentElement.clientWidth - X_PADDING, minWidth),
-          height: Math.max(documentElement.clientHeight - Y_PADDING, minHeight)
+          width: Math.max(documentElement.clientWidth - xPadding, minWidth),
+          height: Math.max(documentElement.clientHeight - yPadding, minHeight)
         });
         return true;
       };
