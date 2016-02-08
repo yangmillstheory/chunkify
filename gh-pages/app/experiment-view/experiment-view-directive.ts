@@ -12,9 +12,9 @@ export var experimentView = function(): ng.IDirective {
 const RANGE = _.range(0.5 * Math.pow(10, 5));
 <strong>let chunk = {{ experiment.options.chunk }};</strong>
 <strong>let delay = {{ experiment.options.delay }};</strong>
-let simulateWork = function(index: number): void {
+let indexConsumer = function(index: number): void {
   let i = 0;
-  let max = largeRandomInteger();
+  let max = largeRandomInt();
   while (i < max) {
     i++;
   }

@@ -3,24 +3,24 @@ import {Action} from '../experiment';
 
 const actionConsumers: Map<number, string> = new Map();
 actionConsumers.set(Action.EACH,
-`let eachFn = function(index) {
-  simulateWork(index);
+`let eachFn = function(index: number): void {
+  indexConsumer(index);
 };`);
 
 actionConsumers.set(Action.MAP,
-`let mapper = function(item, index) {
-  return simulateWork(index) + 1;
+`let mapper = function(item: number, index: number): number {
+  return indexConsumer(index) + 1;
 };`);
 
 actionConsumers.set(Action.REDUCE,
-`let reducer = function(memo, item, index) {
-  return memo + simulateWork(index);
+`let reducer = function(memo: number, item: number): number {
+  return memo + indexConsumer(item);
 };
 let memo = 0;`);
 
 actionConsumers.set(Action.RANGE,
-`let loopFn = function(index) {
-  simulateWork(index);
+`let loopFn = function(index: number): void {
+  indexConsumer(index);
 };`);
 
 
@@ -49,7 +49,7 @@ let actionCall = function(experiment: IExperiment): string {
       }
       return '' +
 `for (let index = 0; index < RANGE.length; index++) {
-  loopFn(index)
+  loopFn(index);
 }`;
     default:
       throw new Error(`Unknown experiment action: ${action}`);
@@ -58,7 +58,7 @@ let actionCall = function(experiment: IExperiment): string {
 
 export var experimentCode = function(): (experiment: IExperiment) => string {
   return  function(experiment: IExperiment): string {
-    if (!experiment.isRunning()) {
+    if (experiment.getAction() === undefined) {
       return 'Hover over an action button on the left sidebar.';
     }
     let action = experiment.getAction();
