@@ -17,49 +17,49 @@ let block = function(consumer: Function): (j: number) => number {
 };
 
 let reduceAction = function(
-  consumer: Function,
+  consumer: (i: number) => number,
   chunkified: boolean,
   options: IChunkifyOptions = null
 ): Promise<number> {
   let memo = 0;
   if (chunkified) {
-    return reduce(RANGE, block(consumer), options, memo);
+    return reduce(RANGE, consumer, options, memo);
   }
-  return Promise.resolve(RANGE.reduce(block(consumer), memo));
+  return Promise.resolve(RANGE.reduce(consumer, memo));
 };
 
 let mapAction = function(
-  consumer: Function,
+  consumer: (i: number) => number,
   chunkified: boolean,
   options: IChunkifyOptions = null
 ): Promise<number[]> {
   if (chunkified) {
-    return map(RANGE, block(consumer), options);
+    return map(RANGE, consumer, options);
   }
-  return Promise.resolve(RANGE.map(block(consumer)));
+  return Promise.resolve(RANGE.map(consumer));
 };
 
 let eachAction = function(
-  consumer: Function,
+  consumer: (i: number) => number,
   chunkified: boolean,
   options: IChunkifyOptions = null
 ): Promise<void> {
   if (chunkified) {
-    return each(RANGE, block(consumer), options);
+    return each(RANGE, consumer, options);
   }
-  return Promise.resolve(RANGE.forEach(block(consumer)));
+  return Promise.resolve(RANGE.forEach(consumer));
 };
 
 let rangeAction = function(
-  consumer: Function,
+  consumer: (i: number) => number,
   chunkified: boolean,
   options: IChunkifyOptions = null
 ): Promise<void> {
   if (chunkified) {
-    return range(block(consumer), RANGE.length, options);
+    return range(consumer, RANGE.length, options);
   }
   return Promise.resolve(function(): void {
-    let blocked = block(consumer);
+    let blocked = consumer;
     for (let i = 0; i < RANGE.length; i++) {
       blocked(i);
     }
@@ -79,15 +79,16 @@ export var applyAction = function(
   chunkified: boolean,
   options: IChunkifyOptions
 ): Promise<void|number|number[]> {
+  let blockedConsumer = block(consumer);
   switch (action) {
     case ExperimentAction.EACH:
-      return eachAction(consumer, chunkified, options);
+      return eachAction(blockedConsumer, chunkified, options);
     case ExperimentAction.MAP:
-      return mapAction(consumer, chunkified, options);
+      return mapAction(blockedConsumer, chunkified, options);
     case ExperimentAction.REDUCE:
-      return reduceAction(consumer, chunkified, options);
+      return reduceAction(blockedConsumer, chunkified, options);
     case ExperimentAction.RANGE:
-      return rangeAction(consumer, chunkified, options);
+      return rangeAction(blockedConsumer, chunkified, options);
     default:
       throw new Error(`Unknown action ${action}`);
   }
