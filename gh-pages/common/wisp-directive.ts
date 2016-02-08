@@ -56,8 +56,9 @@ function* wispMoves($element: ng.IAugmentedJQuery): IterableIterator<IMoveCSS> {
     }
   ];
   let randomMove = function(): IMoveCSS {
-    let moveCssMaker = moveFunctions[randomInt({min: 0, max: moveFunctions.length})];
-    return moveCssMaker();
+    let randomIndex = randomInt({min: 0, max: moveFunctions.length});
+    let randomMover = moveFunctions[randomIndex];
+    return randomMover();
   };
   while (true) {
     yield randomMove();
