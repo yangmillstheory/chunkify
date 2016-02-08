@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 import {ExperimentCtrl} from './experiment-ctrl';
-import {experimentOptions} from './options-directive';
+import {experimentOptions} from './experiment-options-directive.ts';
 import {ExperimentAction} from './action';
 
 

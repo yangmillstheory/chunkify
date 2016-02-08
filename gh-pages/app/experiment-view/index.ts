@@ -1,6 +1,6 @@
 import * as angular from 'angular';
-import {experimentCode} from './code-filter';
-import {experimentView} from './view-directive';
+import {experimentCode} from './experiment-code-filter';
+import {experimentView} from './experiment-view-directive';
 
 
 const ngModuleName = 'experiment-view';

@@ -1,7 +1,16 @@
+import * as jQuery from 'jquery';
+
+
+let $ = jQuery.fn.constructor;
+
 interface IResizingContainerAttrs {
   minWidth: string;
   minHeight: string;
 }
+
+
+const X_PADDING = 250;
+const Y_PADDING = 225;
 
 /**
  * A div container that resizes to fill the window viewport.
@@ -24,17 +33,12 @@ export var resizingContainer = function($window: ng.IWindowService): ng.IDirecti
       let minWidth = parseInt(attrs.minWidth, 10);
       let minHeight = parseInt(attrs.minHeight, 10);
       let documentElement = $window.document.documentElement;
+      let $element = $(element);
 
       let resize = function(): boolean {
-        element.css({
-          width: Math.max(
-            documentElement.clientWidth,
-            minWidth
-          ),
-          height: Math.max(
-            documentElement.clientHeight,
-            minHeight
-          )
+        $element.css({
+          width: Math.max(documentElement.clientWidth - X_PADDING, minWidth),
+          height: Math.max(documentElement.clientHeight - Y_PADDING, minHeight)
         });
         return true;
       };
