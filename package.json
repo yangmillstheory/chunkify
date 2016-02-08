@@ -68,7 +68,8 @@
     "tslint": "^3.2.2",
     "typescript": "^1.7.5",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
   },
   "dependencies": {
     "angular": "^1.4.9",

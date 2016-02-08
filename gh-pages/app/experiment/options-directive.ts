@@ -11,6 +11,7 @@ interface IExperimentOptionsCtrl extends IExperimentOptionsScope {
 
 export var experimentOptions = function(): ng.IDirective {
   return {
+    restrict: 'E',
     scope: {
       delay: '=',
       chunk: '=',
