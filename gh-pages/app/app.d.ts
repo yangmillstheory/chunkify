@@ -1,7 +1,11 @@
-declare interface IExperiment {
-  chunkified: boolean;
+declare interface IMetered {
   length: number;
   progress: number;
+}
+
+
+declare interface IExperiment extends IMetered {
+  chunkified: boolean;
 
   actions: {[actionName: string]: number};
   options: IChunkifyOptions;

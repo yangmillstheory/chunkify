@@ -16,7 +16,7 @@
   </div>
   <div class='main-wrapper' ng-controller='ExperimentCtrl as experiment'>
     <div class='main'>
-      <progress-bar experi='experiment.progress' length='experiment.length'></progress-bar>
+      <progress-bar meter='experiment'></progress-bar>
       <div class='button-container'>
         <div class='buttons' ng-repeat="(actionName, action) in experiment.actions">
           <button ng-class='{active: experiment.isSelected(action)}' 

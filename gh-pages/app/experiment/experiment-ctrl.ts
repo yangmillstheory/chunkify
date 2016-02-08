@@ -6,7 +6,7 @@ import {
 } from './defaults';
 
 
-export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
+export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutService): void {
   // We attach to an object literal because 'this' is of type any.
   //
   // https://github.com/Microsoft/TypeScript/issues/3694
@@ -16,7 +16,7 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
 
   let currentAction: ExperimentAction;
 
-  let updateProgress = function(value?: number): void {
+  let updateProgress = (value?: number): void => {
     if (typeof value === 'number') {
       experiment.progress = value;
     } else {
@@ -32,7 +32,6 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     $timeout(
       function(): void {
         updateProgress(0);
-        currentAction = undefined;
         running = false;
       },
       1000
@@ -53,10 +52,10 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     length: RANGE.length,
 
     actions: {
-      'each': ExperimentAction.EACH,
-      'map': ExperimentAction.MAP,
-      'reduce': ExperimentAction.REDUCE,
-      'range': ExperimentAction.RANGE,
+      each: ExperimentAction.EACH,
+      map: ExperimentAction.MAP,
+      reduce: ExperimentAction.REDUCE,
+      range: ExperimentAction.RANGE,
     },
 
     isSelected: function(action: ExperimentAction): boolean {
@@ -81,12 +80,14 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
 
     execute: function(action: ExperimentAction): void {
       running = true;
-      currentAction = action;
-      applyAction(currentAction, actionConsumer, experiment.chunkified, this.options)
-      .then(reset);
+      experiment.setAction(action);
+      applyAction(currentAction, actionConsumer, experiment.chunkified, experiment.options)
+        .then(reset);
     }
   };
 
   Object.assign(this, experiment);
+
+  experiment = this;
 
 };

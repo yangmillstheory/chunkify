@@ -244,6 +244,9 @@ label {
   height: 20px;
   border-radius: 15px;
   background-color: #8BC53F;
+  transition: width 0.5s;
+  -webkit-transition: width .5s;
+  -moz-transition: width .5s;
 }
 
 .ui-tooltip {
