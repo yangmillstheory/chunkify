@@ -76,7 +76,7 @@ export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutSer
     },
 
     getActionName: function(actionNumber: number): string {
-      return Object.keys(this.actions)[actionNumber];
+      return Object.keys(api.actions)[actionNumber];
     },
 
     execute: function(action: ExperimentAction): void {
