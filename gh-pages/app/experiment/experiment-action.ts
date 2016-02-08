@@ -1,7 +1,7 @@
 import {each, reduce, map, range} from 'chunkify';
 import {
   RANGE,
-} from './defaults';
+} from './experiment-defaults';
 
 
 let block = function(consumer: Function): (j: number) => number {

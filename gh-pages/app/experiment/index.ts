@@ -1,7 +1,7 @@
 import * as angular from 'angular';
-import {ExperimentCtrl} from './experiment-ctrl';
+import {ExperimentCtrl} from './experiment-controller';
 import {experimentOptions} from './experiment-options-directive.ts';
-import {ExperimentAction} from './action';
+import {ExperimentAction} from './experiment-action';
 
 
 const ngModuleName = 'experiment';

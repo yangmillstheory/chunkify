@@ -1,9 +1,9 @@
-import {applyAction, ExperimentAction} from './action';
+import {applyAction, ExperimentAction} from './experiment-action';
 import {
   RANGE,
   CHUNK,
   DELAY
-} from './defaults';
+} from './experiment-defaults';
 
 
 export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutService): void {
