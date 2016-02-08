@@ -20,7 +20,7 @@ export var experimentOptions = function(): ng.IDirective {
     controller($scope: IExperimentOptionsScope): void {
       let api: IExperimentOptionsCtrl = {
         disabled: function(): boolean {
-          return $scope.experiment.isRunning() || $scope.form.$invalid;
+          return $scope.experiment.isRunning();
         },
 
         reset: function(): void {
