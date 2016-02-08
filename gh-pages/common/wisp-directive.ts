@@ -38,19 +38,19 @@ function* wispMoves($element: ng.IAugmentedJQuery): IterableIterator<IMoveCSS> {
     return randomInt({min: 0.25 * height, max: height});
   };
   let moveFunctions: IMoveFunction[] = [
-    function(): IMoveCSS {
+    function moveRight(): IMoveCSS {
       let maxOffset = ($parent.offset().left + $parent.width()) - ($element.offset().left + $element.width());
       return {left: `+=${Math.min(xOffset(), maxOffset)}`};
     },
-    function(): IMoveCSS {
+    function moveDown(): IMoveCSS {
       let maxOffset = ($parent.offset().top + $parent.height()) - ($element.offset().top + $element.height());
       return {top: `+=${Math.min(yOffset(), maxOffset)}`};
     },
-    function(): IMoveCSS {
+    function moveLeft(): IMoveCSS {
       let maxOffset = $element.offset().left - $parent.offset().left;
       return {left: `-=${Math.min(xOffset(), maxOffset)}`};
     },
-    function(): IMoveCSS {
+    function moveUp(): IMoveCSS {
       let maxOffset = $element.offset().top - $parent.offset().top;
       return {top: `-=${Math.min(yOffset(), maxOffset)}`};
     }
