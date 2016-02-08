@@ -17,5 +17,5 @@ declare interface IExperiment extends IMetered {
   getAction(): number;
   setAction(action: number): void;
 
-  execute(action: number): void;
+  run(action: number): void;
 }

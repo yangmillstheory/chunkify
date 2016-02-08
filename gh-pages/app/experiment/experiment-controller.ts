@@ -6,7 +6,7 @@ import {
 } from './experiment-defaults';
 
 
-export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutService): void {
+export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
   // We attach to an object literal because 'this' is of type any.
   // The pattern here lets compile-time checking work with the closure pattern.
   //
@@ -79,7 +79,7 @@ export var ExperimentCtrl = function($scope: ng.IScope, $timeout: ng.ITimeoutSer
       return Object.keys(api.actions)[actionNumber];
     },
 
-    execute: function(action: ExperimentAction): void {
+    run: function(action: ExperimentAction): void {
       running = true;
       api.setAction(action);
       applyAction(currentAction, actionConsumer, api.chunkified, api.options)

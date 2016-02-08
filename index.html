@@ -21,7 +21,7 @@
         <div class='buttons' ng-repeat="(actionName, action) in experiment.actions">
           <button ng-class='{active: experiment.isSelected(action)}' 
                   ng-disabled='experiment.isRunning()' 
-                  ng-click='experiment.execute(action)' 
+                  ng-click='experiment.run(action)' 
                   ng-mouseover="experiment.setAction(action)">
             {{ actionName | titlecase }}&nbsp;<span ng-if="experiment.isSelected(action)">✓</span>
           </button>
