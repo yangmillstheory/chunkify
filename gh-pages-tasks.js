@@ -121,7 +121,7 @@ let initTasks = function() {
   });
 
   gulp.task('bundle:dev', function(done) {
-    finishBundle(bundleDev().bundle());
+    finishBundle(bundleDev().bundle(), gulpNgAnnotate);
     done();
   });
 
