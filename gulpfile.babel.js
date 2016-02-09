@@ -54,12 +54,12 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 ///////
 // lint
 
-let lintStream = function(globs, rules, emitError = true) {
+let lintStream = function(globs, rules) {
   return gulp.src(globs)
     .pipe(gulpTslint({configuration: {tslint, rules}}))
     .pipe(gulpTslint.report('verbose', {
       summarizeFailureOutput: true,
-      emitError
+      emitError: true
     }));
 };
 

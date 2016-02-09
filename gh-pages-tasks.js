@@ -3,26 +3,41 @@ import browserify from 'browserify';
 import vinylSource from 'vinyl-source-stream';
 import vinylBuffer from 'vinyl-buffer';
 import gulpUglify from 'gulp-uglify';
+import gulpTslint from 'gulp-tslint';
 import tsify from 'tsify';
 import babelify from 'babelify';
 import watchify from 'watchify';
 import ngAnnotate from 'gulp-ng-annotate';
 import typescript from 'typescript';
+import tslint from 'tslint';
 import gulpUtil from 'gulp-util';
 import {symlink} from 'fs';
 import tsConfig from './tsconfig.json';
 
 
 const ghPagesBase = 'gh-pages';
+const lintConfig = {
+  tslint, 
+  rules: {
+    align: false
+  }
+};
 
 
-let initTasks = function(lintStream) {
+let initTasks = function() {
   ///////
   // lint
   let lint = function() {
-    return lintStream(`${ghPagesBase}/**/*.ts`, {
-      align: false
-    }, false);
+    return gulp
+      .src(`${ghPagesBase}/**/*.ts`)
+      .pipe(gulpTslint({configuration: lintConfig}))
+      .pipe(gulpTslint.report('verbose', {
+        summarizeFailureOutput: true,
+        // emitting errors kills the bundle; 
+        // but didn't look deeper into making 
+        // it work with this on
+        emitError: false
+      }));
   };
 
   gulp.task('lint:gh-pages', lint);
@@ -92,7 +107,7 @@ let initTasks = function(lintStream) {
   });
 
   gulp.task('bundle:prod', function() {
-    return finishBundle(startBundle(), ngAnnotate, gulpUglify);
+    return finishBundle(startBundle().bundle(), ngAnnotate, gulpUglify);
   });
 
   gulp.task('bundle:dev', function(done) {
