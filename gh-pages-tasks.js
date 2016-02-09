@@ -3,11 +3,12 @@ import browserify from 'browserify';
 import vinylSource from 'vinyl-source-stream';
 import vinylBuffer from 'vinyl-buffer';
 import gulpUglify from 'gulp-uglify';
+import gulpSourcemaps from 'gulp-sourcemaps';
 import gulpTslint from 'gulp-tslint';
 import tsify from 'tsify';
 import babelify from 'babelify';
 import watchify from 'watchify';
-import ngAnnotate from 'gulp-ng-annotate';
+import gulpNgAnnotate from 'gulp-ng-annotate';
 import typescript from 'typescript';
 import tslint from 'tslint';
 import gulpUtil from 'gulp-util';
@@ -107,7 +108,16 @@ let initTasks = function() {
   });
 
   gulp.task('bundle:prod', function() {
-    return finishBundle(startBundle().bundle(), ngAnnotate, gulpUglify);
+    return finishBundle(
+      startBundle().bundle(),
+      gulpNgAnnotate,
+      function() {
+        return gulpSourcemaps.init({loadMaps: true});
+      },
+      gulpUglify,
+      function() {
+        return gulpSourcemaps.write();
+      });
   });
 
   gulp.task('bundle:dev', function(done) {

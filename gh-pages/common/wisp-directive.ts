@@ -66,6 +66,7 @@ function* wispMoves($element: ng.IAugmentedJQuery): IterableIterator<IMoveCSS> {
 }
 
 export var wisp = function($interval: ng.IIntervalService): ng.IDirective {
+  'ngInject';
   return {
     replace: true,
     link(scope: ng.IScope, element: ng.IAugmentedJQuery): void {

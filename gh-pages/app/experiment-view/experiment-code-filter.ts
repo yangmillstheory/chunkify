@@ -1,4 +1,4 @@
-import {Action} from '../experiment';
+import {Action} from '../experiment-state';
 
 
 const actionConsumers: Map<number, string> = new Map();
@@ -51,7 +51,7 @@ let actionCall = function(experiment: IExperiment): string {
 };
 
 export var experimentCode = function(): (experiment: IExperiment) => string {
-  return  function(experiment: IExperiment): string {
+  return function(experiment: IExperiment): string {
     if (experiment.getAction() === undefined) {
       return 'Hover over an action button on the left sidebar.';
     }

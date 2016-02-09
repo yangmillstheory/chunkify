@@ -21,6 +21,7 @@ interface IResizingContainerAttrs {
  * @param {number} offsetY: subtracted from the resize height
  */
 export var resizingContainer = function($window: ng.IWindowService): ng.IDirective {
+  'ngInject';
   return {
     restrict: 'E',
     transclude: true,

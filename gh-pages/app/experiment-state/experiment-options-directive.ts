@@ -18,6 +18,7 @@ export var experimentOptions = function(): ng.IDirective {
     },
     controllerAs: 'optionsCtrl',
     controller($scope: IExperimentOptionsScope): void {
+      'ngInject';
       let api: IExperimentOptionsCtrl = {
         disabled: function(): boolean {
           return $scope.experiment.isRunning();

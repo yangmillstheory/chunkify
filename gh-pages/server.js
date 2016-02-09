@@ -8,7 +8,7 @@ createServer(function(request, response) {
   console.info(`Serving request for URL: ${url}`);
   if (url === '/favicon.ico') {
     response.writeHead(200, {'Content-Type': 'image/x-icon'});
-    createReadStream('gh-pages/img/favicon.ico', {autoClose: true}).pipe(response);
+    createReadStream('favicon.ico', {autoClose: true}).pipe(response);
   } else if (url === '/') {
     response.writeHead(200, {'Content-Type': 'text/html'});
     createReadStream('index.html', {autoClose: true}).pipe(response);

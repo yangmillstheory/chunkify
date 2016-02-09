@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import * as angular from 'angular';
-import experiment from './experiment';
+import experiment from './experiment-state';
 import experimentView from './experiment-view';
 import common from '../common';
 

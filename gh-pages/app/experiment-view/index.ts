@@ -11,4 +11,4 @@ angular
 .directive('experimentView', experimentView);
 
 
-export default {ngModuleName, foo: 'foo'};
+export default {ngModuleName};

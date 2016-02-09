@@ -7,6 +7,7 @@ import {
 
 
 export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
+  'ngInject';
   // We attach to an object literal because 'this' is of type any.
   // The pattern here lets compile-time checking work with the closure pattern.
   //
