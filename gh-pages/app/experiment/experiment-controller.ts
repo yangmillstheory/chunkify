@@ -11,7 +11,7 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
   // The pattern here lets compile-time checking work with the closure pattern.
   //
   // https://github.com/Microsoft/TypeScript/issues/3694
-  let api: IExperiment;
+  let experimentCtrl: IExperiment;
 
   let running = false;
 
@@ -19,9 +19,9 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
 
   let updateProgress = (value?: number): void => {
     if (typeof value === 'number') {
-      api.progress = value;
+      experimentCtrl.progress = value;
     } else {
-      api.progress += 1;
+      experimentCtrl.progress += 1;
     }
   };
 
@@ -39,7 +39,7 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     );
   };
 
-  api = {
+  experimentCtrl = {
 
     chunkified: true,
 
@@ -76,19 +76,19 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
     },
 
     getActionName: function(actionNumber: number): string {
-      return Object.keys(api.actions)[actionNumber];
+      return Object.keys(experimentCtrl.actions)[actionNumber];
     },
 
     run: function(action: ExperimentAction): void {
       running = true;
-      api.setAction(action);
-      applyAction(currentAction, actionConsumer, api.chunkified, api.options)
+      experimentCtrl.setAction(action);
+      applyAction(currentAction, actionConsumer, experimentCtrl.chunkified, experimentCtrl.options)
         .then(reset);
     }
   };
 
-  Object.assign(this, api);
+  Object.assign(this, experimentCtrl);
 
-  api = this;
+  experimentCtrl = this;
 
 };
