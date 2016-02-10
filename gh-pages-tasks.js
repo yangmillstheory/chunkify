@@ -34,7 +34,7 @@ let initTasks = function() {
       .pipe(gulpTslint({configuration: lintConfig}))
       .pipe(gulpTslint.report('verbose', {
         summarizeFailureOutput: true,
-        // emitting errors kills the bundle; 
+        // emitting errors kills watchify,
         // but didn't look deeper into making 
         // it work with this on
         emitError: false
@@ -99,12 +99,8 @@ let initTasks = function() {
     return bundle;
   };
 
-  let doBundle = function() {
-    return finishBundle(startBundle().bundle());
-  };
-
   gulp.task('bundle', function() {
-    return doBundle();
+    return finishBundle(startBundle().bundle());
   });
 
   gulp.task('bundle:prod', function() {
