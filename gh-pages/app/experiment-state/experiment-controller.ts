@@ -60,27 +60,27 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
       range: ExperimentAction.RANGE,
     },
 
-    isSelected: function(action: ExperimentAction): boolean {
+    isSelected(action: ExperimentAction): boolean {
       return action === currentAction;
     },
 
-    isRunning: function(): boolean {
+    isRunning(): boolean {
       return running;
     },
 
-    setAction: function(action: ExperimentAction): void {
+    setAction(action: ExperimentAction): void {
       currentAction = action;
     },
 
-    getAction: function(): ExperimentAction {
+    getAction(): ExperimentAction {
       return currentAction;
     },
 
-    getActionName: function(actionNumber: number): string {
+    getActionName(actionNumber: number): string {
       return Object.keys(experimentCtrl.actions)[actionNumber];
     },
 
-    run: function(action: ExperimentAction): void {
+    run(action: ExperimentAction): void {
       running = true;
       experimentCtrl.setAction(action);
       applyAction(currentAction, actionConsumer, experimentCtrl.chunkified, experimentCtrl.options)
