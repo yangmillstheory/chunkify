@@ -18,7 +18,7 @@ export var ExperimentCtrl = function($timeout: ng.ITimeoutService): void {
 
   let currentAction: ExperimentAction;
 
-  let updateProgress = (value?: number): void => {
+  let updateProgress = function(value?: number): void {
     if (typeof value === 'number') {
       experimentCtrl.progress = value;
     } else {
