@@ -94,7 +94,7 @@ let initTasks = function() {
           gulpUtil.log('File updated: ', gulpUtil.colors.yellow(id));
         })
         lint();
-        finishBundle(bundle.bundle());
+        finishBundle(bundle.bundle(), gulpNgAnnotate);
       });
     return bundle;
   };
