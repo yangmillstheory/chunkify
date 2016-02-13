@@ -8,19 +8,19 @@ createServer(function(request, response) {
   console.info(`Serving request for URL: ${url}`);
   if (url === '/favicon.ico') {
     response.writeHead(200, {'Content-Type': 'image/x-icon'});
-    createReadStream('favicon.ico', {autoClose: true}).pipe(response);
+    createReadStream('favicon.ico').pipe(response);
   } else if (url === '/') {
     response.writeHead(200, {'Content-Type': 'text/html'});
-    createReadStream('index.html', {autoClose: true}).pipe(response);
+    createReadStream('index.html').pipe(response);
   } else if (url.endsWith('gh-pages/bundle.js')) {
     response.writeHead(200, {'Content-Type': 'application/javascript'});
-    createReadStream(`./${parse(url).path}`, {autoClose: true}).pipe(response);
+    createReadStream(`./${parse(url).path}`).pipe(response);
   } else if (url.endsWith('gh-pages/css/index.css')) {
     response.writeHead(200, {'Content-Type': 'text/css'});
-    createReadStream(`./${parse(url).path}`, {autoClose: true}).pipe(response);
+    createReadStream(`./${parse(url).path}`).pipe(response);
   } else if (url.endsWith('.png')) {
     response.writeHead(200, {'Content-Type': 'image/png'});
-    createReadStream(`./${parse(url).path}`, {autoClose: true}).pipe(response);
+    createReadStream(`./${parse(url).path}`).pipe(response);
   } else {
     console.error(`Returning 404 Not Found`);
     response.writeHead(404);
