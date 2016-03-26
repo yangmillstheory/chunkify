@@ -55,7 +55,7 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 
 let lintStream = function(globs, rules) {
   return gulp.src(globs)
-    .pipe(gulpTslint({configuration: {tslint, rules}}))
+    .pipe(gulpTslint({configuration: {rules}, tslint}))
     .pipe(gulpTslint.report('verbose', {
       summarizeFailureOutput: true,
       emitError: true
