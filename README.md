@@ -4,7 +4,7 @@
 
 ## What is it?
 
-An API to prevent long-running scripts from blocking. 
+An isomorphic API to prevent long-running scripts from blocking. 
 
 The idea is to do work in synchronous chunks, periodically letting go of the thread. 
 
