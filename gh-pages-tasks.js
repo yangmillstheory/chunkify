@@ -47,8 +47,9 @@ let initTasks = function() {
     let target = 'node_modules/chunkify';
     let source = `../${tsConfig.compilerOptions.outDir}`;
     symlink(source, target, function(error) {
-      if (error) {
-        gulpUtil.log(`${target} already linked to ${source}.`);
+      if (error.code === 'EACCES') {
+        gulpUtil.log(`Permissions error while symlinking: ${error}`);
+        process.exit(1);
       }
       done();
     });
@@ -100,7 +101,7 @@ let initTasks = function() {
   };
 
   gulp.task('bundle', function() {
-    return finishBundle(startBundle().bundle());
+    return finishBundle(startBundle().bundle(), gulpNgAnnotate);
   });
 
   gulp.task('bundle:prod', function() {
