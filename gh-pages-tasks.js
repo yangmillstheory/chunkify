@@ -91,7 +91,6 @@ let initTasks = function() {
         let rebundled = bundle.bundle();
         rebundled
           .on('error', function(error) {
-            console.log(__dirname);
             gulpUtil.log(gulpUtil.colors.red(`Error re-bundling:\n\n${JSON.stringify(error, null, 2)}`));
           });
         lint();
