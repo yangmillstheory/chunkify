@@ -47,7 +47,7 @@ let initTasks = function() {
     let target = 'node_modules/chunkify';
     let source = `../${tsConfig.compilerOptions.outDir}`;
     symlink(source, target, function(error) {
-      if (error.code === 'EACCES') {
+      if (typeof error === 'object' && error.code === 'EACCES') {
         gulpUtil.log(`Permissions error while symlinking: ${error}`);
         process.exit(1);
       }
