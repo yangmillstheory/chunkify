@@ -3,19 +3,19 @@ declare interface IMetered {
   progress: number;
 }
 
+declare type ExperimentAction = 'each' | 'map' | 'reduce' | 'range';
 
 declare interface IExperiment extends IMetered {
   chunkified: boolean;
 
-  actions: {[actionName: string]: number};
+  actions: ExperimentAction[];
   options: IChunkifyOptions;
 
-  isSelected(action: number): boolean;
+  isSelected(experimentAction: ExperimentAction): boolean;
   isRunning(): boolean;
 
-  getActionName(actionNumber: number): string;
-  getAction(): number;
-  setAction(action: number): void;
+  getAction(): ExperimentAction;
+  setAction(experimentAction: ExperimentAction): void;
 
-  run(action: number): void;
+  run(experimentAction: ExperimentAction): void;
 }

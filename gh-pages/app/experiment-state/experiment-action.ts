@@ -66,13 +66,6 @@ let rangeAction = function(
   }());
 };
 
-export enum ExperimentAction {
-  EACH,
-  MAP,
-  REDUCE,
-  RANGE
-}
-
 export var applyAction = function(
   action: ExperimentAction,
   consumer: Function,
@@ -81,13 +74,13 @@ export var applyAction = function(
 ): Promise<void|number|number[]> {
   let blockedConsumer = block(consumer);
   switch (action) {
-    case ExperimentAction.EACH:
+    case 'each':
       return eachAction(blockedConsumer, chunkified, options);
-    case ExperimentAction.MAP:
+    case 'map':
       return mapAction(blockedConsumer, chunkified, options);
-    case ExperimentAction.REDUCE:
+    case 'reduce':
       return reduceAction(blockedConsumer, chunkified, options);
-    case ExperimentAction.RANGE:
+    case 'range':
       return rangeAction(blockedConsumer, chunkified, options);
     default:
       throw new Error(`Unknown action ${action}`);
