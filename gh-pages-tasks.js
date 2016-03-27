@@ -84,18 +84,18 @@ let initTasks = function() {
   let bundleDev = function() {
     let bundle = watchify(startBundle());
     bundle
-      .on('error', function(error) {
-        gulpUtil.error(error);
-      })
-      .on('log', function(message) {
-        gulpUtil.log(message);
-      })
       .on('update', function(ids) {
         ids.forEach(function(id) {
-          gulpUtil.log('File updated: ', gulpUtil.colors.yellow(id));
+          gulpUtil.log(gulpUtil.colors.yellow(`File updated: ${id}`));
         })
+        let rebundled = bundle.bundle();
+        rebundled
+          .on('error', function(error) {
+            console.log(__dirname);
+            gulpUtil.log(gulpUtil.colors.red(`Error re-bundling:\n\n${JSON.stringify(error, null, 2)}`));
+          });
         lint();
-        finishBundle(bundle.bundle(), gulpNgAnnotate);
+        finishBundle(rebundled, gulpNgAnnotate);
       });
     return bundle;
   };
