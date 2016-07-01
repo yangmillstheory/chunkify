@@ -151,11 +151,11 @@ Install dependencies:
     
 Compile:
 
-    $ npm run-script compile
+    $ npm run compile
     
 Develop:
 
-    $ npm run-script dev
+    $ npm run dev
 
 ## License
 
