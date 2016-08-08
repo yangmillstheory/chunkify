@@ -1,42 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="chunkify" ng-strict-di>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>yangmillstheory - chunkify</title>
-  <link rel="stylesheet" href="gh-pages/css/index.css" />
-  <!-- Put the bundle here so ng-cloak will work -->
-  <script src="gh-pages/bundle.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
 </head>
-<body ng-cloak>
-  <div class='title'>chunkify.js
-    <span class='title-blurb'>a functional API to unblock your JavaScript</span>
-    <a id='github' href='https://github.com/yangmillstheory/chunkify' target="_blank"></a>
-    <a id='npm' href='https://www.npmjs.com/package/chunkify' target="_blank"></a>
-    <a id='hn' href='https://news.ycombinator.com/item?id=10328277' target="_blank"></a>
-  </div>
-  <div class='main-wrapper' ng-controller='ExperimentCtrl as experiment'>
-    <div class='main'>
-      <progress-bar meter='experiment'></progress-bar>
-      <div class='button-container'>
-        <div class='buttons' ng-repeat="action in experiment.actions">
-          <button ng-class='{active: experiment.isSelected(action)}' 
-                  ng-disabled='experiment.isRunning()' 
-                  ng-click='experiment.run(action)' 
-                  ng-mouseover="experiment.setAction(action)">
-            {{ action | titlecase }}&nbsp;<span ng-if="experiment.isSelected(action)">✓</span>
-          </button>
-        </div>
-        <label for='chunkify-checkbox'>
-          <input type="checkbox" id='chunkify-checkbox' ng-disabled="experiment.isRunning()" ng-model="experiment.chunkified" />
-          chunkified
-        </label>
-      </div>
-      <experiment-options experiment="experiment"></experiment-options>
-    </div>
-    <resizing-container offset-x="250" offset-y="225" min-width="750" min-height="450">
-      <experiment-view experiment="experiment"></experiment-view>
-      <wisp></wisp>
-    </resizing-container>
-  </div>
+<body>
+<div id='react-root'></div>
 </body>
 </html>
