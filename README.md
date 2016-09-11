@@ -1,6 +1,7 @@
 # chunkify
 
 [![Build Status](https://travis-ci.org/yangmillstheory/chunkify.svg?branch=master)](https://travis-ci.org/yangmillstheory/chunkify)
+[![NPM](https://nodei.co/npm-dl/chunkify.png)](https://nodei.co/npm/chunkify/)
 
 ## What is it?
 
