@@ -1,6 +1,6 @@
 # chunkify
 
-[![NPM](https://nodei.co/npm-dl/chunkify.png)](https://nodei.co/npm/chunkify/)
+[![NPM](https://nodei.co/npm-dl/chunkify.png?months=1)](https://nodei.co/npm/chunkify/)
 
 [![build status](https://img.shields.io/travis/yangmillstheory/chunkify/master.svg?style=flat-square)](https://travis-ci.org/yangmillstheory/chunkify)
 
