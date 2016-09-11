@@ -12,9 +12,12 @@ export var tick = function(tickParams: {
   time.tick(tickParams.delay);
   time.restore();
 
-  process.nextTick(function(): void {
-    tickParams.after(beforeResult);
-  });
+  setTimeout(
+    function(): void {
+      tickParams.after(beforeResult);
+    },
+    0
+  );
 };
 
 export var now = function(): number {
